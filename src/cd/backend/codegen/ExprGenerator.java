@@ -21,7 +21,7 @@ import cd.util.debug.AstOneLine;
 
 import cd.backend.codegen.AssemblyEmitter;
 import cd.backend.codegen.AssemblyFailedException;
-import cd.backend.codegen.AstCodeGenerator;
+//import cd.backend.codegen.AstCodeGenerator;
 import cd.backend.codegen.RegisterManager;
 
 /**
@@ -164,14 +164,16 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 		
 		switch(ast.operator){
 		case U_PLUS:
+			//Passiert nichts
 		case U_MINUS:
+			cg.emit.emit("negl", reg);
 		case U_BOOL_NOT:
-		
+			//müsswa ned mache
 		}
 		
-		{
-			throw new ToDoException();
-		}
+		return reg;
+		
+		
 	}
 	
 	@Override
