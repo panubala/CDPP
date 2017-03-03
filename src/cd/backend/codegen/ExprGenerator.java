@@ -59,15 +59,16 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 		
 		switch(ast.operator){
 		case B_PLUS:
-//			emitRaw("addl");
+			cg.emit.emitRaw("addl");
 			
 		case B_MINUS:
-//			emitRaw("subl");
+			cg.emit.emitRaw("subl");
 			
 		case B_TIMES:
-//			emitRaw("imull");
+			cg.emit.emitRaw("imull");
 			
 		case B_DIV:
+			//TODO
 			//shit
 		}
 		
@@ -76,7 +77,6 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register booleanConst(BooleanConst ast, Void arg) {
-		
 		{
 			throw new RuntimeException("Not required");
 		}
@@ -119,7 +119,6 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register field(Field ast, Void arg) {
-		//TODO
 		{
 			throw new RuntimeException("Not required");
 		}
@@ -127,7 +126,6 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register newArray(NewArray ast, Void arg) {
-		//TODO
 		{
 			throw new RuntimeException("Not required");
 		}
@@ -135,7 +133,6 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register newObject(NewObject ast, Void arg) {
-		//TODO
 		{
 			throw new RuntimeException("Not required");
 		}
@@ -143,7 +140,6 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register nullConst(NullConst ast, Void arg) {
-		//TODO
 		{
 			throw new RuntimeException("Not required");
 		}
