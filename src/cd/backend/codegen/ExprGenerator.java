@@ -1,5 +1,6 @@
 package cd.backend.codegen;
 
+import cd.Config;
 import cd.ToDoException;
 import cd.backend.codegen.RegisterManager.Register;
 import cd.ir.Ast.BinaryOp;
@@ -57,6 +58,9 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 		Register regLeft = visit(ast.left(),arg);
 		Register regRight = visit(ast.right(),arg);
 		
+		cg.emit.emit("pushl", regLeft);
+		cg.emit.emit("pushl", regRight);
+		
 		switch(ast.operator){
 		case B_PLUS:
 			cg.emit.emitRaw("addl");
@@ -85,7 +89,8 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 	@Override
 	public Register builtInRead(BuiltInRead ast, Void arg) {
 		//TODO
-		
+		cg.emit.emit("pushl", "%esp");
+		cg.emit.emit("call", Config.SCANF);
 		
 		{
 			throw new ToDoException();
