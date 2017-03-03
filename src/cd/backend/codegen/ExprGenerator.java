@@ -94,7 +94,6 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register cast(Cast ast, Void arg) {
-		//TODO
 		{
 			throw new RuntimeException("Not required");
 		}
@@ -102,7 +101,6 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register index(Index ast, Void arg) {
-		//TODO
 		{
 			throw new RuntimeException("Not required");
 		}
@@ -110,11 +108,9 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register intConst(IntConst ast, Void arg) {
-		//TODO
-		//String reg = 
-		{
-			throw new ToDoException();
-		}
+		Register regInt = cg.rm.getRegister();
+		cg.emit.emitMove("$" + Integer.toString(ast.value),regInt);
+		return regInt;
 	}
 
 	@Override
@@ -147,7 +143,6 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register thisRef(ThisRef ast, Void arg) {
-		//TODO
 		{
 			throw new RuntimeException("Not required");
 		}
@@ -175,6 +170,9 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 	@Override
 	public Register var(Var ast, Void arg) {
 		//TODO
+		
+//		Register regVar=
+//		return regVar
 		{
 			throw new ToDoException();
 		}
