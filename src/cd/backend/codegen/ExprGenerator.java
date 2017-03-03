@@ -19,6 +19,11 @@ import cd.ir.Ast.Var;
 import cd.ir.ExprVisitor;
 import cd.util.debug.AstOneLine;
 
+import cd.backend.codegen.AssemblyEmitter;
+import cd.backend.codegen.AssemblyFailedException;
+import cd.backend.codegen.AstCodeGenerator;
+import cd.backend.codegen.RegisterManager;
+
 /**
  * Generates code to evaluate expressions. After emitting the code, returns a
  * String which indicates the register where the result can be found.
@@ -49,14 +54,28 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 	public Register binaryOp(BinaryOp ast, Void arg) {
 		//TODO
 		
-		{
-			throw new ToDoException();
+		Register regLeft = visit(ast.left(),arg);
+		Register regRight = visit(ast.right(),arg);
+		
+		switch(ast.operator){
+		case B_PLUS:
+//			emitRaw("addl");
+			
+		case B_MINUS:
+//			emitRaw("subl");
+			
+		case B_TIMES:
+//			emitRaw("imull");
+			
+		case B_DIV:
+			//shit
 		}
+		
+		return regLeft;
 	}
 
 	@Override
 	public Register booleanConst(BooleanConst ast, Void arg) {
-		//TODO
 		
 		{
 			throw new RuntimeException("Not required");
@@ -65,8 +84,9 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register builtInRead(BuiltInRead ast, Void arg) {
-		
 		//TODO
+		
+		
 		{
 			throw new ToDoException();
 		}
@@ -91,6 +111,7 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 	@Override
 	public Register intConst(IntConst ast, Void arg) {
 		//TODO
+		//String reg = 
 		{
 			throw new ToDoException();
 		}
@@ -139,6 +160,15 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 	@Override
 	public Register unaryOp(UnaryOp ast, Void arg) {
 		//TODO
+		Register reg = visit(ast.arg(), arg);
+		
+		switch(ast.operator){
+		case U_PLUS:
+		case U_MINUS:
+		case U_BOOL_NOT:
+		
+		}
+		
 		{
 			throw new ToDoException();
 		}
