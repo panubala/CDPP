@@ -109,7 +109,7 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 	@Override
 	public Register intConst(IntConst ast, Void arg) {
 		Register regInt = cg.rm.getRegister();
-		cg.emit.emitMove("$" + Integer.toString(ast.value),regInt);
+		cg.emit.emitMove(cg.emit.constant(ast.value),regInt);
 		return regInt;
 	}
 
