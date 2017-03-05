@@ -58,6 +58,7 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 		Register regLeft = visit(ast.left(),arg);
 		Register regRight = visit(ast.right(),arg);
 		
+		
 		cg.emit.emit("pushl", regLeft);
 		cg.emit.emit("pushl", regRight);
 		

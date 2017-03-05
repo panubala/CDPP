@@ -142,7 +142,11 @@ public class AssemblyEmitter {
 
 	void emitLabel(String label) {
 		try {
+			out.write(".globl "+label+"\n");
 			out.write(label + ":" + "\n");
+			
+			System.out.println(".globl "+label);
+			System.out.println(label+":");
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -153,6 +157,10 @@ public class AssemblyEmitter {
 			out.write(indent.toString());
 			out.write(op);
 			out.write("\n");
+			
+			System.out.println(indent.toString());
+			System.out.println(op);
+			
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

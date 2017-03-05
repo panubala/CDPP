@@ -138,7 +138,7 @@ abstract public class AbstractTestAgainstFrozenReference {
 		// Determine the input and expected output.
 		String inFile = (infile.exists() ? FileUtil.read(infile) : "");
 		String execRef = findExecRef();
-
+		
 		// Run the code generator:
 		try (FileWriter fw = new FileWriter(this.sfile)) {
 			main.generateCode(astRoots, fw);
@@ -152,7 +152,7 @@ abstract public class AbstractTestAgainstFrozenReference {
 				Config.ASM,
 				new String[] { binfile.getAbsolutePath(),
 						sfile.getAbsolutePath() }, null, false);
-
+		
 		// To check if gcc succeeded, check if the binary file exists.
 		// We could use the return code instead, but this seems more
 		// portable to other compilers / make systems.

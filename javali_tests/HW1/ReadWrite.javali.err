@@ -1,4 +1,4 @@
-Debug information for file: javali_tests/HW1/ReadWrite.javali
+Debug information for file: javali_tests\HW1\ReadWrite.javali
 AST Resulting From Parsing Stage:
 ClassDecl (name: Main, superClass: Object)
 | MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)
@@ -30,22 +30,13 @@ ClassDecl (name: Main, superClass: Object)
 | | | BuiltInWriteln ()
 
 Test failed because an exception was thrown:
-    null
+    String index out of range: -2
 Stack trace:
-cd.ToDoException
-	at cd.backend.codegen.StmtGenerator.methodDecl(StmtGenerator.java:53)
-	at cd.backend.codegen.StmtGenerator.methodDecl(StmtGenerator.java:1)
-	at cd.ir.Ast$MethodDecl.accept(Ast.java:666)
-	at cd.ir.AstVisitor.visit(AstVisitor.java:16)
-	at cd.backend.codegen.StmtGenerator.visit(StmtGenerator.java:34)
-	at cd.backend.codegen.StmtGenerator.visit(StmtGenerator.java:1)
-	at cd.ir.AstVisitor.visitChildren(AstVisitor.java:28)
-	at cd.ir.AstVisitor.dflt(AstVisitor.java:37)
-	at cd.ir.AstVisitor.dfltDecl(AstVisitor.java:56)
-	at cd.ir.AstVisitor.classDecl(AstVisitor.java:72)
-	at cd.ir.Ast$ClassDecl.accept(Ast.java:699)
-	at cd.ir.AstVisitor.visit(AstVisitor.java:16)
-	at cd.backend.codegen.StmtGenerator.visit(StmtGenerator.java:34)
+java.lang.StringIndexOutOfBoundsException: String index out of range: -2
+	at java.lang.AbstractStringBuilder.setLength(AbstractStringBuilder.java:207)
+	at java.lang.StringBuilder.setLength(StringBuilder.java:76)
+	at cd.backend.codegen.AssemblyEmitter.decreaseIndent(AssemblyEmitter.java:48)
+	at cd.backend.codegen.StmtGenerator.visit(StmtGenerator.java:36)
 	at cd.backend.codegen.StmtGenerator.gen(StmtGenerator.java:27)
 	at cd.backend.codegen.AstCodeGenerator.go(AstCodeGenerator.java:51)
 	at cd.Main.generateCode(Main.java:117)
