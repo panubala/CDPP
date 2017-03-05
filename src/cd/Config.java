@@ -90,6 +90,7 @@ public class Config {
         if(os.contains("windows") || os.contains("nt")) {
             systemKind = SystemKind.WINDOWS;
             BINARYEXT = ".exe";
+            //MAIN = ".globl _main\r\n_main";
             MAIN = "_main";
             PRINTF = "_printf";
             SCANF = "_scanf";
