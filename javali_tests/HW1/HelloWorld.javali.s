@@ -5,6 +5,4 @@ _main:
     pushl %ebp
     movl %esp, %ebp
       # Emitting (...)
-    movl %ebp, %esp
-    pop %ebp
-    ret
+        # Emitting x = 5

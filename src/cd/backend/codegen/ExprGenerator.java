@@ -54,7 +54,7 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 	@Override
 	public Register binaryOp(BinaryOp ast, Void arg) {
 		//TODO: Not tested
-		
+		System.out.println("===BinOP");
 		Register regLeft = visit(ast.left(),arg);
 		Register regRight = visit(ast.right(),arg);
 		
@@ -128,8 +128,10 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register intConst(IntConst ast, Void arg) {
+
+		System.out.println("===intConst");
 		Register regInt = cg.rm.getRegister();
-		cg.emit.emitMove(cg.emit.constant(ast.value),regInt);
+		cg.emit.emitMove(AssemblyEmitter.constant(ast.value),regInt);
 		return regInt;
 	}
 
@@ -194,6 +196,8 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 	public Register var(Var ast, Void arg) {
 		//TODO
 		//Panuya: keine Ahnung wie es geht
+		
+		
 		{
 			throw new ToDoException();
 		}

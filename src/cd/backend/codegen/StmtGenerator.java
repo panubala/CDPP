@@ -1,5 +1,6 @@
 package cd.backend.codegen;
 
+import cd.Config;
 import cd.ToDoException;
 import cd.backend.codegen.RegisterManager.Register;
 import cd.ir.Ast;
@@ -57,10 +58,11 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 			
 			visit(ast.body(), arg);
 			
-			cg.emit.emitMove(RegisterManager.BASE_REG, RegisterManager.STACK_REG);
-			cg.emit.emit("pop",RegisterManager.BASE_REG);
+			//cg.emit.emitMove(RegisterManager.BASE_REG, RegisterManager.STACK_REG);
+			cg.emit.emitMove("$0", "%eax");
+			//cg.emit.emit("popl",RegisterManager.BASE_REG);
 			
-			//cg.emit.emitRaw("leave");
+			cg.emit.emitRaw("leave");
 			cg.emit.emitRaw("ret");
 			
 			return null;
@@ -90,16 +92,13 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 			// Because we only handle very simple programs in HW1,
 			// you can just emit the prologue here!
 			
-			//Register result = visit(ast.right(),arg);
 			
-			//Register storeR = cg.rm.getRegister();
-			//cg.emit.emit("pushl", storeR);
-			//ast.
-			//cg.emit.emitStore(result, 0, result);
-			//cg.emit.emi
+			Register result = visit(ast.right(),arg);
+			Register store = visit(ast.right(),arg);
+			cg.emit.emitStore(result,0,store);
 			
 			
-			return null;
+			return store;
 			
 			//throw new ToDoException();
 		}
@@ -108,11 +107,20 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 	@Override
 	public Register builtInWrite(BuiltInWrite ast, Void arg) {
 		//TODO
+		Register argument = visit(ast.arg(),arg);
 		
+		//cg.emit.emitMove(argument, RegisterManager.Register.EAX);
+		//cg.emit.emit("pushl", RegisterManager.Register.EAX);
 		
-		{
-			throw new ToDoException();
-		}
+		cg.emit.emit("pushl", argument);
+		cg.emit.emit("pushl",Config.DOT_INT);
+		
+		cg.emit.emit("call", Config.PRINTF);
+		
+		//{
+		//	throw new ToDoException();
+		//}
+		return null;
 	}
 
 	@Override
