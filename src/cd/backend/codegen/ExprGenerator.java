@@ -53,7 +53,7 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register binaryOp(BinaryOp ast, Void arg) {
-		//TODO
+		//TODO: Not tested
 		
 		Register regLeft = visit(ast.left(),arg);
 		Register regRight = visit(ast.right(),arg);
@@ -61,19 +61,33 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 		cg.emit.emit("pushl", regLeft);
 		cg.emit.emit("pushl", regRight);
 		
+		String rightHandSite = cg.emit.registerOffset(0, Register.ESP);
+		cg.emit.emitLoad(4, Register.ESP, regLeft);
+		
 		switch(ast.operator){
 		case B_PLUS:
-			cg.emit.emitRaw("addl");
+			cg.emit.emit("addl", rightHandSite, regLeft);
+			break;
 			
 		case B_MINUS:
-			cg.emit.emitRaw("subl");
+			cg.emit.emit("subl",rightHandSite, regLeft);
+			break;
 			
 		case B_TIMES:
-			cg.emit.emitRaw("imull");
+			cg.emit.emit("imull",rightHandSite, regLeft);
+			break;
 			
 		case B_DIV:
-			//TODO
-			//shit
+			cg.emit.emit("cmpl", cg.emit.constant(0), rightHandSite);
+			cg.emit.emit("pushl", Register.EAX);
+			cg.emit.emitMove(regLeft, Register.EAX);
+			cg.emit.emit("idivl", rightHandSite);
+			cg.emit.emitMove(Register.EAX, regLeft);
+			cg.emit.emit("popl", Register.EAX);
+			break;
+	
+		default:
+			break;
 		}
 		
 		return regLeft;
@@ -89,12 +103,12 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 	@Override
 	public Register builtInRead(BuiltInRead ast, Void arg) {
 		//TODO
-		cg.emit.emit("pushl", "%esp");
+		cg.emit.emit("pushl", Register.ESP);
 		cg.emit.emit("call", Config.SCANF);
 		
-		{
-			throw new ToDoException();
-		}
+		Register reg = cg.rm.getRegister();
+		cg.emit.emitLoad(0, Register.ESP, reg);
+		return reg;
 	}
 
 	@Override
@@ -161,10 +175,13 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 		switch(ast.operator){
 		case U_PLUS:
 			//Passiert nichts
+			break;
 		case U_MINUS:
 			cg.emit.emit("negl", reg);
-		case U_BOOL_NOT:
-			//müsswa ned mache
+			break;
+		default:
+			break;
+		
 		}
 		
 		return reg;
@@ -175,9 +192,7 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 	@Override
 	public Register var(Var ast, Void arg) {
 		//TODO
-		
-//		Register regVar=
-//		return regVar
+		//Panuya: keine Ahnung wie es geht
 		{
 			throw new ToDoException();
 		}
