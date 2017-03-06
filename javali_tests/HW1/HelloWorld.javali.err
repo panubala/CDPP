@@ -1,3 +1,5 @@
+Debug information for file: javali_tests\HW1\HelloWorld.javali
+AST Resulting From Parsing Stage:
 ClassDecl (name: Main, superClass: Object)
 | MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)
 | | Seq ()
@@ -6,3 +8,14 @@ ClassDecl (name: Main, superClass: Object)
 | | | Assign ()
 | | | | Var (name: x)
 | | | | IntConst (value: 5)
+
+Phase exec failed because we expected to see:
+
+But we actually saw:
+Error: 35584
+
+The difference is:
+At line   1 /   1:
+< 
+> Error: 35584
+

@@ -1,6 +1,6 @@
 Exception: STATUS_ACCESS_VIOLATION at eip=004011DD
 eax=00000001 ebx=0061CC2C ecx=00000000 edx=00000000 esi=00000005 edi=00000005
-ebp=0061CC08 esp=0061CC08 program=C:\Users\patri\Documents\ETH\FS17\Compiler Design\CDPP\javali_tests\HW1\HelloWorld.javali.exe, pid 8984, thread main
+ebp=0061CC08 esp=0061CC08 program=C:\Users\patri\Documents\ETH\FS17\Compiler Design\CDPP\javali_tests\HW1\HelloWorld.javali.exe, pid 10380, thread main
 cs=0023 ds=002B es=002B fs=0053 gs=002B ss=002B
 Stack trace:
 Frame     Function  Args
