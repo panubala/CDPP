@@ -142,11 +142,8 @@ public class AssemblyEmitter {
 
 	void emitLabel(String label) {
 		try {
-			out.write(".globl "+label+"\n");
 			//out.write(".text\n");
 			out.write(label + ":" + "\n");
-			
-			System.out.println(".globl "+label);
 			System.out.println(label+":");
 		} catch (IOException e) {
 			throw new RuntimeException(e);

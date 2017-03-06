@@ -2,6 +2,7 @@ package cd.backend.codegen;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -120,4 +121,7 @@ public class RegisterManager {
 	public int availableRegisters() {
 		return registers.size();
 	}
+	
+	public static HashMap<String, Integer> variableOffset = new HashMap<String, Integer>();
+	public static int currentOffset = 0;
 }

@@ -58,26 +58,6 @@ _main:
           # Emitting 7
           movl $7, %edi
         movl %edi, -32(%ebp)
-        # Emitting r1 = (i0 + (i1 + (i2 + (i3 + (i4 + (i5 + (i6 + i7)))))))
-          # Emitting r1
-          addl $-4, %esp
-          # Emitting (i0 + (i1 + (i2 + (i3 + (i4 + (i5 + (i6 + i7)))))))
-            # Emitting i0
-            movl -4(%ebp), %edi
-            # Emitting (i1 + (i2 + (i3 + (i4 + (i5 + (i6 + i7))))))
-              # Emitting i1
-              movl -8(%ebp), %esi
-              # Emitting (i2 + (i3 + (i4 + (i5 + (i6 + i7)))))
-                # Emitting i2
-                movl -12(%ebp), %edx
-                # Emitting (i3 + (i4 + (i5 + (i6 + i7))))
-                  # Emitting i3
-                  movl -16(%ebp), %ecx
-                  # Emitting (i4 + (i5 + (i6 + i7)))
-                    # Emitting i4
-                    movl -20(%ebp), %ebx
-                    # Emitting (i5 + (i6 + i7))
-                      # Emitting i5
-                      movl -24(%ebp), %eax
-                      # Emitting (i6 + i7)
-                        # Emitting i6
+    movl $0, %eax
+    leave
+    ret

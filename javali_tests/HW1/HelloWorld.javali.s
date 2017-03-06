@@ -1,23 +1,24 @@
   # Emitting class Main {...}
     # Emitting void main(...) {...}
-.globl _main
+.LC0:
+    .string "%d"
+.LC1:
+    .string "\n"
+    .globl _main
+
 _main:
     pushl %ebp
     movl %esp, %ebp
       # Emitting (...)
-        # Emitting x = 5
-          # Emitting x
-          # Emitting 5
-          movl $5, %esi
-        movl %esi, %edi
-        # Emitting y = x
-          # Emitting y
-          # Emitting x
-        movl %edi, %edx
-        # Emitting z = y
-          # Emitting z
-          # Emitting y
-        movl %edx, %ecx
+        # Emitting write(53110)
+          # Emitting 53110
+          movl $53110, %edi
+        pushl %edi
+        pushl $.LC0
+        call _printf
+        # Emitting writeln()
+        pushl $.LC1
+        call _printf
     movl $0, %eax
     leave
     ret

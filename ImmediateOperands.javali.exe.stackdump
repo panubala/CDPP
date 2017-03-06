@@ -1,0 +1,7 @@
+Exception: STATUS_ACCESS_VIOLATION at eip=61152830
+eax=0061C9FC ebx=00000005 ecx=00000005 edx=00000001 esi=611C0E20 edi=0061D51C
+ebp=61152810 esp=0061C934 program=C:\Users\patri\Documents\ETH\FS17\Compiler Design\CDPP\javali_tests\HW1\ImmediateOperands.javali.exe, pid 12256, thread main
+cs=0023 ds=002B es=002B fs=0053 gs=002B ss=002B
+Stack trace:
+Frame     Function  Args
+End of stack trace
