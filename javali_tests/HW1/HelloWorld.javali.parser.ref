@@ -1,12 +1,1 @@
-ClassDecl (name: Main, superClass: Object)
-| MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)
-| | Seq ()
-| | | VarDecl (name: x, type: int)
-| | | VarDecl (name: y, type: int)
-| | | VarDecl (name: z, type: int)
-| | Seq ()
-| | | Assign ()
-| | | | Var (name: x)
-| | | | BinaryOp (operator: B_PLUS)
-| | | | | IntConst (value: 5)
-| | | | | IntConst (value: 1)
+ParseFailure

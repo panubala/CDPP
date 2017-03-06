@@ -7,9 +7,11 @@ import cd.ir.Ast;
 import cd.ir.Ast.Assign;
 import cd.ir.Ast.BuiltInWrite;
 import cd.ir.Ast.BuiltInWriteln;
+import cd.ir.Ast.Expr;
 import cd.ir.Ast.IfElse;
 import cd.ir.Ast.MethodCall;
 import cd.ir.Ast.MethodDecl;
+import cd.ir.Ast.Var;
 import cd.ir.Ast.WhileLoop;
 import cd.ir.AstVisitor;
 import cd.util.debug.AstOneLine;
@@ -52,12 +54,26 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 		System.out.println("==MethodDecl");
 		{
 			cg.rm.initRegisters(); //TODO init every function call?
+			
+			//For write(int)
+			cg.emit.emitLabel(".LC0");
+			cg.emit.emitRaw(".string \"%d\"");
+			
+			//For writeln()
+			cg.emit.emitLabel(".LC1");
+			cg.emit.emitRaw(".string \"\\n\"");
+			
+			//Main fnc
+			cg.emit.emitRaw(".globl "+"_"+ast.name+"\n");
 			cg.emit.emitLabel("_"+ast.name);
 			
 			cg.emit.emit("pushl",RegisterManager.BASE_REG);
 			cg.emit.emitMove(RegisterManager.STACK_REG, RegisterManager.BASE_REG);
 			
-			visit(ast.body(), arg);
+			Register r = visit(ast.body(), arg);
+			cg.rm.releaseRegister(r);
+			if(r != null)
+				System.out.println(r.repr+" released");
 			
 			cg.emit.emitMove(RegisterManager.BASE_REG, RegisterManager.STACK_REG);
 			cg.emit.emitMove("$0", "%eax");
@@ -97,51 +113,66 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 			// Because we only handle very simple programs in HW1,
 			// you can just emit the prologue here!
 			
-			//register of x (e.g. x=5)
-			Register leftS = cg.eg.visit(ast.left(),arg);
+			//register with left side (not used)
+			Register r = cg.eg.visit(ast.left(),arg); //create new space if necessary
+
 			
-			//register of constant value
+			//register with constant value
 			Register rightS = cg.eg.visit(ast.right(),arg);
 			
-			System.out.println("assign");
-			cg.emit.emitMove(rightS, leftS);
-			//cg.emit.emitStore(rightS,0,leftS);						
-			//cg.rm.releaseRegister(rightS);
+			System.out.println("==after receiving registers (assign)");
+			
+			//get location in stack
+			Ast.Var var = (Var) ast.left();
+			int offset = RegisterManager.variableOffset.get(var.name);
+			
+			//store new value in stack
+			cg.emit.emitStore(rightS,offset,RegisterManager.BASE_REG);						
+			cg.rm.releaseRegister(rightS);
+			System.out.println(rightS.repr+" released");
+			cg.rm.releaseRegister(r);
+			System.out.println(r.repr+" released");
 			
 			return null;
-			
-			//throw new ToDoException();
 		}
 	}
 
 	@Override
 	public Register builtInWrite(BuiltInWrite ast, Void arg) {
 		System.out.println("==write");
-		//TODO
-		Register argument = visit(ast.arg(),arg);
 		
-		//cg.emit.emitMove(argument, RegisterManager.Register.EAX);
-		//cg.emit.emit("pushl", RegisterManager.Register.EAX);
+		//Register with the value to print		
+		Register argument = cg.eg.visit(ast.arg(),arg);
 		
+		//Push argument onto the stack
 		cg.emit.emit("pushl", argument);
-		cg.emit.emit("pushl",Config.DOT_INT);
+		cg.rm.releaseRegister(argument);
+		System.out.println(argument+" released");
 		
+		//TODO float
+		//TODO String?
+		
+		//Panuya: We just need  to handle int Variables
+		
+		//push first argument onto the stack
+		if(ast.children().get(0) instanceof Ast.IntConst){
+			cg.emit.emit("pushl","$.LC0");
+		}			
+	
 		cg.emit.emit("call", Config.PRINTF);
 		
-		//{
-		//	throw new ToDoException();
-		//}
 		return null;
 	}
 
 	@Override
 	public Register builtInWriteln(BuiltInWriteln ast, Void arg) {
-		//TODO
 		System.out.println("==writeln");
 		
-		{
-			throw new ToDoException();
-		}
+		//push argument "/n" onto the stack
+		cg.emit.emit("pushl","$.LC1");
+		cg.emit.emit("call", Config.PRINTF);
+		
+		return null;
 	}
 
 }

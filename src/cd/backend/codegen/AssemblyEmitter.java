@@ -142,11 +142,8 @@ public class AssemblyEmitter {
 
 	void emitLabel(String label) {
 		try {
-			out.write(".globl "+label+"\n");
 			//out.write(".text\n");
 			out.write(label + ":" + "\n");
-			
-			System.out.println(".globl "+label);
 			System.out.println(label+":");
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -165,5 +162,13 @@ public class AssemblyEmitter {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	void emitAllocation(int bytes) {
+		emit("subl", constant(bytes), "%esp");
+	}
+	
+	void emitDeallocation(int bytes) {
+		emit("addl", constant(bytes), "%esp");
 	}
 }

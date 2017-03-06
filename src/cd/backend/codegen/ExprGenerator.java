@@ -49,35 +49,37 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register binaryOp(BinaryOp ast, Void arg) {
-		//TODO: Not tested
+		// TODO: (i0 + (i1 + (i2 + (i3 + (i4 + (i5 + (i6 + i7))))))) gives an error, because too many register are used
+		//File: EightVariables.javali
+		
 		System.out.println("===BinOP");
-		Register regLeft = visit(ast.left(),arg);
-		Register regRight = visit(ast.right(),arg);
-		
-		
+		Register regLeft = visit(ast.left(), arg);
 		cg.emit.emit("pushl", regLeft);
+		
+		Register regRight = visit(ast.right(), arg);
 		cg.emit.emit("pushl", regRight);
-		
+		cg.rm.releaseRegister(regRight);
+
 		String rightHandSite = cg.emit.registerOffset(0, Register.ESP);
-		cg.emit.emitLoad(4, RegisterManager.STACK_REG, regLeft);
-		
-		switch(ast.operator){
+		cg.emit.emitLoad(4, Register.ESP, regLeft);
+
+		switch (ast.operator) {
+
 		case B_PLUS:
-			System.out.println("==Plus");
 			cg.emit.emit("addl", rightHandSite, regLeft);
 			break;
-			
+
 		case B_MINUS:
-			System.out.println("==Minus");
-			cg.emit.emit("subl",rightHandSite, regLeft);
+			cg.emit.emit("subl", rightHandSite, regLeft);
 			break;
-			
+
 		case B_TIMES:
-			System.out.println("==Times");
-			cg.emit.emit("imull",rightHandSite, regLeft);
+			cg.emit.emit("imull", rightHandSite, regLeft);
+
 			break;
-			
+
 		case B_DIV:
+			//TODO:Division by Zero
 			System.out.println("==Div");
 			cg.emit.emit("cmpl", cg.emit.constant(0), rightHandSite);
 			cg.emit.emit("pushl", Register.EAX);
@@ -86,10 +88,12 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 			cg.emit.emitMove(Register.EAX, regLeft);
 			cg.emit.emit("popl", Register.EAX);
 			break;
-	
+
 		default:
 			break;
 		}
+		
+		cg.emit.emitDeallocation(8);
 		
 		return regLeft;
 	}
@@ -105,11 +109,15 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 	@Override
 	public Register builtInRead(BuiltInRead ast, Void arg) {
 		System.out.println("==read");
-		//TODO
-		cg.emit.emit("pushl", Register.ESP);
+		// TODO
+		cg.emit.emitAllocation(4);
+		cg.emit.emit("pushl", RegisterManager.STACK_REG);
 		cg.emit.emit("call", Config.SCANF);
-		
+		cg.emit.emitDeallocation(8);
+
 		Register reg = cg.rm.getRegister();
+
+		System.out.println(reg.repr+" occupied");
 		cg.emit.emitLoad(0, RegisterManager.STACK_REG, reg);
 		return reg;
 	}
@@ -135,7 +143,8 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 		System.out.println("===intConst");
 		Register regInt = cg.rm.getRegister();
-		cg.emit.emitMove(cg.emit.constant(ast.value),regInt);
+		System.out.println(regInt.repr+" occupied");
+		cg.emit.emitMove(cg.emit.constant(ast.value), regInt);
 		return regInt;
 	}
 
@@ -182,45 +191,59 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 	@Override
 	public Register unaryOp(UnaryOp ast, Void arg) {
 		System.out.println("==unaryOP");
-		//TODO
+		// TODO
 		Register reg = visit(ast.arg(), arg);
-		
-		switch(ast.operator){
+
+		switch (ast.operator) {
 		case U_PLUS:
-			//Passiert nichts
+			// Passiert nichts
 			break;
 		case U_MINUS:
 			cg.emit.emit("negl", reg);
 			break;
 		default:
 			break;
-		
+
 		}
-		
+
 		return reg;
-		
-		
+
 	}
-	
+
 	@Override
 	public Register var(Var ast, Void arg) {
 
 		System.out.println("==var");
-		//TODO
-		//Panuya: keine Ahnung wie es geht
+		// TODO
+		// Panuya: keine Ahnung wie es geht
 		String name = ast.name;
-		if(lookupVariable.containsKey(name))
-			return lookupVariable.get(name);
-		else{
-			Register newRet = cg.rm.getRegister();
-			lookupVariable.put(name, newRet);
-			return newRet;
+
+		Register ret = cg.rm.getRegister();
+		System.out.println(ret.repr+" occupied");
+
+		
+		if(RegisterManager.variableOffset.containsKey(name)){ //already on stack
+			cg.emit.emitLoad(RegisterManager.variableOffset.get(name), RegisterManager.BASE_REG, ret);
+		}		
+		else{ //make space on stack 
+			cg.emit.emit("addl", "$-4", RegisterManager.STACK_REG); //TODO floats Does floats need more space?
+			RegisterManager.currentOffset -=4; //TODO if function call
+			RegisterManager.variableOffset.put(name, RegisterManager.currentOffset);
+			//cg.emit.emit("xor", ret ,ret);
 		}
-		//{
-		//	throw new ToDoException();
-		//}
+
+		// if(lookupVariable.containsKey(name))
+		// return lookupVariable.get(name);
+		// else{
+		// Register newRet = cg.rm.getRegister();
+		// lookupVariable.put(name, newRet);
+		return ret;
+
+		// {
+		// throw new ToDoException();
+		// }
 	}
-	
-	private static HashMap<String,Register> lookupVariable = new HashMap<String,Register>();
+	// private static HashMap<String,Integer> lookupOffset = new
+	// HashMap<String,Integer>();
 
 }
