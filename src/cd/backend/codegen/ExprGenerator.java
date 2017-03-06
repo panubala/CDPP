@@ -135,7 +135,7 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 		System.out.println("===intConst");
 		Register regInt = cg.rm.getRegister();
-		cg.emit.emitMove(AssemblyEmitter.constant(ast.value),regInt);
+		cg.emit.emitMove(cg.emit.constant(ast.value),regInt);
 		return regInt;
 	}
 
