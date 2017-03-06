@@ -41,6 +41,7 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 	@Override
 	public Register methodCall(MethodCall ast, Void dummy) {
 		//TODO
+		System.out.println("==MethodCall");
 		{
 			throw new RuntimeException("Not required");
 		}
@@ -48,9 +49,9 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 
 	@Override
 	public Register methodDecl(MethodDecl ast, Void arg) {
-		
+		System.out.println("==MethodDecl");
 		{
-			
+			cg.rm.initRegisters(); //TODO init every function call?
 			cg.emit.emitLabel("_"+ast.name);
 			
 			cg.emit.emit("pushl",RegisterManager.BASE_REG);
@@ -71,6 +72,7 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 
 	@Override
 	public Register ifElse(IfElse ast, Void arg) {
+		System.out.println("==ifEles");
 		//TODO
 		{
 			throw new RuntimeException("Not required");
@@ -79,6 +81,8 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 
 	@Override
 	public Register whileLoop(WhileLoop ast, Void arg) {
+		
+		System.out.println("==whileLoop");
 		//TODO
 	
 		{
@@ -88,17 +92,18 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 
 	@Override
 	public Register assign(Assign ast, Void arg) {
+		System.out.println("==assign");
 		{
 			// Because we only handle very simple programs in HW1,
 			// you can just emit the prologue here!
 			
-			
-			Register result = visit(ast.right(),arg);
-			Register store = visit(ast.right(),arg);
+			Register result = cg.eg.visit(ast.right(),arg);
+			Register store = cg.eg.visit(ast.right(),arg);
 			cg.emit.emitStore(result,0,store);
 			
-			
-			return store;
+			cg.rm.releaseRegister(result);
+			cg.rm.releaseRegister(store);
+			return null;
 			
 			//throw new ToDoException();
 		}
@@ -106,6 +111,7 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 
 	@Override
 	public Register builtInWrite(BuiltInWrite ast, Void arg) {
+		System.out.println("==write");
 		//TODO
 		Register argument = visit(ast.arg(),arg);
 		
@@ -126,6 +132,7 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 	@Override
 	public Register builtInWriteln(BuiltInWriteln ast, Void arg) {
 		//TODO
+		System.out.println("==writeln");
 		
 		{
 			throw new ToDoException();

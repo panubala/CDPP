@@ -1,8 +1,4 @@
 ClassDecl (name: Main, superClass: Object)
 | MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)
 | | Seq ()
-| | | VarDecl (name: x, type: int)
 | | Seq ()
-| | | Assign ()
-| | | | Var (name: x)
-| | | | IntConst (value: 5)

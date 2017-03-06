@@ -5,4 +5,6 @@ _main:
     pushl %ebp
     movl %esp, %ebp
       # Emitting (...)
-        # Emitting x = 5
+    movl $0, %eax
+    leave
+    ret

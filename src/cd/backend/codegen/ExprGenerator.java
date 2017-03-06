@@ -96,6 +96,7 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register booleanConst(BooleanConst ast, Void arg) {
+		System.out.println("==boolConst");
 		{
 			throw new RuntimeException("Not required");
 		}
@@ -103,6 +104,7 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register builtInRead(BuiltInRead ast, Void arg) {
+		System.out.println("==read");
 		//TODO
 		cg.emit.emit("pushl", Register.ESP);
 		cg.emit.emit("call", Config.SCANF);
@@ -114,6 +116,7 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register cast(Cast ast, Void arg) {
+		System.out.println("==cast");
 		{
 			throw new RuntimeException("Not required");
 		}
@@ -121,6 +124,7 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register index(Index ast, Void arg) {
+		System.out.println("==index");
 		{
 			throw new RuntimeException("Not required");
 		}
@@ -137,6 +141,7 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register field(Field ast, Void arg) {
+		System.out.println("==field");
 		{
 			throw new RuntimeException("Not required");
 		}
@@ -144,6 +149,7 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register newArray(NewArray ast, Void arg) {
+		System.out.println("==newArray");
 		{
 			throw new RuntimeException("Not required");
 		}
@@ -151,6 +157,7 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register newObject(NewObject ast, Void arg) {
+		System.out.println("==newObject");
 		{
 			throw new RuntimeException("Not required");
 		}
@@ -158,6 +165,7 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register nullConst(NullConst ast, Void arg) {
+		System.out.println("==nullConst");
 		{
 			throw new RuntimeException("Not required");
 		}
@@ -165,6 +173,7 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register thisRef(ThisRef ast, Void arg) {
+		System.out.println("==thisRef");
 		{
 			throw new RuntimeException("Not required");
 		}
@@ -172,6 +181,7 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register unaryOp(UnaryOp ast, Void arg) {
+		System.out.println("==unaryOP");
 		//TODO
 		Register reg = visit(ast.arg(), arg);
 		
@@ -194,6 +204,7 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 	
 	@Override
 	public Register var(Var ast, Void arg) {
+		System.out.println("==var");
 		//TODO
 		//Panuya: keine Ahnung wie es geht
 		
