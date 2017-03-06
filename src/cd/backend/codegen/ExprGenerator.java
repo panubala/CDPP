@@ -1,7 +1,8 @@
 package cd.backend.codegen;
 
+import java.util.HashMap;
+
 import cd.Config;
-import cd.ToDoException;
 import cd.backend.codegen.RegisterManager.Register;
 import cd.ir.Ast.BinaryOp;
 import cd.ir.Ast.BooleanConst;
@@ -19,11 +20,6 @@ import cd.ir.Ast.UnaryOp;
 import cd.ir.Ast.Var;
 import cd.ir.ExprVisitor;
 import cd.util.debug.AstOneLine;
-
-import cd.backend.codegen.AssemblyEmitter;
-import cd.backend.codegen.AssemblyFailedException;
-//import cd.backend.codegen.AstCodeGenerator;
-import cd.backend.codegen.RegisterManager;
 
 /**
  * Generates code to evaluate expressions. After emitting the code, returns a
@@ -204,14 +200,23 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 	
 	@Override
 	public Register var(Var ast, Void arg) {
+
 		System.out.println("==var");
 		//TODO
 		//Panuya: keine Ahnung wie es geht
-		
-		return cg.rm.getRegister();
+		String name = ast.name;
+		if(lookupVariable.containsKey(name))
+			return lookupVariable.get(name);
+		else{
+			Register newRet = cg.rm.getRegister();
+			lookupVariable.put(name, newRet);
+			return newRet;
+		}
 		//{
 		//	throw new ToDoException();
 		//}
 	}
+	
+	private static HashMap<String,Register> lookupVariable = new HashMap<String,Register>();
 
 }

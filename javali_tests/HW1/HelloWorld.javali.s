@@ -9,7 +9,15 @@ _main:
           # Emitting x
           # Emitting 5
           movl $5, %esi
-        movl %esi, 0(%edi)
+        movl %esi, %edi
+        # Emitting y = x
+          # Emitting y
+          # Emitting x
+        movl %edi, %edx
+        # Emitting z = y
+          # Emitting z
+          # Emitting y
+        movl %edx, %ecx
     movl $0, %eax
     leave
     ret
