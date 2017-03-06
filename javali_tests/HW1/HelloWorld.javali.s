@@ -6,11 +6,10 @@ _main:
     movl %esp, %ebp
       # Emitting (...)
         # Emitting x = 5
-          # Emitting 5
-          movl $5, %edi
+          # Emitting x
           # Emitting 5
           movl $5, %esi
-        movl %edi, 0(%esi)
+        movl %esi, 0(%edi)
     movl $0, %eax
     leave
     ret

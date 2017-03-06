@@ -208,10 +208,10 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 		//TODO
 		//Panuya: keine Ahnung wie es geht
 		
-		
-		{
-			throw new ToDoException();
-		}
+		return cg.rm.getRegister();
+		//{
+		//	throw new ToDoException();
+		//}
 	}
 
 }

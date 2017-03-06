@@ -97,13 +97,15 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 			// Because we only handle very simple programs in HW1,
 			// you can just emit the prologue here!
 			
-			Register result = cg.eg.visit(ast.right(),arg);
-			Register store = cg.eg.visit(ast.right(),arg);
-			cg.emit.emitStore(result,0,store);
+			Register leftS = cg.eg.visit(ast.left(),arg);
+			Register rightS = cg.eg.visit(ast.right(),arg);
+			
+			System.out.println("assign");
+			cg.emit.emitStore(rightS,0,leftS);
 
 			
-			cg.rm.releaseRegister(result);
-			cg.rm.releaseRegister(store);
+			cg.rm.releaseRegister(leftS);
+			cg.rm.releaseRegister(rightS);
 			return null;
 			
 			//throw new ToDoException();
