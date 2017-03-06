@@ -2,9 +2,7 @@
 class Main {
    void main() {
       int x,y,z;
-      x=5;
-      y=x;
-      z=y;
+      x=5+1;
       //x=5;
       //write(53110);
       //writeln();    

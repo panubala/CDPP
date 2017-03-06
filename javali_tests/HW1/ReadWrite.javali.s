@@ -9,22 +9,22 @@ _main:
           # Emitting i0
           # Emitting 5
           movl $5, %esi
-        movl %esi, 0(%edi)
+        movl %esi, %edi
         # Emitting i1 = read()
           # Emitting i1
           # Emitting read()
           pushl %esp
           call _scanf
-          movl 0(%esp), %edi
-        movl %edi, 0(%esi)
+          movl 0(%esp), %ecx
+        movl %ecx, %edx
         # Emitting r1 = (i0 + i1)
           # Emitting r1
           # Emitting (i0 + i1)
             # Emitting i0
             # Emitting i1
-          pushl %esi
+          pushl %edi
           pushl %edx
-          movl 4(%esp), %esi
-          addl 0(%esp), %esi
-        movl %esi, 0(%edi)
+          movl 4(%esp), %edi
+          addl 0(%esp), %edi
+        movl %edi, %ebx
         # Emitting write(r1)

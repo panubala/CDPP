@@ -59,11 +59,11 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 			
 			visit(ast.body(), arg);
 			
-			//cg.emit.emitMove(RegisterManager.BASE_REG, RegisterManager.STACK_REG);
+			cg.emit.emitMove(RegisterManager.BASE_REG, RegisterManager.STACK_REG);
 			cg.emit.emitMove("$0", "%eax");
-			//cg.emit.emit("popl",RegisterManager.BASE_REG);
+			cg.emit.emit("popl",RegisterManager.BASE_REG);
 			
-			cg.emit.emitRaw("leave");
+//			cg.emit.emitRaw("leave");
 			cg.emit.emitRaw("ret");
 
 			

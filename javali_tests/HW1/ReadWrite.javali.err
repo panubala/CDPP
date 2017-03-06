@@ -1,4 +1,4 @@
-Debug information for file: javali_tests\HW1\ReadWrite.javali
+Debug information for file: javali_tests/HW1/ReadWrite.javali
 AST Resulting From Parsing Stage:
 ClassDecl (name: Main, superClass: Object)
 | MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)
@@ -34,7 +34,7 @@ Test failed because an exception was thrown:
 Stack trace:
 java.lang.NullPointerException
 	at cd.backend.codegen.AssemblyEmitter.emit(AssemblyEmitter.java:98)
-	at cd.backend.codegen.StmtGenerator.builtInWrite(StmtGenerator.java:124)
+	at cd.backend.codegen.StmtGenerator.builtInWrite(StmtGenerator.java:126)
 	at cd.backend.codegen.StmtGenerator.builtInWrite(StmtGenerator.java:1)
 	at cd.ir.Ast$BuiltInWrite.accept(Ast.java:520)
 	at cd.ir.AstVisitor.visit(AstVisitor.java:16)

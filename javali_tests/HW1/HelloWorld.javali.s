@@ -5,19 +5,19 @@ _main:
     pushl %ebp
     movl %esp, %ebp
       # Emitting (...)
-        # Emitting x = 5
+        # Emitting x = (5 + 1)
           # Emitting x
-          # Emitting 5
-          movl $5, %esi
+          # Emitting (5 + 1)
+            # Emitting 5
+            movl $5, %esi
+            # Emitting 1
+            movl $1, %edx
+          pushl %esi
+          pushl %edx
+          movl 4(%esp), %esi
+          addl 0(%esp), %esi
         movl %esi, %edi
-        # Emitting y = x
-          # Emitting y
-          # Emitting x
-        movl %edi, %edx
-        # Emitting z = y
-          # Emitting z
-          # Emitting y
-        movl %edx, %ecx
+    movl %ebp, %esp
     movl $0, %eax
-    leave
+    popl %ebp
     ret

@@ -59,22 +59,26 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 		cg.emit.emit("pushl", regRight);
 		
 		String rightHandSite = cg.emit.registerOffset(0, Register.ESP);
-		cg.emit.emitLoad(4, Register.ESP, regLeft);
+		cg.emit.emitLoad(4, RegisterManager.STACK_REG, regLeft);
 		
 		switch(ast.operator){
 		case B_PLUS:
+			System.out.println("==Plus");
 			cg.emit.emit("addl", rightHandSite, regLeft);
 			break;
 			
 		case B_MINUS:
+			System.out.println("==Minus");
 			cg.emit.emit("subl",rightHandSite, regLeft);
 			break;
 			
 		case B_TIMES:
+			System.out.println("==Times");
 			cg.emit.emit("imull",rightHandSite, regLeft);
 			break;
 			
 		case B_DIV:
+			System.out.println("==Div");
 			cg.emit.emit("cmpl", cg.emit.constant(0), rightHandSite);
 			cg.emit.emit("pushl", Register.EAX);
 			cg.emit.emitMove(regLeft, Register.EAX);
@@ -106,7 +110,7 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 		cg.emit.emit("call", Config.SCANF);
 		
 		Register reg = cg.rm.getRegister();
-		cg.emit.emitLoad(0, Register.ESP, reg);
+		cg.emit.emitLoad(0, RegisterManager.STACK_REG, reg);
 		return reg;
 	}
 
