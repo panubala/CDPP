@@ -65,6 +65,7 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 			
 			cg.emit.emitRaw("leave");
 			cg.emit.emitRaw("ret");
+
 			
 			return null;
 		}
@@ -72,8 +73,11 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 
 	@Override
 	public Register ifElse(IfElse ast, Void arg) {
+<<<<<<< Updated upstream
 		System.out.println("==ifEles");
 		//TODO
+=======
+>>>>>>> Stashed changes
 		{
 			throw new RuntimeException("Not required");
 		}
@@ -81,9 +85,12 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 
 	@Override
 	public Register whileLoop(WhileLoop ast, Void arg) {
+<<<<<<< Updated upstream
 		
 		System.out.println("==whileLoop");
 		//TODO
+=======
+>>>>>>> Stashed changes
 	
 		{
 			throw new RuntimeException("Not required");
@@ -100,6 +107,7 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 			Register result = cg.eg.visit(ast.right(),arg);
 			Register store = cg.eg.visit(ast.right(),arg);
 			cg.emit.emitStore(result,0,store);
+
 			
 			cg.rm.releaseRegister(result);
 			cg.rm.releaseRegister(store);
