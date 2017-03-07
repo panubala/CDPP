@@ -166,9 +166,11 @@ public class AssemblyEmitter {
 	
 	void emitAllocation(int bytes) {
 		emit("subl", constant(bytes), "%esp");
+		RegisterManager.currentOffset -= 4;
 	}
 	
 	void emitDeallocation(int bytes) {
 		emit("addl", constant(bytes), "%esp");
+		RegisterManager.currentOffset += 4;
 	}
 }

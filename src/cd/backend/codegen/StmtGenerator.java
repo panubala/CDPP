@@ -63,6 +63,10 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 			cg.emit.emitLabel(".LC1");
 			cg.emit.emitRaw(".string \"\\n\"");
 			
+			
+			cg.emit.emitLabel(".LC2");
+			cg.emit.emitRaw(".string \"%d\"");
+			
 			//Main fnc
 			cg.emit.emitRaw(".globl "+"_"+ast.name+"\n");
 			cg.emit.emitLabel("_"+ast.name);

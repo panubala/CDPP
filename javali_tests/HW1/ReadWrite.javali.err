@@ -3,15 +3,10 @@ AST Resulting From Parsing Stage:
 ClassDecl (name: Main, superClass: Object)
 | MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)
 | | Seq ()
-| | | VarDecl (name: r1, type: int)
-| | | VarDecl (name: r2, type: int)
 | | | VarDecl (name: i0, type: int)
 | | | VarDecl (name: i1, type: int)
 | | | VarDecl (name: i2, type: int)
 | | Seq ()
-| | | Assign ()
-| | | | Var (name: i0)
-| | | | IntConst (value: 5)
 | | | Assign ()
 | | | | Var (name: i1)
 | | | | BuiltInRead ()
@@ -22,8 +17,16 @@ Phase exec failed because we expected to see:
 22
 But we actually saw:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+Error: 139
+>>>>>>> 9b3c496f200e995a3532e41126c3c6b385cfc65a
 
 The difference is:
 At line   1 /   1:
 < 22
+<<<<<<< HEAD
+=======
+> Error: 139
+>>>>>>> 9b3c496f200e995a3532e41126c3c6b385cfc65a
 

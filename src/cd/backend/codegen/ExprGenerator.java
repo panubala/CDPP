@@ -110,15 +110,24 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 	public Register builtInRead(BuiltInRead ast, Void arg) {
 		System.out.println("==read");
 		// TODO
+		
 		cg.emit.emitAllocation(4);
-		cg.emit.emit("pushl", RegisterManager.STACK_REG);
+		Register varLocReg = cg.rm.getRegister();
+		
+		cg.emit.emit("leal", "(%esp)", varLocReg );
+		
+		int offset = RegisterManager.currentOffset;
+		
+		cg.emit.emit("pushl", varLocReg);
+		cg.emit.emit("pushl", "$.LC2");
 		cg.emit.emit("call", Config.SCANF);
-		cg.emit.emitDeallocation(8);
+		
+		cg.emit.emitDeallocation(4);
 
 		Register reg = cg.rm.getRegister();
 
 		System.out.println(reg.repr+" occupied");
-		cg.emit.emitLoad(0, RegisterManager.STACK_REG, reg);
+		cg.emit.emitLoad(offset, RegisterManager.BASE_REG, reg);
 		return reg;
 	}
 
