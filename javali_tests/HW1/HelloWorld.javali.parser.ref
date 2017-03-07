@@ -1,1 +1,12 @@
-ParseFailure
+ClassDecl (name: Main, superClass: Object)
+| MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)
+| | Seq ()
+| | Seq ()
+| | | Assign ()
+| | | | Var (name: x)
+| | | | BinaryOp (operator: B_PLUS)
+| | | | | IntConst (value: 5)
+| | | | | IntConst (value: 1)
+| | | BuiltInWrite ()
+| | | | Var (name: x)
+| | | BuiltInWriteln ()

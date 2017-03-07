@@ -26,14 +26,4 @@ But we actually saw:
 The difference is:
 At line   1 /   1:
 < 22
-> 
-=======
-Error: 139
-
-The difference is:
-At line   1 /   1:
-< 27
-< 24
-> Error: 139
->>>>>>> 863530a4320df1f0a3dcaa072a5c43369f5a1b1f
 
