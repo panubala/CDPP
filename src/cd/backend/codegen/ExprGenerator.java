@@ -54,37 +54,38 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 		
 		System.out.println("===BinOP");
 		Register regLeft = visit(ast.left(), arg);
-		cg.emit.emit("pushl", regLeft);
+		//cg.emit.emit("pushl", regLeft);
 		
 		Register regRight = visit(ast.right(), arg);
-		cg.emit.emit("pushl", regRight);
-		cg.rm.releaseRegister(regRight);
+		//cg.emit.emit("pushl", regRight);
+		//cg.rm.releaseRegister(regRight);
 
-		String rightHandSite = cg.emit.registerOffset(0, Register.ESP);
-		cg.emit.emitLoad(4, Register.ESP, regLeft);
+		//String rightHandSite = cg.emit.registerOffset(0, Register.ESP);
+		//cg.emit.emitLoad(4, Register.ESP, regLeft);
 
 		switch (ast.operator) {
 
 		case B_PLUS:
-			cg.emit.emit("addl", rightHandSite, regLeft);
+			//cg.emit.emit("addl", rightHandSite, regLeft);
+			cg.emit.emit("addl", regLeft, regRight);
 			break;
-
 		case B_MINUS:
-			cg.emit.emit("subl", rightHandSite, regLeft);
+			//cg.emit.emit("subl", rightHandSite, regLeft);
+			cg.emit.emit("subl", regLeft, regRight);
 			break;
 
 		case B_TIMES:
-			cg.emit.emit("imull", rightHandSite, regLeft);
-
+			//cg.emit.emit("imull", rightHandSite, regLeft);
+			cg.emit.emit("imull", regLeft, regRight);
 			break;
 
 		case B_DIV:
 			//TODO:Division by Zero
 			System.out.println("==Div");
-			cg.emit.emit("cmpl", cg.emit.constant(0), rightHandSite);
+			//cg.emit.emit("cmpl", cg.emit.constant(0), rightHandSite);
 			cg.emit.emit("pushl", Register.EAX);
 			cg.emit.emitMove(regLeft, Register.EAX);
-			cg.emit.emit("idivl", rightHandSite);
+			//cg.emit.emit("idivl", rightHandSite);
 			cg.emit.emitMove(Register.EAX, regLeft);
 			cg.emit.emit("popl", Register.EAX);
 			break;
@@ -93,9 +94,9 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 			break;
 		}
 		
-		cg.emit.emitDeallocation(8);
-		
-		return regLeft;
+		//cg.emit.emitDeallocation(8);
+		cg.rm.releaseRegister(regLeft);
+		return regRight;
 	}
 
 	@Override
@@ -116,18 +117,19 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 		
 		cg.emit.emit("leal", "(%esp)", varLocReg );
 		
-		int offset = RegisterManager.currentOffset;
-		
 		cg.emit.emit("pushl", varLocReg);
 		cg.emit.emit("pushl", "$.LC2");
+		
+		cg.emit.increaseOffset(8);
+		
 		cg.emit.emit("call", Config.SCANF);
 		
-		cg.emit.emitDeallocation(4);
-
+		cg.emit.emitDeallocation(8); //not needed
+		
 		Register reg = cg.rm.getRegister();
 
 		System.out.println(reg.repr+" occupied");
-		cg.emit.emitLoad(offset, RegisterManager.BASE_REG, reg);
+		cg.emit.emitLoad(cg.emit.getCurrentOffset(), RegisterManager.BASE_REG, reg);
 		return reg;
 	}
 
@@ -225,20 +227,18 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 		System.out.println("==var");
 		// TODO
 		// Panuya: keine Ahnung wie es geht
-		String name = ast.name;
+		String varName = ast.name;
 
 		Register ret = cg.rm.getRegister();
 		System.out.println(ret.repr+" occupied");
 
 		
-		if(RegisterManager.variableOffset.containsKey(name)){ //already on stack
-			cg.emit.emitLoad(RegisterManager.variableOffset.get(name), RegisterManager.BASE_REG, ret);
+		if(cg.emit.varOnStack(varName)){ //already on stack
+			cg.emit.emitLoad(cg.emit.getVarLocation(varName), RegisterManager.BASE_REG, ret);
 		}		
 		else{ //make space on stack 
-			cg.emit.emit("addl", "$-4", RegisterManager.STACK_REG); //TODO floats Does floats need more space?
-			RegisterManager.currentOffset -=4; //TODO if function call
-			RegisterManager.variableOffset.put(name, RegisterManager.currentOffset);
-			//cg.emit.emit("xor", ret ,ret);
+			cg.emit.emitAllocation(4);//TODO if function call
+			cg.emit.setVarLocation(varName, cg.emit.getCurrentOffset());
 		}
 
 		// if(lookupVariable.containsKey(name))

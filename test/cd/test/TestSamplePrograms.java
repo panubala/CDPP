@@ -23,8 +23,9 @@ public class TestSamplePrograms extends AbstractTestAgainstFrozenReference {
 	 * {@code justFile = new File("javali_tests/HW2/Inheritance.javali")}.
 	 */
 //	public static final File justFile = new File("javali_tests/HW1/Multiplication.javali");
-	public static final File justFile = new File("javali_tests/HW1/HelloWorld.javali");
+//	public static final File justFile = new File("javali_tests/HW1/HelloWorld.javali");
 //	public static final File justFile = new File("javali_tests/HW1/ReadWrite.javali");
+	public static final File justFile = new File("javali_tests/HW1/EightVariables.javali");
 //	public static final File justFile = null;
 
 	/**

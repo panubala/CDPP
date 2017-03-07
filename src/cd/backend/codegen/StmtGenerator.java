@@ -118,24 +118,25 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 			// you can just emit the prologue here!
 			
 			//register with left side (not used)
-			Register r = cg.eg.visit(ast.left(),arg); //create new space if necessary
-
+			Register varReg = cg.eg.visit(ast.left(),arg); //create new space if necessary
 			
 			//register with constant value
-			Register rightS = cg.eg.visit(ast.right(),arg);
+			Register valueReg = cg.eg.visit(ast.right(),arg);
 			
 			System.out.println("==after receiving registers (assign)");
 			
 			//get location in stack
 			Ast.Var var = (Var) ast.left();
-			int offset = RegisterManager.variableOffset.get(var.name);
+			int varLocationOffset = cg.emit.getVarLocation(var.name);
 			
 			//store new value in stack
-			cg.emit.emitStore(rightS,offset,RegisterManager.BASE_REG);						
-			cg.rm.releaseRegister(rightS);
-			System.out.println(rightS.repr+" released");
-			cg.rm.releaseRegister(r);
-			System.out.println(r.repr+" released");
+			cg.emit.emitStore(valueReg,varLocationOffset,RegisterManager.BASE_REG);						
+			
+			//Release registers
+			cg.rm.releaseRegister(valueReg);
+			System.out.println(valueReg.repr+" released");
+			cg.rm.releaseRegister(varReg);
+			System.out.println(varReg.repr+" released");
 			
 			return null;
 		}
@@ -158,12 +159,18 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 		
 		//Panuya: We just need  to handle int Variables
 		
-		//push first argument onto the stack
-		if(ast.children().get(0) instanceof Ast.IntConst){
-			cg.emit.emit("pushl","$.LC0");
-		}			
-	
+		//push first argument onto the stack //TODO var/int
+		//if(ast.children().get(0) instanceof Ast.IntConst){
+		//	cg.emit.emit("pushl","$.LC0");
+		//}
+		
+		//TODO push and offset is not very elegant
+		cg.emit.emit("pushl","$.LC0");
+		cg.emit.increaseOffset(8);
+		
 		cg.emit.emit("call", Config.PRINTF);
+		
+		cg.emit.emitDeallocation(8);
 		
 		return null;
 	}

@@ -122,6 +122,6 @@ public class RegisterManager {
 		return registers.size();
 	}
 	
-	public static HashMap<String, Integer> variableOffset = new HashMap<String, Integer>();
-	public static int currentOffset = 0;
+	//public static HashMap<String, Integer> variableOffset = new HashMap<String, Integer>();
+	//public static int currentOffset = 0;
 }

@@ -2,6 +2,7 @@ package cd.backend.codegen;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.HashMap;
 
 import cd.Config;
 import cd.backend.codegen.RegisterManager.Register;
@@ -164,13 +165,41 @@ public class AssemblyEmitter {
 		}
 	}
 	
-	void emitAllocation(int bytes) {
+	public void emitAllocation(int bytes) {
 		emit("subl", constant(bytes), "%esp");
-		RegisterManager.currentOffset -= 4;
+		currentOffset -= bytes;
 	}
 	
-	void emitDeallocation(int bytes) {
+	public void emitDeallocation(int bytes) {
 		emit("addl", constant(bytes), "%esp");
-		RegisterManager.currentOffset += 4;
+		currentOffset += bytes;
 	}
+	
+	public void increaseOffset(int bytes){
+		currentOffset -= bytes;
+	}
+	
+	public void decreaseOffset(int bytes){
+		currentOffset += bytes;
+	}
+	
+	public int getCurrentOffset() {
+		return currentOffset;
+	}
+	
+	public void setVarLocation(String varName, int offset){
+		variableOffset.put(varName, offset);
+	}
+	
+	public boolean varOnStack(String varName){
+		return variableOffset.containsKey(varName);
+	}
+	
+	public int getVarLocation(String varName){
+		return variableOffset.get(varName);
+	}
+	
+	private HashMap<String, Integer> variableOffset = new HashMap<String, Integer>();
+	private int currentOffset = 0;
+	
 }
