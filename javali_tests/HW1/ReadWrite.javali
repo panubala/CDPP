@@ -1,10 +1,10 @@
 /* Test read/write native functions */
 class Main {
 	void main() {
-		int r1, r2;
+		//int r1, r2;
 		int i0,  i1,  i2;
 		
-		i0 = 5;
+		//i0 = 5;
 		i1 = read();
 		write(i1);
 		//r1 = i0 + i1;
