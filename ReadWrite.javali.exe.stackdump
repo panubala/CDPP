@@ -1,6 +1,6 @@
-Exception: STATUS_ACCESS_VIOLATION at eip=61152830
-eax=0061CA14 ebx=00000005 ecx=00000005 edx=00000001 esi=611C0E20 edi=0061D51C
-ebp=61152810 esp=0061C94C program=C:\Users\patri\Documents\ETH\FS17\Compiler Design\CDPP\javali_tests\HW1\ReadWrite.javali.exe, pid 14716, thread main
+Exception: STATUS_ACCESS_VIOLATION at eip=6117DFE2
+eax=611D9DB2 ebx=00000016 ecx=00000001 edx=00000000 esi=0061B849 edi=00000000
+ebp=611C0CD0 esp=0061B67C program=C:\Users\patri\Documents\ETH\FS17\Compiler Design\CDPP\javali_tests\HW1\ReadWrite.javali.exe, pid 13696, thread main
 cs=0023 ds=002B es=002B fs=0053 gs=002B ss=002B
 Stack trace:
 Frame     Function  Args

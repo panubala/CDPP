@@ -26,8 +26,8 @@ _main:
             movl $5, %esi
             # Emitting i0
             movl -4(%ebp), %edx
-          addl %esi, %edx
-        movl %edx, -4(%ebp)
+          addl %edx, %esi
+        movl %esi, -4(%ebp)
         # Emitting write(i0)
           # Emitting i0
           movl -4(%ebp), %edi

@@ -8,8 +8,8 @@ class Main {
 		i1 = read();
 		write(i1);
 		r1 = i0 + i1;
-		write(r1); writeln();
 		
+		write(r1); writeln();
 		write(r1 - 3); writeln();
 	}
 }

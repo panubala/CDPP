@@ -32,8 +32,8 @@ _main:
             movl -8(%ebp), %esi
             # Emitting 3
             movl $3, %edx
-          imull %esi, %edx
-        movl %edx, -12(%ebp)
+          imull %edx, %esi
+        movl %esi, -12(%ebp)
         # Emitting write(r1)
           # Emitting r1
           movl -12(%ebp), %edi
@@ -49,9 +49,9 @@ _main:
           movl -12(%ebp), %edi
           # Emitting (i0 * i1)
             # Emitting i0
-            movl -4(%ebp), %edx
+            movl -4(%ebp), %esi
             # Emitting i1
-            movl -8(%ebp), %esi
+            movl -8(%ebp), %edx
           imull %edx, %esi
         movl %esi, -12(%ebp)
         # Emitting write(r1)
@@ -74,14 +74,14 @@ _main:
                 movl -12(%ebp), %esi
                 # Emitting i0
                 movl -4(%ebp), %edx
-              imull %esi, %edx
+              imull %edx, %esi
               # Emitting i1
-              movl -8(%ebp), %esi
+              movl -8(%ebp), %edx
             imull %edx, %esi
             # Emitting 3
             movl $3, %edx
-          imull %esi, %edx
-        movl %edx, -12(%ebp)
+          imull %edx, %esi
+        movl %esi, -12(%ebp)
         # Emitting write(r1)
           # Emitting r1
           movl -12(%ebp), %edi

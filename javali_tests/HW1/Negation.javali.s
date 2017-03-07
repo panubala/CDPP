@@ -34,18 +34,18 @@ _main:
               # Emitting B
               movl -8(%ebp), %edx
             negl %edx
-          imull %esi, %edx
-        movl %edx, -12(%ebp)
+          imull %edx, %esi
+        movl %esi, -12(%ebp)
         # Emitting b = (-(A) * B)
           # Emitting b
           subl $4, %esp
           # Emitting (-(A) * B)
             # Emitting -(A)
               # Emitting A
-              movl -4(%ebp), %edx
-            negl %edx
+              movl -4(%ebp), %esi
+            negl %esi
             # Emitting B
-            movl -8(%ebp), %esi
+            movl -8(%ebp), %edx
           imull %edx, %esi
         movl %esi, -16(%ebp)
         # Emitting c = -((A + B))
@@ -57,18 +57,18 @@ _main:
               movl -4(%ebp), %esi
               # Emitting B
               movl -8(%ebp), %edx
-            addl %esi, %edx
-          negl %edx
-        movl %edx, -20(%ebp)
+            addl %edx, %esi
+          negl %esi
+        movl %esi, -20(%ebp)
         # Emitting d = -((A * B))
           # Emitting d
           subl $4, %esp
           # Emitting -((A * B))
             # Emitting (A * B)
               # Emitting A
-              movl -4(%ebp), %edx
+              movl -4(%ebp), %esi
               # Emitting B
-              movl -8(%ebp), %esi
+              movl -8(%ebp), %edx
             imull %edx, %esi
           negl %esi
         movl %esi, -24(%ebp)

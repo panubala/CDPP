@@ -109,7 +109,7 @@ cd.backend.codegen.AssemblyFailedException: Executing assembler failed.
 Output:
 Program requires too many registers
 	at cd.backend.codegen.RegisterManager.getRegister(RegisterManager.java:97)
-	at cd.backend.codegen.ExprGenerator.var(ExprGenerator.java:232)
+	at cd.backend.codegen.ExprGenerator.var(ExprGenerator.java:231)
 	at cd.backend.codegen.ExprGenerator.var(ExprGenerator.java:1)
 	at cd.ir.Ast$Var.accept(Ast.java:352)
 	at cd.ir.ExprVisitor.visit(ExprVisitor.java:15)

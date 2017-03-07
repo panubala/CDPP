@@ -67,19 +67,19 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 		case B_PLUS:
 			//cg.emit.emit("addl", rightHandSite, regLeft);
-			cg.emit.emit("addl", regLeft, regRight);
+			cg.emit.emit("addl", regRight, regLeft);
 			break;
 		case B_MINUS:
 			//cg.emit.emit("subl", rightHandSite, regLeft);
-			cg.emit.emit("subl", regLeft, regRight);
+			cg.emit.emit("subl", regRight, regLeft);
 			break;
 
-		case B_TIMES:
+		case B_TIMES://TODO not tested
 			//cg.emit.emit("imull", rightHandSite, regLeft);
-			cg.emit.emit("imull", regLeft, regRight);
+			cg.emit.emit("imull", regRight, regLeft);
 			break;
 
-		case B_DIV:
+		case B_DIV: //TODO not tested
 			//TODO:Division by Zero
 			System.out.println("==Div");
 			//cg.emit.emit("cmpl", cg.emit.constant(0), rightHandSite);
@@ -95,8 +95,8 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 		}
 		
 		//cg.emit.emitDeallocation(8);
-		cg.rm.releaseRegister(regLeft);
-		return regRight;
+		cg.rm.releaseRegister(regRight);
+		return regLeft;
 	}
 
 	@Override
@@ -113,23 +113,22 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 		// TODO
 		
 		cg.emit.emitAllocation(4);
-		Register varLocReg = cg.rm.getRegister();
+		//Register varLocReg = cg.rm.getRegister();
+		//cg.emit.emit("leal", "(%esp)", varLocReg );
+		//cg.emit.emit("pushl", varLocReg);
 		
-		cg.emit.emit("leal", "(%esp)", varLocReg );
-		
-		cg.emit.emit("pushl", varLocReg);
-		cg.emit.emit("pushl", "$.LC2");
-		
+		cg.emit.emit("pushl", "%esp");		
+		cg.emit.emit("pushl", "$.LC2");		
 		cg.emit.increaseOffset(8);
 		
 		cg.emit.emit("call", Config.SCANF);
-		
 		cg.emit.emitDeallocation(8); //not needed
 		
 		Register reg = cg.rm.getRegister();
-
 		System.out.println(reg.repr+" occupied");
+
 		cg.emit.emitLoad(cg.emit.getCurrentOffset(), RegisterManager.BASE_REG, reg);
+		//cg.emit.emitDeallocation(4);
 		return reg;
 	}
 
@@ -155,7 +154,7 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 		System.out.println("===intConst");
 		Register regInt = cg.rm.getRegister();
 		System.out.println(regInt.repr+" occupied");
-		cg.emit.emitMove(cg.emit.constant(ast.value), regInt);
+		cg.emit.emitMove(AssemblyEmitter.constant(ast.value), regInt);
 		return regInt;
 	}
 
