@@ -54,15 +54,17 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 		
 		System.out.println("===BinOP");
 		Register regLeft = visit(ast.left(), arg);
-		Register regRight = visit(ast.right(), arg);
-
 		cg.emit.emit("pushl", regLeft);
+		
+		Register regRight = visit(ast.right(), arg);
 		cg.emit.emit("pushl", regRight);
+		cg.rm.releaseRegister(regRight);
 
 		String rightHandSite = cg.emit.registerOffset(0, Register.ESP);
 		cg.emit.emitLoad(4, Register.ESP, regLeft);
 
 		switch (ast.operator) {
+
 		case B_PLUS:
 			cg.emit.emit("addl", rightHandSite, regLeft);
 			break;
@@ -73,9 +75,12 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 		case B_TIMES:
 			cg.emit.emit("imull", rightHandSite, regLeft);
+
 			break;
 
 		case B_DIV:
+			//TODO:Division by Zero
+			System.out.println("==Div");
 			cg.emit.emit("cmpl", cg.emit.constant(0), rightHandSite);
 			cg.emit.emit("pushl", Register.EAX);
 			cg.emit.emitMove(regLeft, Register.EAX);
@@ -87,7 +92,9 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 		default:
 			break;
 		}
-
+		
+		cg.emit.emitDeallocation(8);
+		
 		return regLeft;
 	}
 
@@ -103,12 +110,15 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 	public Register builtInRead(BuiltInRead ast, Void arg) {
 		System.out.println("==read");
 		// TODO
-		cg.emit.emit("pushl", Register.ESP);
+		cg.emit.emitAllocation(4);
+		cg.emit.emit("pushl", RegisterManager.STACK_REG);
 		cg.emit.emit("call", Config.SCANF);
+		cg.emit.emitDeallocation(8);
 
 		Register reg = cg.rm.getRegister();
+
 		System.out.println(reg.repr+" occupied");
-		cg.emit.emitLoad(0, Register.ESP, reg);
+		cg.emit.emitLoad(0, RegisterManager.STACK_REG, reg);
 		return reg;
 	}
 

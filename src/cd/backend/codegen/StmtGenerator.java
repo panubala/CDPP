@@ -75,11 +75,11 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 			if(r != null)
 				System.out.println(r.repr+" released");
 			
-			//cg.emit.emitMove(RegisterManager.BASE_REG, RegisterManager.STACK_REG);
+			cg.emit.emitMove(RegisterManager.BASE_REG, RegisterManager.STACK_REG);
 			cg.emit.emitMove("$0", "%eax");
-			//cg.emit.emit("popl",RegisterManager.BASE_REG);
+			cg.emit.emit("popl",RegisterManager.BASE_REG);
 			
-			cg.emit.emitRaw("leave");
+//			cg.emit.emitRaw("leave");
 			cg.emit.emitRaw("ret");
 
 			
@@ -151,6 +151,9 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 		
 		//TODO float
 		//TODO String?
+		
+		//Panuya: We just need  to handle int Variables
+		
 		//push first argument onto the stack
 		if(ast.children().get(0) instanceof Ast.IntConst){
 			cg.emit.emit("pushl","$.LC0");

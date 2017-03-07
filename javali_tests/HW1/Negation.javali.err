@@ -1,4 +1,4 @@
-Debug information for file: javali_tests\HW1\Negation.javali
+Debug information for file: javali_tests/HW1/Negation.javali
 AST Resulting From Parsing Stage:
 ClassDecl (name: Main, superClass: Object)
 | MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)
@@ -60,7 +60,7 @@ Phase exec failed because we expected to see:
 -1
 
 But we actually saw:
-Error: 35584
+Error: 139
 
 The difference is:
 At line   1 /   1:
@@ -68,5 +68,5 @@ At line   1 /   1:
 < -1
 < -2
 < -1
-> Error: 35584
+> Error: 139
 

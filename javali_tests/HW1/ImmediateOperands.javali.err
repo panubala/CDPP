@@ -1,4 +1,4 @@
-Debug information for file: javali_tests\HW1\ImmediateOperands.javali
+Debug information for file: javali_tests/HW1/ImmediateOperands.javali
 AST Resulting From Parsing Stage:
 ClassDecl (name: Main, superClass: Object)
 | MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)
@@ -19,10 +19,10 @@ ClassDecl (name: Main, superClass: Object)
 Phase exec failed because we expected to see:
 5
 But we actually saw:
-Error: 35584
+Error: 139
 
 The difference is:
 At line   1 /   1:
 < 5
-> Error: 35584
+> Error: 139
 

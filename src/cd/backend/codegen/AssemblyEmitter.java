@@ -163,4 +163,12 @@ public class AssemblyEmitter {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	void emitAllocation(int bytes) {
+		emit("subl", constant(bytes), "%esp");
+	}
+	
+	void emitDeallocation(int bytes) {
+		emit("addl", constant(bytes), "%esp");
+	}
 }
