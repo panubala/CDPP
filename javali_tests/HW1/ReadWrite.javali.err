@@ -15,30 +15,15 @@ ClassDecl (name: Main, superClass: Object)
 | | | Assign ()
 | | | | Var (name: i1)
 | | | | BuiltInRead ()
-| | | Assign ()
-| | | | Var (name: r1)
-| | | | BinaryOp (operator: B_PLUS)
-| | | | | Var (name: i0)
-| | | | | Var (name: i1)
 | | | BuiltInWrite ()
-| | | | Var (name: r1)
-| | | BuiltInWriteln ()
-| | | BuiltInWrite ()
-| | | | BinaryOp (operator: B_MINUS)
-| | | | | Var (name: r1)
-| | | | | IntConst (value: 3)
-| | | BuiltInWriteln ()
+| | | | Var (name: i1)
 
 Phase exec failed because we expected to see:
-27
-24
-
+22
 But we actually saw:
-Error: 35584
 
 The difference is:
 At line   1 /   1:
-< 27
-< 24
-> Error: 35584
+< 22
+> 
 
