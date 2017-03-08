@@ -1,7 +1,5 @@
 package cd.backend.codegen;
 
-import java.util.HashMap;
-
 import cd.Config;
 import cd.backend.codegen.RegisterManager.Register;
 import cd.ir.Ast.BinaryOp;
@@ -49,43 +47,46 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register binaryOp(BinaryOp ast, Void arg) {
-		// TODO: (i0 + (i1 + (i2 + (i3 + (i4 + (i5 + (i6 + i7))))))) gives an error, because too many register are used
-		//File: EightVariables.javali
-		
+
 		System.out.println("===BinOP");
 		Register regLeft = visit(ast.left(), arg);
-		//cg.emit.emit("pushl", regLeft);
-		
-		Register regRight = visit(ast.right(), arg);
-		//cg.emit.emit("pushl", regRight);
-		//cg.rm.releaseRegister(regRight);
+		cg.emit.emitPush(regLeft, 4);
 
-		//String rightHandSite = cg.emit.registerOffset(0, Register.ESP);
-		//cg.emit.emitLoad(4, Register.ESP, regLeft);
+		cg.rm.releaseRegister(regLeft);
+		Register regRight = visit(ast.right(), arg);
+		
+		// cg.emit.emit("pushl", regRight);
+		// cg.rm.releaseRegister(regRight);
+		// String rightHandSite = cg.emit.registerOffset(0, Register.ESP);
+		// cg.emit.emitLoad(4, Register.ESP, regLeft);
+
+		regLeft = cg.rm.getRegister();
+		cg.emit.emitLoad(cg.emit.getCurrentOffset(), Register.EBP, regLeft);
+		cg.emit.emitDeallocation(4);
 
 		switch (ast.operator) {
 
 		case B_PLUS:
-			//cg.emit.emit("addl", rightHandSite, regLeft);
+			// cg.emit.emit("addl", rightHandSite, regLeft);
 			cg.emit.emit("addl", regRight, regLeft);
 			break;
 		case B_MINUS:
-			//cg.emit.emit("subl", rightHandSite, regLeft);
+			// cg.emit.emit("subl", rightHandSite, regLeft);
 			cg.emit.emit("subl", regRight, regLeft);
 			break;
 
-		case B_TIMES://TODO not tested
-			//cg.emit.emit("imull", rightHandSite, regLeft);
+		case B_TIMES:// TODO not tested
+			// cg.emit.emit("imull", rightHandSite, regLeft);
 			cg.emit.emit("imull", regRight, regLeft);
 			break;
 
-		case B_DIV: //TODO not tested
-			//TODO:Division by Zero
+		case B_DIV: // TODO not tested
+			// TODO:Division by Zero
 			System.out.println("==Div");
-			//cg.emit.emit("cmpl", cg.emit.constant(0), rightHandSite);
+			// cg.emit.emit("cmpl", cg.emit.constant(0), rightHandSite);
 			cg.emit.emit("pushl", Register.EAX);
 			cg.emit.emitMove(regLeft, Register.EAX);
-			//cg.emit.emit("idivl", rightHandSite);
+			// cg.emit.emit("idivl", rightHandSite);
 			cg.emit.emitMove(Register.EAX, regLeft);
 			cg.emit.emit("popl", Register.EAX);
 			break;
@@ -93,8 +94,7 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 		default:
 			break;
 		}
-		
-		//cg.emit.emitDeallocation(8);
+
 		cg.rm.releaseRegister(regRight);
 		return regLeft;
 	}
@@ -110,25 +110,23 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 	@Override
 	public Register builtInRead(BuiltInRead ast, Void arg) {
 		System.out.println("==read");
-		// TODO
-		
+
 		cg.emit.emitAllocation(4);
-		//Register varLocReg = cg.rm.getRegister();
-		//cg.emit.emit("leal", "(%esp)", varLocReg );
-		//cg.emit.emit("pushl", varLocReg);
-		
-		cg.emit.emit("pushl", "%esp");		
-		cg.emit.emit("pushl", "$.LC2");		
-		cg.emit.increaseOffset(8);
-		
+
+		// Old Version:
+		// Register varLocReg = cg.rm.getRegister();
+		// cg.emit.emit("leal", "(%esp)", varLocReg );
+		// cg.emit.emit("pushl", varLocReg);
+
+		cg.emit.emitPush("%esp", 4);
+		cg.emit.emitPush("$.LC0", 4);
+
 		cg.emit.emit("call", Config.SCANF);
-		cg.emit.emitDeallocation(8); //not needed
-		
+		cg.emit.emitDeallocation(8);
+
 		Register reg = cg.rm.getRegister();
-		System.out.println(reg.repr+" occupied");
 
 		cg.emit.emitLoad(cg.emit.getCurrentOffset(), RegisterManager.BASE_REG, reg);
-		//cg.emit.emitDeallocation(4);
 		return reg;
 	}
 
@@ -150,10 +148,8 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register intConst(IntConst ast, Void arg) {
-
 		System.out.println("===intConst");
 		Register regInt = cg.rm.getRegister();
-		System.out.println(regInt.repr+" occupied");
 		cg.emit.emitMove(AssemblyEmitter.constant(ast.value), regInt);
 		return regInt;
 	}
@@ -201,7 +197,7 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 	@Override
 	public Register unaryOp(UnaryOp ast, Void arg) {
 		System.out.println("==unaryOP");
-		// TODO
+		// TODO testing
 		Register reg = visit(ast.arg(), arg);
 
 		switch (ast.operator) {
@@ -213,9 +209,7 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 			break;
 		default:
 			break;
-
 		}
-
 		return reg;
 
 	}
@@ -226,32 +220,17 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 		System.out.println("==var");
 		// TODO
 		// Panuya: keine Ahnung wie es geht
+		// Pege: immer noch nicht?
 		String varName = ast.name;
 
 		Register ret = cg.rm.getRegister();
-		System.out.println(ret.repr+" occupied");
 
-		
-		if(cg.emit.varOnStack(varName)){ //already on stack
+		if (cg.emit.varOnStack(varName)) { // already on stack
 			cg.emit.emitLoad(cg.emit.getVarLocation(varName), RegisterManager.BASE_REG, ret);
-		}		
-		else{ //make space on stack 
-			cg.emit.emitAllocation(4);//TODO if function call
+		} else { // make space on stack
+			cg.emit.emitAllocation(4);// TODO if function call
 			cg.emit.setVarLocation(varName, cg.emit.getCurrentOffset());
 		}
-
-		// if(lookupVariable.containsKey(name))
-		// return lookupVariable.get(name);
-		// else{
-		// Register newRet = cg.rm.getRegister();
-		// lookupVariable.put(name, newRet);
 		return ret;
-
-		// {
-		// throw new ToDoException();
-		// }
 	}
-	// private static HashMap<String,Integer> lookupOffset = new
-	// HashMap<String,Integer>();
-
 }

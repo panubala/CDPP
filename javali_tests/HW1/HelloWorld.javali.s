@@ -4,8 +4,6 @@
     .string "%d"
 .LC1:
     .string "\n"
-.LC2:
-    .string "%d"
     .globl _main
 
 _main:
@@ -22,6 +20,7 @@ _main:
         # Emitting writeln()
         pushl $.LC1
         call _printf
+        addl $4, %esp
     movl %ebp, %esp
     movl $0, %eax
     popl %ebp

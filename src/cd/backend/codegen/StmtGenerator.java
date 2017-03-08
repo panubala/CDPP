@@ -1,13 +1,11 @@
 package cd.backend.codegen;
 
 import cd.Config;
-import cd.ToDoException;
 import cd.backend.codegen.RegisterManager.Register;
 import cd.ir.Ast;
 import cd.ir.Ast.Assign;
 import cd.ir.Ast.BuiltInWrite;
 import cd.ir.Ast.BuiltInWriteln;
-import cd.ir.Ast.Expr;
 import cd.ir.Ast.IfElse;
 import cd.ir.Ast.MethodCall;
 import cd.ir.Ast.MethodDecl;
@@ -42,7 +40,7 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 
 	@Override
 	public Register methodCall(MethodCall ast, Void dummy) {
-		//TODO
+		// TODO
 		System.out.println("==MethodCall");
 		{
 			throw new RuntimeException("Not required");
@@ -53,40 +51,33 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 	public Register methodDecl(MethodDecl ast, Void arg) {
 		System.out.println("==MethodDecl");
 		{
-			cg.rm.initRegisters(); //TODO init every function call?
-			
-			//For write(int)
+			cg.rm.initRegisters(); // TODO init every function call?
+
+			// For write(int) and read(int)
 			cg.emit.emitLabel(".LC0");
 			cg.emit.emitRaw(".string \"%d\"");
-			
-			//For writeln()
+
+			// For writeln()
 			cg.emit.emitLabel(".LC1");
 			cg.emit.emitRaw(".string \"\\n\"");
-			
-			
-			cg.emit.emitLabel(".LC2");
-			cg.emit.emitRaw(".string \"%d\"");
-			
-			//Main fnc
-			cg.emit.emitRaw(".globl "+"_"+ast.name+"\n");
-			cg.emit.emitLabel("_"+ast.name);
-			
-			cg.emit.emit("pushl",RegisterManager.BASE_REG);
+
+			// Main fnc
+			cg.emit.emitRaw(".globl " + "_" + ast.name + "\n");
+			cg.emit.emitLabel("_" + ast.name);
+
+			cg.emit.emit("pushl", RegisterManager.BASE_REG);
 			cg.emit.emitMove(RegisterManager.STACK_REG, RegisterManager.BASE_REG);
-			
+
 			Register r = visit(ast.body(), arg);
 			cg.rm.releaseRegister(r);
-			if(r != null)
-				System.out.println(r.repr+" released");
-			
+
 			cg.emit.emitMove(RegisterManager.BASE_REG, RegisterManager.STACK_REG);
 			cg.emit.emitMove("$0", "%eax");
-			cg.emit.emit("popl",RegisterManager.BASE_REG);
-			
-//			cg.emit.emitRaw("leave");
+			cg.emit.emit("popl", RegisterManager.BASE_REG);
+
+			// cg.emit.emitRaw("leave");
 			cg.emit.emitRaw("ret");
 
-			
 			return null;
 		}
 	}
@@ -94,7 +85,7 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 	@Override
 	public Register ifElse(IfElse ast, Void arg) {
 		System.out.println("==ifEles");
-		//TODO
+		// TODO
 		{
 			throw new RuntimeException("Not required");
 		}
@@ -104,7 +95,7 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 	public Register whileLoop(WhileLoop ast, Void arg) {
 
 		System.out.println("==whileLoop");
-		//TODO
+		// TODO
 		{
 			throw new RuntimeException("Not required");
 		}
@@ -116,28 +107,27 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 		{
 			// Because we only handle very simple programs in HW1,
 			// you can just emit the prologue here!
-			
-			//register with left side (not used)
-			Register varReg = cg.eg.visit(ast.left(),arg); //create new space if necessary
-			
-			//register with constant value
-			Register valueReg = cg.eg.visit(ast.right(),arg);
-			
+
+			// register with left side (not used)
+			Register varReg = cg.eg.visit(ast.left(), arg); // create new space
+															// if necessary
+
+			// register with constant value
+			Register valueReg = cg.eg.visit(ast.right(), arg);
+
 			System.out.println("==after receiving registers (assign)");
-			
-			//get location in stack
+
+			// get location in stack
 			Ast.Var var = (Var) ast.left();
 			int varLocationOffset = cg.emit.getVarLocation(var.name);
-			
-			//store new value in stack
-			cg.emit.emitStore(valueReg,varLocationOffset,RegisterManager.BASE_REG);						
-			
-			//Release registers
+
+			// store new value in stack
+			cg.emit.emitStore(valueReg, varLocationOffset, RegisterManager.BASE_REG);
+
+			// Release registers
 			cg.rm.releaseRegister(valueReg);
-			System.out.println(valueReg.repr+" released");
 			cg.rm.releaseRegister(varReg);
-			System.out.println(varReg.repr+" released");
-			
+
 			return null;
 		}
 	}
@@ -145,44 +135,34 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 	@Override
 	public Register builtInWrite(BuiltInWrite ast, Void arg) {
 		System.out.println("==write");
-		
-		//Register with the value to print		
-		Register argument = cg.eg.visit(ast.arg(),arg);
-		
-		//Push argument onto the stack
-		cg.emit.emit("pushl", argument);
+
+		// Register with the value to print
+		Register argument = cg.eg.visit(ast.arg(), arg);
+
+		// Push argument onto the stack
+		cg.emit.emitPush(argument, 4);
 		cg.rm.releaseRegister(argument);
-		System.out.println(argument+" released");
-		
-		//TODO float
-		//TODO String?
-		
-		//Panuya: We just need  to handle int Variables
-		
-		//push first argument onto the stack //TODO var/int
-		//if(ast.children().get(0) instanceof Ast.IntConst){
-		//	cg.emit.emit("pushl","$.LC0");
-		//}
-		
-		//TODO push and offset is not very elegant
-		cg.emit.emit("pushl","$.LC0");
-		cg.emit.increaseOffset(8);
-		
+
+		cg.emit.emitPush("$.LC0", 4);
+
 		cg.emit.emit("call", Config.PRINTF);
-		
+
 		cg.emit.emitDeallocation(8);
-		
+
 		return null;
 	}
 
 	@Override
 	public Register builtInWriteln(BuiltInWriteln ast, Void arg) {
 		System.out.println("==writeln");
-		
-		//push argument "/n" onto the stack
-		cg.emit.emit("pushl","$.LC1");
+
+		// push argument "/n" onto the stack
+		cg.emit.emitPush("$.LC1", 4);
+
 		cg.emit.emit("call", Config.PRINTF);
-		
+
+		cg.emit.emitDeallocation(4);
+
 		return null;
 	}
 

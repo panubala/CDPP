@@ -2,25 +2,21 @@ package cd.backend.codegen;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 /**
- * Simple class that manages the set of currently used
- * and unused registers
+ * Simple class that manages the set of currently used and unused registers
  */
 public class RegisterManager {
 	private List<Register> registers = new ArrayList<Register>();
 
 	// lists of register to save by the callee and the caller
-	public static final Register CALLEE_SAVE[] = new Register[]{Register.ESI,
-			Register.EDI, Register.EBX};
-	public static final Register CALLER_SAVE[] = new Register[]{Register.EAX,
-			Register.ECX, Register.EDX};
-	
+	public static final Register CALLEE_SAVE[] = new Register[] { Register.ESI, Register.EDI, Register.EBX };
+	public static final Register CALLER_SAVE[] = new Register[] { Register.EAX, Register.ECX, Register.EDX };
+
 	// list of general purpose registers
-	public static final Register GPR[] = new Register[]{Register.EAX, Register.EBX,
-		Register.ECX, Register.EDX, Register.ESI, Register.EDI};
+	public static final Register GPR[] = new Register[] { Register.EAX, Register.EBX, Register.ECX, Register.EDX,
+			Register.ESI, Register.EDI };
 
 	// special purpose registers
 	public static final Register BASE_REG = Register.EBP;
@@ -28,12 +24,9 @@ public class RegisterManager {
 
 	public static final int SIZEOF_REG = 4;
 
-	
 	public enum Register {
-		EAX("%eax", ByteRegister.EAX), EBX("%ebx", ByteRegister.EBX), ECX(
-				"%ecx", ByteRegister.ECX), EDX("%edx", ByteRegister.EDX), ESI(
-				"%esi", null), EDI("%edi", null), EBP("%ebp", null), ESP(
-				"%esp", null);
+		EAX("%eax", ByteRegister.EAX), EBX("%ebx", ByteRegister.EBX), ECX("%ecx", ByteRegister.ECX), EDX("%edx",
+				ByteRegister.EDX), ESI("%esi", null), EDI("%edi", null), EBP("%ebp", null), ESP("%esp", null);
 
 		public final String repr;
 		private final ByteRegister lowByteVersion;
@@ -94,9 +87,9 @@ public class RegisterManager {
 	public Register getRegister() {
 		int last = registers.size() - 1;
 		if (last < 0)
-			throw new AssemblyFailedException(
-					"Program requires too many registers");
+			throw new AssemblyFailedException("Program requires too many registers");
 
+		System.out.println("-- " + registers.get(last).repr + " occupied");
 		return registers.remove(last);
 	}
 
@@ -106,6 +99,8 @@ public class RegisterManager {
 	public void releaseRegister(Register reg) {
 		assert !registers.contains(reg);
 		registers.add(reg);
+		if (reg != null)
+			System.out.println("-- " + reg.repr + " released");
 	}
 
 	/**
@@ -121,7 +116,4 @@ public class RegisterManager {
 	public int availableRegisters() {
 		return registers.size();
 	}
-	
-	//public static HashMap<String, Integer> variableOffset = new HashMap<String, Integer>();
-	//public static int currentOffset = 0;
 }

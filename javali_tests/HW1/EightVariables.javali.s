@@ -4,8 +4,6 @@
     .string "%d"
 .LC1:
     .string "\n"
-.LC2:
-    .string "%d"
     .globl _main
 
 _main:
@@ -66,17 +64,199 @@ _main:
           # Emitting (i0 + (i1 + (i2 + (i3 + (i4 + (i5 + (i6 + i7)))))))
             # Emitting i0
             movl -4(%ebp), %esi
+          pushl %esi
             # Emitting (i1 + (i2 + (i3 + (i4 + (i5 + (i6 + i7))))))
               # Emitting i1
-              movl -8(%ebp), %edx
+              movl -8(%ebp), %esi
+            pushl %esi
               # Emitting (i2 + (i3 + (i4 + (i5 + (i6 + i7)))))
                 # Emitting i2
-                movl -12(%ebp), %ecx
+                movl -12(%ebp), %esi
+              pushl %esi
                 # Emitting (i3 + (i4 + (i5 + (i6 + i7))))
                   # Emitting i3
-                  movl -16(%ebp), %ebx
+                  movl -16(%ebp), %esi
+                pushl %esi
                   # Emitting (i4 + (i5 + (i6 + i7)))
                     # Emitting i4
-                    movl -20(%ebp), %eax
+                    movl -20(%ebp), %esi
+                  pushl %esi
                     # Emitting (i5 + (i6 + i7))
                       # Emitting i5
+                      movl -24(%ebp), %esi
+                    pushl %esi
+                      # Emitting (i6 + i7)
+                        # Emitting i6
+                        movl -28(%ebp), %esi
+                      pushl %esi
+                        # Emitting i7
+                        movl -32(%ebp), %esi
+                      movl -64(%ebp), %edx
+                      addl $4, %esp
+                      addl %esi, %edx
+                    movl -60(%ebp), %esi
+                    addl $4, %esp
+                    addl %edx, %esi
+                  movl -56(%ebp), %edx
+                  addl $4, %esp
+                  addl %esi, %edx
+                movl -52(%ebp), %esi
+                addl $4, %esp
+                addl %edx, %esi
+              movl -48(%ebp), %edx
+              addl $4, %esp
+              addl %esi, %edx
+            movl -44(%ebp), %esi
+            addl $4, %esp
+            addl %edx, %esi
+          movl -40(%ebp), %edx
+          addl $4, %esp
+          addl %esi, %edx
+        movl %edx, -36(%ebp)
+        # Emitting r2 = (((((((i0 + i1) + i2) + i3) + i4) + i5) + i6) + i7)
+          # Emitting r2
+          subl $4, %esp
+          # Emitting (((((((i0 + i1) + i2) + i3) + i4) + i5) + i6) + i7)
+            # Emitting ((((((i0 + i1) + i2) + i3) + i4) + i5) + i6)
+              # Emitting (((((i0 + i1) + i2) + i3) + i4) + i5)
+                # Emitting ((((i0 + i1) + i2) + i3) + i4)
+                  # Emitting (((i0 + i1) + i2) + i3)
+                    # Emitting ((i0 + i1) + i2)
+                      # Emitting (i0 + i1)
+                        # Emitting i0
+                        movl -4(%ebp), %edx
+                      pushl %edx
+                        # Emitting i1
+                        movl -8(%ebp), %edx
+                      movl -44(%ebp), %esi
+                      addl $4, %esp
+                      addl %edx, %esi
+                    pushl %esi
+                      # Emitting i2
+                      movl -12(%ebp), %esi
+                    movl -44(%ebp), %edx
+                    addl $4, %esp
+                    addl %esi, %edx
+                  pushl %edx
+                    # Emitting i3
+                    movl -16(%ebp), %edx
+                  movl -44(%ebp), %esi
+                  addl $4, %esp
+                  addl %edx, %esi
+                pushl %esi
+                  # Emitting i4
+                  movl -20(%ebp), %esi
+                movl -44(%ebp), %edx
+                addl $4, %esp
+                addl %esi, %edx
+              pushl %edx
+                # Emitting i5
+                movl -24(%ebp), %edx
+              movl -44(%ebp), %esi
+              addl $4, %esp
+              addl %edx, %esi
+            pushl %esi
+              # Emitting i6
+              movl -28(%ebp), %esi
+            movl -44(%ebp), %edx
+            addl $4, %esp
+            addl %esi, %edx
+          pushl %edx
+            # Emitting i7
+            movl -32(%ebp), %edx
+          movl -44(%ebp), %esi
+          addl $4, %esp
+          addl %edx, %esi
+        movl %esi, -40(%ebp)
+        # Emitting r3 = (((i0 + i1) + (i2 + i3)) + ((i4 + i5) + (i6 + i7)))
+          # Emitting r3
+          subl $4, %esp
+          # Emitting (((i0 + i1) + (i2 + i3)) + ((i4 + i5) + (i6 + i7)))
+            # Emitting ((i0 + i1) + (i2 + i3))
+              # Emitting (i0 + i1)
+                # Emitting i0
+                movl -4(%ebp), %esi
+              pushl %esi
+                # Emitting i1
+                movl -8(%ebp), %esi
+              movl -48(%ebp), %edx
+              addl $4, %esp
+              addl %esi, %edx
+            pushl %edx
+              # Emitting (i2 + i3)
+                # Emitting i2
+                movl -12(%ebp), %edx
+              pushl %edx
+                # Emitting i3
+                movl -16(%ebp), %edx
+              movl -52(%ebp), %esi
+              addl $4, %esp
+              addl %edx, %esi
+            movl -48(%ebp), %edx
+            addl $4, %esp
+            addl %esi, %edx
+          pushl %edx
+            # Emitting ((i4 + i5) + (i6 + i7))
+              # Emitting (i4 + i5)
+                # Emitting i4
+                movl -20(%ebp), %edx
+              pushl %edx
+                # Emitting i5
+                movl -24(%ebp), %edx
+              movl -52(%ebp), %esi
+              addl $4, %esp
+              addl %edx, %esi
+            pushl %esi
+              # Emitting (i6 + i7)
+                # Emitting i6
+                movl -28(%ebp), %esi
+              pushl %esi
+                # Emitting i7
+                movl -32(%ebp), %esi
+              movl -56(%ebp), %edx
+              addl $4, %esp
+              addl %esi, %edx
+            movl -52(%ebp), %esi
+            addl $4, %esp
+            addl %edx, %esi
+          movl -48(%ebp), %edx
+          addl $4, %esp
+          addl %esi, %edx
+        movl %edx, -44(%ebp)
+        # Emitting write(r1)
+          # Emitting r1
+          movl -36(%ebp), %edi
+        pushl %edi
+        pushl $.LC0
+        call _printf
+        addl $8, %esp
+        # Emitting writeln()
+        pushl $.LC1
+        call _printf
+        addl $4, %esp
+        # Emitting write(r2)
+          # Emitting r2
+          movl -40(%ebp), %edi
+        pushl %edi
+        pushl $.LC0
+        call _printf
+        addl $8, %esp
+        # Emitting writeln()
+        pushl $.LC1
+        call _printf
+        addl $4, %esp
+        # Emitting write(r3)
+          # Emitting r3
+          movl -44(%ebp), %edi
+        pushl %edi
+        pushl $.LC0
+        call _printf
+        addl $8, %esp
+        # Emitting writeln()
+        pushl $.LC1
+        call _printf
+        addl $4, %esp
+    movl %ebp, %esp
+    movl $0, %eax
+    popl %ebp
+    ret

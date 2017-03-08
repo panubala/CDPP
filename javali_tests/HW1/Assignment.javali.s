@@ -4,8 +4,6 @@
     .string "%d"
 .LC1:
     .string "\n"
-.LC2:
-    .string "%d"
     .globl _main
 
 _main:

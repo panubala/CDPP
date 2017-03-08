@@ -4,8 +4,6 @@
     .string "%d"
 .LC1:
     .string "\n"
-.LC2:
-    .string "%d"
     .globl _main
 
 _main:
@@ -30,22 +28,28 @@ _main:
           # Emitting (A * -(B))
             # Emitting A
             movl -4(%ebp), %esi
+          pushl %esi
             # Emitting -(B)
               # Emitting B
-              movl -8(%ebp), %edx
-            negl %edx
-          imull %edx, %esi
-        movl %esi, -12(%ebp)
+              movl -8(%ebp), %esi
+            negl %esi
+          movl -16(%ebp), %edx
+          addl $4, %esp
+          imull %esi, %edx
+        movl %edx, -12(%ebp)
         # Emitting b = (-(A) * B)
           # Emitting b
           subl $4, %esp
           # Emitting (-(A) * B)
             # Emitting -(A)
               # Emitting A
-              movl -4(%ebp), %esi
-            negl %esi
+              movl -4(%ebp), %edx
+            negl %edx
+          pushl %edx
             # Emitting B
             movl -8(%ebp), %edx
+          movl -20(%ebp), %esi
+          addl $4, %esp
           imull %edx, %esi
         movl %esi, -16(%ebp)
         # Emitting c = -((A + B))
@@ -55,20 +59,26 @@ _main:
             # Emitting (A + B)
               # Emitting A
               movl -4(%ebp), %esi
+            pushl %esi
               # Emitting B
-              movl -8(%ebp), %edx
-            addl %edx, %esi
-          negl %esi
-        movl %esi, -20(%ebp)
+              movl -8(%ebp), %esi
+            movl -24(%ebp), %edx
+            addl $4, %esp
+            addl %esi, %edx
+          negl %edx
+        movl %edx, -20(%ebp)
         # Emitting d = -((A * B))
           # Emitting d
           subl $4, %esp
           # Emitting -((A * B))
             # Emitting (A * B)
               # Emitting A
-              movl -4(%ebp), %esi
+              movl -4(%ebp), %edx
+            pushl %edx
               # Emitting B
               movl -8(%ebp), %edx
+            movl -28(%ebp), %esi
+            addl $4, %esp
             imull %edx, %esi
           negl %esi
         movl %esi, -24(%ebp)
@@ -82,6 +92,7 @@ _main:
         # Emitting writeln()
         pushl $.LC1
         call _printf
+        addl $4, %esp
         # Emitting write(b)
           # Emitting b
           movl -16(%ebp), %edi
@@ -92,6 +103,7 @@ _main:
         # Emitting writeln()
         pushl $.LC1
         call _printf
+        addl $4, %esp
         # Emitting write(c)
           # Emitting c
           movl -20(%ebp), %edi
@@ -102,6 +114,7 @@ _main:
         # Emitting writeln()
         pushl $.LC1
         call _printf
+        addl $4, %esp
         # Emitting write(d)
           # Emitting d
           movl -24(%ebp), %edi
@@ -112,6 +125,7 @@ _main:
         # Emitting writeln()
         pushl $.LC1
         call _printf
+        addl $4, %esp
     movl %ebp, %esp
     movl $0, %eax
     popl %ebp

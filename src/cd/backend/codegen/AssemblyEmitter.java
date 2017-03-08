@@ -165,6 +165,16 @@ public class AssemblyEmitter {
 		}
 	}
 	
+	public void emitPush(Register src, int size){
+		increaseOffset(size);
+		emit("pushl", src);		
+	}
+	
+	public void emitPush(String src, int size){
+		increaseOffset(size);
+		emit("pushl", src);	
+	}
+	
 	public void emitAllocation(int bytes) {
 		emit("subl", constant(bytes), "%esp");
 		currentOffset -= bytes;
@@ -172,14 +182,14 @@ public class AssemblyEmitter {
 	
 	public void emitDeallocation(int bytes) {
 		emit("addl", constant(bytes), "%esp");
-		currentOffset += bytes;
+		decreaseOffset(bytes);
 	}
 	
-	public void increaseOffset(int bytes){
+	private void increaseOffset(int bytes){
 		currentOffset -= bytes;
 	}
 	
-	public void decreaseOffset(int bytes){
+	private void decreaseOffset(int bytes){
 		currentOffset += bytes;
 	}
 	
