@@ -54,11 +54,6 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 		cg.rm.releaseRegister(regLeft);
 		Register regRight = visit(ast.right(), arg);
-		
-		// cg.emit.emit("pushl", regRight);
-		// cg.rm.releaseRegister(regRight);
-		// String rightHandSite = cg.emit.registerOffset(0, Register.ESP);
-		// cg.emit.emitLoad(4, Register.ESP, regLeft);
 
 		regLeft = cg.rm.getRegister();
 		cg.emit.emitLoad(cg.emit.getCurrentOffset(), Register.EBP, regLeft);
@@ -67,28 +62,22 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 		switch (ast.operator) {
 
 		case B_PLUS:
-			// cg.emit.emit("addl", rightHandSite, regLeft);
 			cg.emit.emit("addl", regRight, regLeft);
 			break;
 		case B_MINUS:
-			// cg.emit.emit("subl", rightHandSite, regLeft);
 			cg.emit.emit("subl", regRight, regLeft);
 			break;
 
-		case B_TIMES:// TODO not tested
-			// cg.emit.emit("imull", rightHandSite, regLeft);
+		case B_TIMES:
 			cg.emit.emit("imull", regRight, regLeft);
 			break;
 
-		case B_DIV: // TODO not tested
-			// TODO:Division by Zero
+		case B_DIV:
 			System.out.println("==Div");
-			// cg.emit.emit("cmpl", cg.emit.constant(0), rightHandSite);
-			cg.emit.emit("pushl", Register.EAX);
 			cg.emit.emitMove(regLeft, Register.EAX);
-			// cg.emit.emit("idivl", rightHandSite);
+			cg.emit.emitRaw("cltd");
+			cg.emit.emit("idivl", regRight);
 			cg.emit.emitMove(Register.EAX, regLeft);
-			cg.emit.emit("popl", Register.EAX);
 			break;
 
 		default:
@@ -118,7 +107,7 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 		// cg.emit.emit("leal", "(%esp)", varLocReg );
 		// cg.emit.emit("pushl", varLocReg);
 
-		cg.emit.emitPush("%esp", 4);
+		cg.emit.emitPush(RegisterManager.STACK_REG, 4);
 		cg.emit.emitPush("$.LC0", 4);
 
 		cg.emit.emit("call", Config.SCANF);

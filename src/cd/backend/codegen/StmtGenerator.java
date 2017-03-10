@@ -62,8 +62,8 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 			cg.emit.emitRaw(".string \"\\n\"");
 
 			// Main fnc
-			cg.emit.emitRaw(".globl " + "_" + ast.name + "\n");
-			cg.emit.emitLabel("_" + ast.name);
+			cg.emit.emitRaw(".globl " + Config.MAIN + "\n");
+			cg.emit.emitLabel(Config.MAIN);
 
 			cg.emit.emit("pushl", RegisterManager.BASE_REG);
 			cg.emit.emitMove(RegisterManager.STACK_REG, RegisterManager.BASE_REG);
@@ -75,7 +75,6 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 			cg.emit.emitMove("$0", "%eax");
 			cg.emit.emit("popl", RegisterManager.BASE_REG);
 
-			// cg.emit.emitRaw("leave");
 			cg.emit.emitRaw("ret");
 
 			return null;
