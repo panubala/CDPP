@@ -1,0 +1,33 @@
+Debug information for file: javali_tests\HW1\HW1_team\test6.javali
+AST Resulting From Parsing Stage:
+ClassDecl (name: Main, superClass: Object)
+| MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)
+| | Seq ()
+| | | VarDecl (name: r1, type: int)
+| | | VarDecl (name: r2, type: int)
+| | | VarDecl (name: r3, type: int)
+| | Seq ()
+| | | Assign ()
+| | | | Var (name: r1)
+| | | | BuiltInRead ()
+| | | Assign ()
+| | | | Var (name: r2)
+| | | | BinaryOp (operator: B_PLUS)
+| | | | | IntConst (value: 5)
+| | | | | Var (name: r1)
+| | | Assign ()
+| | | | Var (name: r1)
+| | | | BinaryOp (operator: B_DIV)
+| | | | | Var (name: r1)
+| | | | | Var (name: r2)
+
+Phase exec failed because we expected to see:
+
+But we actually saw:
+Error: 34816
+
+The difference is:
+At line   1 /   1:
+< 
+> Error: 34816
+

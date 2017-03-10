@@ -1,3 +1,5 @@
+Debug information for file: javali_tests\HW1\ReadWrite.javali
+AST Resulting From Parsing Stage:
 ClassDecl (name: Main, superClass: Object)
 | MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)
 | | Seq ()
@@ -20,3 +22,14 @@ ClassDecl (name: Main, superClass: Object)
 | | | | | BinaryOp (operator: B_PLUS)
 | | | | | | Var (name: i1)
 | | | | | | IntConst (value: 4)
+
+Phase exec failed because we expected to see:
+
+But we actually saw:
+Error: 34816
+
+The difference is:
+At line   1 /   1:
+< 
+> Error: 34816
+

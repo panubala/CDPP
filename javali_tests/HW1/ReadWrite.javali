@@ -6,6 +6,7 @@ class Main {
 		
 		i0 = 5;
 		i1 = read();
+		i1 = i1/(i1+4);
 		write(i1);
 		r1 = i0 + i1;
 		

@@ -1,0 +1,9 @@
+Exception: STATUS_INTEGER_DIVIDE_BY_ZERO at eip=0040121C
+eax=00000005 ebx=0061CC1C ecx=0061B6F8 edx=00000000 esi=00000005 edi=00000005
+ebp=0061CBF8 esp=0061CBEC program=C:\Users\patri\Documents\ETH\FS17\Compiler Design\CDPP\javali_tests\HW1\HW1_team\test6.javali.exe, pid 12264, thread main
+cs=0023 ds=002B es=002B fs=0053 gs=002B ss=002B
+Stack trace:
+Frame     Function  Args
+0061CBF8  0040121C (00000001, 0061CC1C, 200280F0, 61007A6A)
+0061CD18  61007ACF (00000000, 0061CD74, 61006B00, 00000000)
+End of stack trace
