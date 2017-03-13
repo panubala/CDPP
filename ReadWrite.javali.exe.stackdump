@@ -1,9 +1,0 @@
-Exception: STATUS_INTEGER_OVERFLOW at eip=00401238
-eax=0000003C ebx=0061CC2C ecx=0061B700 edx=00000001 esi=00000002 edi=0000003C
-ebp=0061CC08 esp=0061CBF4 program=C:\Users\patri\Documents\ETH\FS17\Compiler Design\CDPP\javali_tests\HW1\ReadWrite.javali.exe, pid 15312, thread main
-cs=0023 ds=002B es=002B fs=0053 gs=002B ss=002B
-Stack trace:
-Frame     Function  Args
-0061CC08  00401238 (00000001, 0061CC2C, 200280F0, 61007A6A)
-0061CD18  61007ACF (00000000, 0061CD74, 61006B00, 00000000)
-End of stack trace
