@@ -107,12 +107,12 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 			// Because we only handle very simple programs in HW1,
 			// you can just emit the prologue here!
 
-			// register with left side (not used)
-			Register varReg = cg.eg.visit(ast.left(), arg); // create new space
-															// if necessary
-
 			// register with constant value
 			Register valueReg = cg.eg.visit(ast.right(), arg);
+			
+			// register with left side (not used)
+			Register varReg = cg.eg.visit(ast.left(), arg); // create new space
+															// if necessar
 
 			System.out.println("==after receiving registers (assign)");
 

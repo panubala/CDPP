@@ -49,15 +49,34 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 	public Register binaryOp(BinaryOp ast, Void arg) {
 
 		System.out.println("===BinOP");
-		Register regLeft = visit(ast.left(), arg);
-		cg.emit.emitPush(regLeft, 4);
+		
+		System.out.println("======"+ast.rwChildren.get(0).numberOfChildren());
+		
+		System.out.println("======"+ast.rwChildren.get(1).numberOfChildren());
+		//ast.left().rwChildren.
+		int left = ast.rwChildren.get(0).numberOfChildren();
+		int right = ast.rwChildren.get(1).numberOfChildren();
+		
+		Register regRight;
+		Register regLeft;
+		if(left < right ){
+			regRight = visit(ast.right(), arg);
+			regLeft = visit(ast.left(), arg);
+		}else{
+			regLeft = visit(ast.left(), arg);
+			regRight = visit(ast.right(), arg);
+		}
+		
+		
+//		Register regLeft = visit(ast.left(), arg);
+//		cg.emit.emitPush(regLeft, 4);
 
-		cg.rm.releaseRegister(regLeft);
-		Register regRight = visit(ast.right(), arg);
+//		cg.rm.releaseRegister(regLeft);
+//		Register regRight = visit(ast.right(), arg);
 
-		regLeft = cg.rm.getRegister();
-		cg.emit.emitLoad(cg.emit.getCurrentOffset(), Register.EBP, regLeft);
-		cg.emit.emitDeallocation(4);
+//		regLeft = cg.rm.getRegister();
+//		cg.emit.emitLoad(cg.emit.getCurrentOffset(), Register.EBP, regLeft);
+//		cg.emit.emitDeallocation(4);
 
 		switch (ast.operator) {
 
