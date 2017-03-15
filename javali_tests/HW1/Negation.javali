@@ -13,6 +13,6 @@ class Main {
 		write(a); writeln();
 		write(b); writeln();
 		write(c); writeln();
-      write(d); writeln();
+      	write(d); writeln();
    }
 }

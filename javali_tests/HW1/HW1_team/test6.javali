@@ -3,22 +3,15 @@ class Main {
 		int r1, r2, r3;
 		
 		r1=read();
-		r2=5+r1;
-		//write(5+r1);
-		//r1=r1/(5+r1);
+		write(5+r1);
+		r1=r1/(5+r1);
 		
+		r2=read();
+		r2=r2/(r1+5);
 		
-		r1=r1/r2;
-		
-		
-		//r1=5/10;
-		
-		//r2=read();
-		//r2=r2/(r1+5);
-		//
-		//r3=5;
-		//r3=read();
-		//r3=r1;
+		r3=5;
+		r3=read();
+		r3=r1;
 	}
 }
 		

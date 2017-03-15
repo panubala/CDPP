@@ -40,7 +40,6 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 
 	@Override
 	public Register methodCall(MethodCall ast, Void dummy) {
-		// TODO
 		System.out.println("==MethodCall");
 		{
 			throw new RuntimeException("Not required");
@@ -51,7 +50,7 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 	public Register methodDecl(MethodDecl ast, Void arg) {
 		System.out.println("==MethodDecl");
 		{
-			cg.rm.initRegisters(); // TODO init every function call?
+			cg.rm.initRegisters();
 
 			// For write(int) and read(int)
 			cg.emit.emitLabel(".LC0");
@@ -83,8 +82,6 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 
 	@Override
 	public Register ifElse(IfElse ast, Void arg) {
-		System.out.println("==ifEles");
-		// TODO
 		{
 			throw new RuntimeException("Not required");
 		}
@@ -92,9 +89,6 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 
 	@Override
 	public Register whileLoop(WhileLoop ast, Void arg) {
-
-		System.out.println("==whileLoop");
-		// TODO
 		{
 			throw new RuntimeException("Not required");
 		}
@@ -113,8 +107,6 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 			// register with left side (not used)
 			Register varReg = cg.eg.visit(ast.left(), arg); // create new space
 															// if necessar
-
-			System.out.println("==after receiving registers (assign)");
 
 			// get location in stack
 			Ast.Var var = (Var) ast.left();

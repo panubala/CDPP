@@ -11,43 +11,40 @@ _main:
     movl %esp, %ebp
       # Emitting (...)
         # Emitting i1 = 1
+          # Emitting 1
+          movl $1, %edi
           # Emitting i1
           subl $4, %esp
-          # Emitting 1
-          movl $1, %esi
-        movl %esi, -4(%ebp)
+        movl %edi, -4(%ebp)
         # Emitting i2 = 2
-          # Emitting i2
-          subl $4, %esp
           # Emitting 2
           movl $2, %esi
+          # Emitting i2
+          subl $4, %esp
         movl %esi, -8(%ebp)
         # Emitting i3 = 3
+          # Emitting 3
+          movl $3, %edi
           # Emitting i3
           subl $4, %esp
-          # Emitting 3
-          movl $3, %esi
-        movl %esi, -12(%ebp)
+        movl %edi, -12(%ebp)
         # Emitting i4 = 4
-          # Emitting i4
-          subl $4, %esp
           # Emitting 4
           movl $4, %esi
+          # Emitting i4
+          subl $4, %esp
         movl %esi, -16(%ebp)
         # Emitting write((i1 / i2))
           # Emitting (i1 / i2)
             # Emitting i1
             movl -4(%ebp), %edi
-          pushl %edi
             # Emitting i2
-            movl -8(%ebp), %edi
-          movl -20(%ebp), %esi
-          addl $4, %esp
-          movl %esi, %eax
+            movl -8(%ebp), %esi
+          movl %edi, %eax
           cltd
-          idivl %edi
-          movl %eax, %esi
-        pushl %esi
+          idivl %esi
+          movl %eax, %edi
+        pushl %edi
         pushl $.LC0
         call _printf
         addl $8, %esp
@@ -55,26 +52,20 @@ _main:
           # Emitting ((i1 / i2) / i3)
             # Emitting (i1 / i2)
               # Emitting i1
-              movl -4(%ebp), %esi
-            pushl %esi
+              movl -4(%ebp), %edi
               # Emitting i2
               movl -8(%ebp), %esi
-            movl -20(%ebp), %edi
-            addl $4, %esp
             movl %edi, %eax
             cltd
             idivl %esi
             movl %eax, %edi
-          pushl %edi
             # Emitting i3
-            movl -12(%ebp), %edi
-          movl -20(%ebp), %esi
-          addl $4, %esp
-          movl %esi, %eax
+            movl -12(%ebp), %esi
+          movl %edi, %eax
           cltd
-          idivl %edi
-          movl %eax, %esi
-        pushl %esi
+          idivl %esi
+          movl %eax, %edi
+        pushl %edi
         pushl $.LC0
         call _printf
         addl $8, %esp
@@ -83,30 +74,21 @@ _main:
             # Emitting ((i1 / i2) / i3)
               # Emitting (i1 / i2)
                 # Emitting i1
-                movl -4(%ebp), %esi
-              pushl %esi
+                movl -4(%ebp), %edi
                 # Emitting i2
                 movl -8(%ebp), %esi
-              movl -20(%ebp), %edi
-              addl $4, %esp
               movl %edi, %eax
               cltd
               idivl %esi
               movl %eax, %edi
-            pushl %edi
               # Emitting i3
-              movl -12(%ebp), %edi
-            movl -20(%ebp), %esi
-            addl $4, %esp
-            movl %esi, %eax
+              movl -12(%ebp), %esi
+            movl %edi, %eax
             cltd
-            idivl %edi
-            movl %eax, %esi
-          pushl %esi
+            idivl %esi
+            movl %eax, %edi
             # Emitting i4
             movl -16(%ebp), %esi
-          movl -20(%ebp), %edi
-          addl $4, %esp
           movl %edi, %eax
           cltd
           idivl %esi
@@ -117,44 +99,32 @@ _main:
         addl $8, %esp
         # Emitting write((i1 / (i2 + i3)))
           # Emitting (i1 / (i2 + i3))
-            # Emitting i1
-            movl -4(%ebp), %edi
-          pushl %edi
             # Emitting (i2 + i3)
               # Emitting i2
               movl -8(%ebp), %edi
-            pushl %edi
               # Emitting i3
-              movl -12(%ebp), %edi
-            movl -24(%ebp), %esi
-            addl $4, %esp
-            addl %edi, %esi
-          movl -20(%ebp), %edi
-          addl $4, %esp
-          movl %edi, %eax
+              movl -12(%ebp), %esi
+            addl %esi, %edi
+            # Emitting i1
+            movl -4(%ebp), %esi
+          movl %esi, %eax
           cltd
-          idivl %esi
-          movl %eax, %edi
-        pushl %edi
+          idivl %edi
+          movl %eax, %esi
+        pushl %esi
         pushl $.LC0
         call _printf
         addl $8, %esp
         # Emitting write((i1 / (i1 + i2)))
           # Emitting (i1 / (i1 + i2))
-            # Emitting i1
-            movl -4(%ebp), %edi
-          pushl %edi
             # Emitting (i1 + i2)
               # Emitting i1
-              movl -4(%ebp), %edi
-            pushl %edi
+              movl -4(%ebp), %esi
               # Emitting i2
               movl -8(%ebp), %edi
-            movl -24(%ebp), %esi
-            addl $4, %esp
             addl %edi, %esi
-          movl -20(%ebp), %edi
-          addl $4, %esp
+            # Emitting i1
+            movl -4(%ebp), %edi
           movl %edi, %eax
           cltd
           idivl %esi
@@ -165,37 +135,28 @@ _main:
         addl $8, %esp
         # Emitting write((i1 / (i1 + 5)))
           # Emitting (i1 / (i1 + 5))
-            # Emitting i1
-            movl -4(%ebp), %edi
-          pushl %edi
             # Emitting (i1 + 5)
               # Emitting i1
               movl -4(%ebp), %edi
-            pushl %edi
               # Emitting 5
-              movl $5, %edi
-            movl -24(%ebp), %esi
-            addl $4, %esp
-            addl %edi, %esi
-          movl -20(%ebp), %edi
-          addl $4, %esp
-          movl %edi, %eax
+              movl $5, %esi
+            addl %esi, %edi
+            # Emitting i1
+            movl -4(%ebp), %esi
+          movl %esi, %eax
           cltd
-          idivl %esi
-          movl %eax, %edi
-        pushl %edi
+          idivl %edi
+          movl %eax, %esi
+        pushl %esi
         pushl $.LC0
         call _printf
         addl $8, %esp
         # Emitting write((10 / 20))
           # Emitting (10 / 20)
             # Emitting 10
-            movl $10, %edi
-          pushl %edi
+            movl $10, %esi
             # Emitting 20
             movl $20, %edi
-          movl -20(%ebp), %esi
-          addl $4, %esp
           movl %esi, %eax
           cltd
           idivl %edi
@@ -208,16 +169,13 @@ _main:
           # Emitting (20 / 10)
             # Emitting 20
             movl $20, %esi
-          pushl %esi
             # Emitting 10
-            movl $10, %esi
-          movl -20(%ebp), %edi
-          addl $4, %esp
-          movl %edi, %eax
+            movl $10, %edi
+          movl %esi, %eax
           cltd
-          idivl %esi
-          movl %eax, %edi
-        pushl %edi
+          idivl %edi
+          movl %eax, %esi
+        pushl %esi
         pushl $.LC0
         call _printf
         addl $8, %esp

@@ -49,37 +49,21 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 	public Register binaryOp(BinaryOp ast, Void arg) {
 
 		System.out.println("===BinOP");
-		
-		System.out.println("======"+ast.rwChildren.get(0).numberOfChildren());
-		
-		System.out.println("======"+ast.rwChildren.get(1).numberOfChildren());
-		//ast.left().rwChildren.
-		int left = ast.rwChildren.get(0).numberOfChildren();
-		int right = ast.rwChildren.get(1).numberOfChildren();
-		
+
+		int numberOfNodesReft = ast.rwChildren.get(0).numberOfChildren();
+		int numberOfNodesRight = ast.rwChildren.get(1).numberOfChildren();
+
 		Register regRight;
 		Register regLeft;
-		if(left < right ){
+		if (numberOfNodesReft < numberOfNodesRight) {
 			regRight = visit(ast.right(), arg);
 			regLeft = visit(ast.left(), arg);
-		}else{
+		} else {
 			regLeft = visit(ast.left(), arg);
 			regRight = visit(ast.right(), arg);
 		}
-		
-		
-//		Register regLeft = visit(ast.left(), arg);
-//		cg.emit.emitPush(regLeft, 4);
-
-//		cg.rm.releaseRegister(regLeft);
-//		Register regRight = visit(ast.right(), arg);
-
-//		regLeft = cg.rm.getRegister();
-//		cg.emit.emitLoad(cg.emit.getCurrentOffset(), Register.EBP, regLeft);
-//		cg.emit.emitDeallocation(4);
 
 		switch (ast.operator) {
-
 		case B_PLUS:
 			cg.emit.emit("addl", regRight, regLeft);
 			break;
@@ -109,7 +93,6 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register booleanConst(BooleanConst ast, Void arg) {
-		System.out.println("==boolConst");
 		{
 			throw new RuntimeException("Not required");
 		}
@@ -120,11 +103,6 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 		System.out.println("==read");
 
 		cg.emit.emitAllocation(4);
-
-		// Old Version:
-		// Register varLocReg = cg.rm.getRegister();
-		// cg.emit.emit("leal", "(%esp)", varLocReg );
-		// cg.emit.emit("pushl", varLocReg);
 
 		cg.emit.emitPush(RegisterManager.STACK_REG, 4);
 		cg.emit.emitPush("$.LC0", 4);
@@ -140,7 +118,6 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register cast(Cast ast, Void arg) {
-		System.out.println("==cast");
 		{
 			throw new RuntimeException("Not required");
 		}
@@ -148,7 +125,6 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register index(Index ast, Void arg) {
-		System.out.println("==index");
 		{
 			throw new RuntimeException("Not required");
 		}
@@ -164,7 +140,6 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register field(Field ast, Void arg) {
-		System.out.println("==field");
 		{
 			throw new RuntimeException("Not required");
 		}
@@ -172,7 +147,6 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register newArray(NewArray ast, Void arg) {
-		System.out.println("==newArray");
 		{
 			throw new RuntimeException("Not required");
 		}
@@ -180,7 +154,6 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register newObject(NewObject ast, Void arg) {
-		System.out.println("==newObject");
 		{
 			throw new RuntimeException("Not required");
 		}
@@ -188,7 +161,6 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register nullConst(NullConst ast, Void arg) {
-		System.out.println("==nullConst");
 		{
 			throw new RuntimeException("Not required");
 		}
@@ -196,7 +168,6 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 
 	@Override
 	public Register thisRef(ThisRef ast, Void arg) {
-		System.out.println("==thisRef");
 		{
 			throw new RuntimeException("Not required");
 		}
@@ -205,12 +176,10 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 	@Override
 	public Register unaryOp(UnaryOp ast, Void arg) {
 		System.out.println("==unaryOP");
-		// TODO testing
 		Register reg = visit(ast.arg(), arg);
 
 		switch (ast.operator) {
 		case U_PLUS:
-			// Passiert nichts
 			break;
 		case U_MINUS:
 			cg.emit.emit("negl", reg);
@@ -219,16 +188,13 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 			break;
 		}
 		return reg;
-
 	}
 
 	@Override
 	public Register var(Var ast, Void arg) {
 
 		System.out.println("==var");
-		// TODO
-		// Panuya: keine Ahnung wie es geht
-		// Pege: immer noch nicht?
+
 		String varName = ast.name;
 
 		Register ret = cg.rm.getRegister();
@@ -236,7 +202,7 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 		if (cg.emit.varOnStack(varName)) { // already on stack
 			cg.emit.emitLoad(cg.emit.getVarLocation(varName), RegisterManager.BASE_REG, ret);
 		} else { // make space on stack
-			cg.emit.emitAllocation(4);// TODO if function call
+			cg.emit.emitAllocation(4);
 			cg.emit.setVarLocation(varName, cg.emit.getCurrentOffset());
 		}
 		return ret;

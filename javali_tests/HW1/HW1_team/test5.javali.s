@@ -11,18 +11,15 @@ _main:
     movl %esp, %ebp
       # Emitting (...)
         # Emitting i0 = (+(-(+(-(2)))) + -(+(-(2))))
-          # Emitting i0
-          subl $4, %esp
           # Emitting (+(-(+(-(2)))) + -(+(-(2))))
             # Emitting +(-(+(-(2))))
               # Emitting -(+(-(2)))
                 # Emitting +(-(2))
                   # Emitting -(2)
                     # Emitting 2
-                    movl $2, %esi
-                  negl %esi
-              negl %esi
-          pushl %esi
+                    movl $2, %edi
+                  negl %edi
+              negl %edi
             # Emitting -(+(-(2)))
               # Emitting +(-(2))
                 # Emitting -(2)
@@ -30,32 +27,29 @@ _main:
                   movl $2, %esi
                 negl %esi
             negl %esi
-          movl -8(%ebp), %edx
-          addl $4, %esp
-          addl %esi, %edx
-        movl %edx, -4(%ebp)
-        # Emitting i1 = (-(+(-(+(2)))) - +(-(+(2))))
-          # Emitting i1
+          addl %esi, %edi
+          # Emitting i0
           subl $4, %esp
+        movl %edi, -4(%ebp)
+        # Emitting i1 = (-(+(-(+(2)))) - +(-(+(2))))
           # Emitting (-(+(-(+(2)))) - +(-(+(2))))
             # Emitting -(+(-(+(2))))
               # Emitting +(-(+(2)))
                 # Emitting -(+(2))
                   # Emitting +(2)
                     # Emitting 2
-                    movl $2, %edx
-                negl %edx
-            negl %edx
-          pushl %edx
+                    movl $2, %esi
+                negl %esi
+            negl %esi
             # Emitting +(-(+(2)))
               # Emitting -(+(2))
                 # Emitting +(2)
                   # Emitting 2
-                  movl $2, %edx
-              negl %edx
-          movl -12(%ebp), %esi
-          addl $4, %esp
-          subl %edx, %esi
+                  movl $2, %edi
+              negl %edi
+          subl %edi, %esi
+          # Emitting i1
+          subl $4, %esp
         movl %esi, -8(%ebp)
         # Emitting write(((-(+(5)) - +(5)) - +(5)))
           # Emitting ((-(+(5)) - +(5)) - +(5))
@@ -65,19 +59,13 @@ _main:
                   # Emitting 5
                   movl $5, %edi
               negl %edi
-            pushl %edi
               # Emitting +(5)
                 # Emitting 5
-                movl $5, %edi
-            movl -12(%ebp), %esi
-            addl $4, %esp
-            subl %edi, %esi
-          pushl %esi
+                movl $5, %esi
+            subl %esi, %edi
             # Emitting +(5)
               # Emitting 5
               movl $5, %esi
-          movl -12(%ebp), %edi
-          addl $4, %esp
           subl %esi, %edi
         pushl %edi
         pushl $.LC0
@@ -91,21 +79,15 @@ _main:
                   # Emitting 5
                   movl $5, %edi
                 negl %edi
-            pushl %edi
               # Emitting -(5)
                 # Emitting 5
-                movl $5, %edi
-              negl %edi
-            movl -12(%ebp), %esi
-            addl $4, %esp
-            addl %edi, %esi
-          pushl %esi
+                movl $5, %esi
+              negl %esi
+            addl %esi, %edi
             # Emitting -(5)
               # Emitting 5
               movl $5, %esi
             negl %esi
-          movl -12(%ebp), %edi
-          addl $4, %esp
           addl %esi, %edi
         pushl %edi
         pushl $.LC0
@@ -116,55 +98,43 @@ _main:
             # Emitting (((-(1) * +(-(1))) / +(-(1))) * -(-(1)))
               # Emitting ((-(1) * +(-(1))) / +(-(1)))
                 # Emitting (-(1) * +(-(1)))
-                  # Emitting -(1)
-                    # Emitting 1
-                    movl $1, %edi
-                  negl %edi
-                pushl %edi
                   # Emitting +(-(1))
                     # Emitting -(1)
                       # Emitting 1
                       movl $1, %edi
                     negl %edi
-                movl -12(%ebp), %esi
-                addl $4, %esp
-                imull %edi, %esi
-              pushl %esi
-                # Emitting +(-(1))
                   # Emitting -(1)
                     # Emitting 1
                     movl $1, %esi
                   negl %esi
-              movl -12(%ebp), %edi
-              addl $4, %esp
-              movl %edi, %eax
+                imull %edi, %esi
+                # Emitting +(-(1))
+                  # Emitting -(1)
+                    # Emitting 1
+                    movl $1, %edi
+                  negl %edi
+              movl %esi, %eax
               cltd
-              idivl %esi
-              movl %eax, %edi
-            pushl %edi
+              idivl %edi
+              movl %eax, %esi
               # Emitting -(-(1))
                 # Emitting -(1)
                   # Emitting 1
                   movl $1, %edi
                 negl %edi
               negl %edi
-            movl -12(%ebp), %esi
-            addl $4, %esp
             imull %edi, %esi
-          pushl %esi
             # Emitting -(-(1))
               # Emitting -(1)
                 # Emitting 1
-                movl $1, %esi
-              negl %esi
-            negl %esi
-          movl -12(%ebp), %edi
-          addl $4, %esp
-          movl %edi, %eax
+                movl $1, %edi
+              negl %edi
+            negl %edi
+          movl %esi, %eax
           cltd
-          idivl %esi
-          movl %eax, %edi
-        pushl %edi
+          idivl %edi
+          movl %eax, %esi
+        pushl %esi
         pushl $.LC0
         call _printf
         addl $8, %esp

@@ -11,25 +11,25 @@ _main:
     movl %esp, %ebp
       # Emitting (...)
         # Emitting i0 = 5
+          # Emitting 5
+          movl $5, %edi
           # Emitting i0
           subl $4, %esp
-          # Emitting 5
-          movl $5, %esi
-        movl %esi, -4(%ebp)
+        movl %edi, -4(%ebp)
         # Emitting write(+(i0))
           # Emitting +(i0)
             # Emitting i0
-            movl -4(%ebp), %edi
-        pushl %edi
+            movl -4(%ebp), %esi
+        pushl %esi
         pushl $.LC0
         call _printf
         addl $8, %esp
         # Emitting write(-(i0))
           # Emitting -(i0)
             # Emitting i0
-            movl -4(%ebp), %edi
-          negl %edi
-        pushl %edi
+            movl -4(%ebp), %esi
+          negl %esi
+        pushl %esi
         pushl $.LC0
         call _printf
         addl $8, %esp
@@ -37,14 +37,11 @@ _main:
           # Emitting (-(1) * +(i0))
             # Emitting -(1)
               # Emitting 1
-              movl $1, %edi
-            negl %edi
-          pushl %edi
+              movl $1, %esi
+            negl %esi
             # Emitting +(i0)
               # Emitting i0
               movl -4(%ebp), %edi
-          movl -8(%ebp), %esi
-          addl $4, %esp
           imull %edi, %esi
         pushl %esi
         pushl $.LC0
@@ -56,15 +53,12 @@ _main:
               # Emitting 1
               movl $1, %esi
             negl %esi
-          pushl %esi
             # Emitting -(i0)
               # Emitting i0
-              movl -4(%ebp), %esi
-            negl %esi
-          movl -8(%ebp), %edi
-          addl $4, %esp
-          imull %esi, %edi
-        pushl %edi
+              movl -4(%ebp), %edi
+            negl %edi
+          imull %edi, %esi
+        pushl %esi
         pushl $.LC0
         call _printf
         addl $8, %esp
@@ -73,25 +67,22 @@ _main:
         call _printf
         addl $4, %esp
         # Emitting i1 = 10
-          # Emitting i1
-          subl $4, %esp
           # Emitting 10
           movl $10, %esi
+          # Emitting i1
+          subl $4, %esp
         movl %esi, -8(%ebp)
         # Emitting write((+(i0) + -(i1)))
           # Emitting (+(i0) + -(i1))
             # Emitting +(i0)
               # Emitting i0
               movl -4(%ebp), %edi
-          pushl %edi
             # Emitting -(i1)
               # Emitting i1
-              movl -8(%ebp), %edi
-            negl %edi
-          movl -12(%ebp), %esi
-          addl $4, %esp
-          addl %edi, %esi
-        pushl %esi
+              movl -8(%ebp), %esi
+            negl %esi
+          addl %esi, %edi
+        pushl %edi
         pushl $.LC0
         call _printf
         addl $8, %esp
@@ -99,15 +90,12 @@ _main:
           # Emitting (-(i0) + -(i1))
             # Emitting -(i0)
               # Emitting i0
-              movl -4(%ebp), %esi
-            negl %esi
-          pushl %esi
+              movl -4(%ebp), %edi
+            negl %edi
             # Emitting -(i1)
               # Emitting i1
               movl -8(%ebp), %esi
             negl %esi
-          movl -12(%ebp), %edi
-          addl $4, %esp
           addl %esi, %edi
         pushl %edi
         pushl $.LC0
@@ -121,15 +109,12 @@ _main:
                 movl -4(%ebp), %edi
               negl %edi
             negl %edi
-          pushl %edi
             # Emitting -(i1)
               # Emitting i1
-              movl -8(%ebp), %edi
-            negl %edi
-          movl -12(%ebp), %esi
-          addl $4, %esp
-          addl %edi, %esi
-        pushl %esi
+              movl -8(%ebp), %esi
+            negl %esi
+          addl %esi, %edi
+        pushl %edi
         pushl $.LC0
         call _printf
         addl $8, %esp
@@ -138,14 +123,11 @@ _main:
             # Emitting +(+(i0))
               # Emitting +(i0)
                 # Emitting i0
-                movl -4(%ebp), %esi
-          pushl %esi
+                movl -4(%ebp), %edi
             # Emitting -(i1)
               # Emitting i1
               movl -8(%ebp), %esi
             negl %esi
-          movl -12(%ebp), %edi
-          addl $4, %esp
           addl %esi, %edi
         pushl %edi
         pushl $.LC0
@@ -166,21 +148,17 @@ _main:
                           negl %edi
                       negl %edi
                   negl %edi
-              pushl %edi
                 # Emitting -(+(-(+(-(i1)))))
                   # Emitting +(-(+(-(i1))))
                     # Emitting -(+(-(i1)))
                       # Emitting +(-(i1))
                         # Emitting -(i1)
                           # Emitting i1
-                          movl -8(%ebp), %edi
-                        negl %edi
-                    negl %edi
-                negl %edi
-              movl -12(%ebp), %esi
-              addl $4, %esp
-              addl %edi, %esi
-            pushl %esi
+                          movl -8(%ebp), %esi
+                        negl %esi
+                    negl %esi
+                negl %esi
+              addl %esi, %edi
               # Emitting -(+(-(+(-(i0)))))
                 # Emitting +(-(+(-(i0))))
                   # Emitting -(+(-(i0)))
@@ -191,24 +169,19 @@ _main:
                       negl %esi
                   negl %esi
               negl %esi
-            movl -12(%ebp), %edi
-            addl $4, %esp
             addl %esi, %edi
-          pushl %edi
             # Emitting -(+(-(+(-(i1)))))
               # Emitting +(-(+(-(i1))))
                 # Emitting -(+(-(i1)))
                   # Emitting +(-(i1))
                     # Emitting -(i1)
                       # Emitting i1
-                      movl -8(%ebp), %edi
-                    negl %edi
-                negl %edi
-            negl %edi
-          movl -12(%ebp), %esi
-          addl $4, %esp
-          addl %edi, %esi
-        pushl %esi
+                      movl -8(%ebp), %esi
+                    negl %esi
+                negl %esi
+            negl %esi
+          addl %esi, %edi
+        pushl %edi
         pushl $.LC0
         call _printf
         addl $8, %esp
