@@ -63,7 +63,10 @@ public abstract class Ast {
 	}
 
 	public int numberOfChildren() {
-		if (this.rwChildren.size() !=0 ) {			
+		if (this.rwChildren.size() !=0 ) {
+			if (this.rwChildren.size() ==1 ) {
+				return 1 + this.rwChildren.get(0).numberOfChildren();
+			}
 			return 1 + this.rwChildren.get(0).numberOfChildren() + this.rwChildren.get(1).numberOfChildren();
 		}
 		return 1;

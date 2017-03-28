@@ -22,19 +22,8 @@ public class TestSamplePrograms extends AbstractTestAgainstFrozenReference {
 	 * variable like:
 	 * {@code justFile = new File("javali_tests/HW2/Inheritance.javali")}.
 	 */
-//	public static final File justFile = new File("javali_tests/HW1/Multiplication.javali");
 //	public static final File justFile = new File("javali_tests/HW1/HelloWorld.javali");
-//	public static final File justFile = new File("javali_tests/HW1/ReadWrite.javali");
-<<<<<<< HEAD
-	public static final File justFile = new File("javali_tests/HW1/EightVariables.javali");
-//	public static final File justFile = null;
-=======
-//	public static final File justFile = new File("javali_tests/HW1/EightVariables.javali");
-//	public static final File justFile = null;
-//	public static final File justFile = new File("javali_tests/HW1/EightVariables.javali");
-	public static final File justFile = new File("javali_tests/HW1/HW1_team/test6.javali");
->>>>>>> origin/master
-
+	public static final File justFile = null;
 	
 	/**
 	 * Directory in which to search for test files. If null, then the default is
@@ -42,8 +31,7 @@ public class TestSamplePrograms extends AbstractTestAgainstFrozenReference {
 	 * particular directory, use sth. like:
 	 * {@code testDir = new File("javali_tests/HW2/")}.
 	 */
-	public static final File testDir = new File("javali_tests/HW1/HW1_team");
-//	public static final File testDir = new File("javali_tests");
+	public static final File testDir = new File("javali_tests");
 	
 	@Parameters(name="{index}:{0}")
 	public static Collection<Object[]> testFiles() {

@@ -11,52 +11,52 @@ _main:
     movl %esp, %ebp
       # Emitting (...)
         # Emitting i0 = 0
+          # Emitting 0
+          movl $0, %edi
           # Emitting i0
           subl $4, %esp
-          # Emitting 0
-          movl $0, %esi
-        movl %esi, -4(%ebp)
+        movl %edi, -4(%ebp)
         # Emitting i1 = 1
-          # Emitting i1
-          subl $4, %esp
           # Emitting 1
           movl $1, %esi
+          # Emitting i1
+          subl $4, %esp
         movl %esi, -8(%ebp)
         # Emitting i2 = 2
+          # Emitting 2
+          movl $2, %edi
           # Emitting i2
           subl $4, %esp
-          # Emitting 2
-          movl $2, %esi
-        movl %esi, -12(%ebp)
+        movl %edi, -12(%ebp)
         # Emitting i3 = 3
-          # Emitting i3
-          subl $4, %esp
           # Emitting 3
           movl $3, %esi
+          # Emitting i3
+          subl $4, %esp
         movl %esi, -16(%ebp)
         # Emitting i4 = 4
+          # Emitting 4
+          movl $4, %edi
           # Emitting i4
           subl $4, %esp
-          # Emitting 4
-          movl $4, %esi
-        movl %esi, -20(%ebp)
+        movl %edi, -20(%ebp)
         # Emitting i5 = 5
-          # Emitting i5
-          subl $4, %esp
           # Emitting 5
           movl $5, %esi
+          # Emitting i5
+          subl $4, %esp
         movl %esi, -24(%ebp)
         # Emitting i6 = 6
+          # Emitting 6
+          movl $6, %edi
           # Emitting i6
           subl $4, %esp
-          # Emitting 6
-          movl $6, %esi
-        movl %esi, -28(%ebp)
+        movl %edi, -28(%ebp)
         # Emitting i7 = 7
-          # Emitting i7
-          subl $4, %esp
           # Emitting 7
           movl $7, %esi
+          # Emitting i7
+          subl $4, %esp
         movl %esi, -32(%ebp)
     movl %ebp, %esp
     movl $0, %eax
