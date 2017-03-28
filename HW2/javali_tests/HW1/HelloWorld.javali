@@ -1,0 +1,9 @@
+/* Kind of like hello world */
+class Main {
+   void main(int a, boolean b) {
+      int v1;
+      v1 = 5;
+      write(53110);
+      writeln();    
+   }
+}
