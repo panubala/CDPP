@@ -15,28 +15,33 @@ import cd.frontend.parser.JavaliParser.ArrayTypePrimitiveContext;
 import cd.frontend.parser.JavaliParser.AssignmentStmtContext;
 import cd.frontend.parser.JavaliParser.BOOLlitContext;
 import cd.frontend.parser.JavaliParser.CASTexprContext;
-import cd.frontend.parser.JavaliParser.CallContext;
+
 import cd.frontend.parser.JavaliParser.ClassDeclContext;
 import cd.frontend.parser.JavaliParser.DIVexprContext;
 import cd.frontend.parser.JavaliParser.EQexprContext;
 import cd.frontend.parser.JavaliParser.FormalParamListContext;
 import cd.frontend.parser.JavaliParser.GEQexprContext;
 import cd.frontend.parser.JavaliParser.GRTexprContext;
+
 import cd.frontend.parser.JavaliParser.IAHexprContext;
 import cd.frontend.parser.JavaliParser.INTlitContext;
-import cd.frontend.parser.JavaliParser.IdentAccessHeadContext;
-import cd.frontend.parser.JavaliParser.IdentAccessTailContext;
+import cd.frontend.parser.JavaliParser.IdentArrayContext;
+import cd.frontend.parser.JavaliParser.IdentFieldContext;
+import cd.frontend.parser.JavaliParser.IdentIdentContext;
+import cd.frontend.parser.JavaliParser.IdentMethodContext;
+import cd.frontend.parser.JavaliParser.IdentThisContext;
 import cd.frontend.parser.JavaliParser.IfStmtContext;
 import cd.frontend.parser.JavaliParser.LEQexprContext;
 import cd.frontend.parser.JavaliParser.LESexprContext;
 import cd.frontend.parser.JavaliParser.LITexprContext;
-import cd.frontend.parser.JavaliParser.LocalCallContext;
 import cd.frontend.parser.JavaliParser.MODexprContext;
 import cd.frontend.parser.JavaliParser.MULTexprContext;
 import cd.frontend.parser.JavaliParser.MemberListContext;
+import cd.frontend.parser.JavaliParser.MethodAccessContext;
 import cd.frontend.parser.JavaliParser.MethodCallExprContext;
 import cd.frontend.parser.JavaliParser.MethodCallStmtContext;
 import cd.frontend.parser.JavaliParser.MethodDeclContext;
+import cd.frontend.parser.JavaliParser.MethodFieldContext;
 import cd.frontend.parser.JavaliParser.NEGexprContext;
 import cd.frontend.parser.JavaliParser.NOTexprContext;
 import cd.frontend.parser.JavaliParser.NULLlitContext;
@@ -46,7 +51,7 @@ import cd.frontend.parser.JavaliParser.PARexprContext;
 import cd.frontend.parser.JavaliParser.POSexprContext;
 import cd.frontend.parser.JavaliParser.PrimitiveTypeContext;
 import cd.frontend.parser.JavaliParser.ReadExprContext;
-import cd.frontend.parser.JavaliParser.RefCallContext;
+
 import cd.frontend.parser.JavaliParser.ReferenceTypeArrayContext;
 import cd.frontend.parser.JavaliParser.ReferenceTypeContext;
 import cd.frontend.parser.JavaliParser.ReferenceTypeIdentContext;
@@ -54,6 +59,7 @@ import cd.frontend.parser.JavaliParser.ReturnStmtContext;
 import cd.frontend.parser.JavaliParser.SUBexprContext;
 import cd.frontend.parser.JavaliParser.StmtBlockContext;
 import cd.frontend.parser.JavaliParser.StmtContext;
+
 import cd.frontend.parser.JavaliParser.TypeContext;
 import cd.frontend.parser.JavaliParser.UEQexprContext;
 import cd.frontend.parser.JavaliParser.UnitContext;
@@ -114,7 +120,7 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 		return null;
 	}
 
-	// TODO not tested
+	// not tested
 	@Override
 	public List<Ast> visitWhileStmt(WhileStmtContext ctx) {
 		ArrayList<Ast> astList = new ArrayList<Ast>();
@@ -141,19 +147,6 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 	}
 
 	// TODO implement 'this'
-	@Override
-	public List<Ast> visitIdentAccessHead(IdentAccessHeadContext ctx) {
-		System.out.println("==Ident Access Head");
-		return visitChildren(ctx);
-	}
-
-	@Override
-	public List<Ast> visitIdentAccessTail(IdentAccessTailContext ctx) {
-		System.out.println("==Ident Access Tail");
-		ArrayList<Ast> astList = new ArrayList<>();
-		astList.add(new Ast.Var(ctx.getText()));
-		return astList;
-	}
 
 	@Override
 	public List<Ast> visitMethodDecl(MethodDeclContext ctx) {
@@ -197,6 +190,70 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 	}
 
 	@Override
+	public List<Ast> visitIdentThis(IdentThisContext ctx) {
+		// TODO Auto-generated method stub
+		return super.visitIdentThis(ctx);
+	}
+
+	@Override
+	public List<Ast> visitIdentIdent(IdentIdentContext ctx) {
+		ArrayList<Ast> astList = new ArrayList<Ast>();
+		String name = ctx.Ident().toString();
+		
+		astList.add(new Ast.Var(name));
+		
+		return astList;
+	}
+
+	@Override
+	public List<Ast> visitIdentArray(IdentArrayContext ctx) {
+
+		ArrayList<Ast> astList = new ArrayList<Ast>();
+		
+		Ast.Expr array = (Ast.Expr) visit(ctx.IdentAccess()).get(0);
+		Ast.Expr index = (Ast.Expr) visit(ctx.expr()).get(0);
+		
+		astList.add(new Ast.Index(array, index));
+		
+		return astList;
+	}
+
+
+
+	@Override
+	public List<Ast> visitMethodAccess(MethodAccessContext ctx) {
+		
+		ArrayList<Ast> astList = new ArrayList<Ast>();
+		
+		
+		
+		return super.visitMethodAccess(ctx);
+	}
+
+	@Override
+	public List<Ast> visitMethodField(MethodFieldContext ctx) {
+		// TODO Auto-generated method stub
+		return super.visitMethodField(ctx);
+	}
+
+	@Override
+	public List<Ast> visitIdentField(IdentFieldContext ctx) {
+		// TODO Auto-generated method stub
+		return super.visitIdentField(ctx);
+	}
+
+	@Override
+	public List<Ast> visitMethodCallStmt(MethodCallStmtContext ctx) {
+		return visit(ctx.MethodCallExpr()) ;
+	}
+
+	@Override
+	public List<Ast> visitIdentMethod(IdentMethodContext ctx) {
+		// TODO Auto-generated method stub
+		return super.visitIdentMethod(ctx);
+	}
+
+	@Override
 	public List<Ast> visitWriteStmt(WriteStmtContext ctx) {
 		System.out.println("==Write Stmt");
 		ArrayList<Ast> astList = new ArrayList<Ast>();
@@ -217,45 +274,6 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 		return astList;
 	}
 
-	// TODO not tested
-	@Override
-	public List<Ast> visitMethodCallStmt(MethodCallStmtContext ctx) {
-		System.out.println("==Method Call Stmt");
-		return visit(ctx.methodCallExpr());
-	}
-
-	@Override
-	public List<Ast> visitRefCall(RefCallContext ctx) {
-		System.out.println("==refCall");
-		// TODO Auto-generated method stub
-		return super.visitRefCall(ctx);
-	}
-
-	@Override
-	public List<Ast> visitLocalCall(LocalCallContext ctx) {
-		System.out.println("==localCall");
-		// TODO Auto-generated method stub
-		return super.visitLocalCall(ctx);
-	}
-
-	@Override
-	public List<Ast> visitCall(CallContext ctx) {
-		System.out.println("==call");
-		List<Ast> astList = new ArrayList<>();
-		
-		Expr rcvr = (Ast.Expr) visit(ctx.Ident());
-		String methodName = ctx.Ident().getText();		
-		ArrayList<Expr> arguments = new ArrayList<Expr>();
-		
-		for(Ast ast : visit(ctx.actualParamList())){
-			arguments.add((Ast.Expr)ast);
-		}
-		if(rcvr == null)
-		
-		astList.add(new Ast.MethodCallExpr(rcvr, methodName, arguments));
-		return astList;
-		
-	}
 
 	@Override
 	public List<Ast> visitStmtBlock(StmtBlockContext ctx) {

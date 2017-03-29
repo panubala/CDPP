@@ -176,41 +176,7 @@ public interface JavaliListener extends ParseTreeListener {
 	 * labeled alternative in {@link JavaliParser#methodCallExpr}.
 	 * @param ctx the parse tree
 	 */
-	void enterCall(JavaliParser.CallContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code call}
-	 * labeled alternative in {@link JavaliParser#methodCallExpr}.
-	 * @param ctx the parse tree
-	 */
-	void exitCall(JavaliParser.CallContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code localCall}
-	 * labeled alternative in {@link JavaliParser#methodCallExpr}.
-	 * @param ctx the parse tree
-	 */
-	void enterLocalCall(JavaliParser.LocalCallContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code localCall}
-	 * labeled alternative in {@link JavaliParser#methodCallExpr}.
-	 * @param ctx the parse tree
-	 */
-	void exitLocalCall(JavaliParser.LocalCallContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code refCall}
-	 * labeled alternative in {@link JavaliParser#methodCallExpr}.
-	 * @param ctx the parse tree
-	 */
-	void enterRefCall(JavaliParser.RefCallContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code refCall}
-	 * labeled alternative in {@link JavaliParser#methodCallExpr}.
-	 * @param ctx the parse tree
-	 */
-	void exitRefCall(JavaliParser.RefCallContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link JavaliParser#actualParamList}.
-	 * @param ctx the parse tree
-	 */
+
 	void enterActualParamList(JavaliParser.ActualParamListContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link JavaliParser#actualParamList}.
@@ -221,27 +187,8 @@ public interface JavaliListener extends ParseTreeListener {
 	 * Enter a parse tree produced by {@link JavaliParser#identAccessHead}.
 	 * @param ctx the parse tree
 	 */
-	void enterIdentAccessHead(JavaliParser.IdentAccessHeadContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link JavaliParser#identAccessHead}.
-	 * @param ctx the parse tree
-	 */
-	void exitIdentAccessHead(JavaliParser.IdentAccessHeadContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link JavaliParser#identAccessTail}.
-	 * @param ctx the parse tree
-	 */
-	void enterIdentAccessTail(JavaliParser.IdentAccessTailContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link JavaliParser#identAccessTail}.
-	 * @param ctx the parse tree
-	 */
-	void exitIdentAccessTail(JavaliParser.IdentAccessTailContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code CASTexpr}
-	 * labeled alternative in {@link JavaliParser#expr}.
-	 * @param ctx the parse tree
-	 */
+
+	
 	void enterCASTexpr(JavaliParser.CASTexprContext ctx);
 	/**
 	 * Exit a parse tree produced by the {@code CASTexpr}

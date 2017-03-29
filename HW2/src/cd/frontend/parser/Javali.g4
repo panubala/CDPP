@@ -100,12 +100,12 @@ stmtBlock
 
 methodCallStmt
 :
-	methodCallExpr ';'
+	MethodCallExpr ';'
 ;
 
 assignmentStmt
 :
-	identAccessHead '='
+	IdentAccess '='
 	(
 		expr
 		| newExpr
@@ -159,18 +159,13 @@ readExpr
 	'read' '(' ')'
 ;
 
-//MethodCallExpr //Original
-//:
-//	Ident '(' (ActualParamList)? ')'
-//	| IdentAccess '.' Ident '(' (ActualParamList)? ')'
-//;
-
 methodCallExpr
 :
-	Ident '('(actualParamList)? ')' #call
-	| 'this' '.' identAccessTail #localCall
-	| Ident '('(actualParamList)? ')' '.' identAccessTail #refCall
+	Ident '(' ( actualParamList )? ')' #methodAccess
+	| IdentAccess '.' Ident '(' ( actualParamList )? ')' #methodField
 ;
+
+
 
 actualParamList
 :
@@ -180,35 +175,22 @@ actualParamList
 	)*
 ;
 
-//IdentAccess //Original //TODO Überlegungen richtig?
-//:
-//	Ident
-//	| 'this'
-//	| IdentAccess'.'Ident		//'this' ist immer am Anfang
-//	| IdentAccess '[' expr ']' //[] sind immer am Schluss
-//	| MethodCallExpr			//MethodC ist immer am Anfang
-//; 
-
-identAccessHead
+identAccess 
 :
-	identAccessTail
-	| 'this'
-	| 'this' '.' identAccessTail
-;
+	Ident #IdentIdent
+	| 'this' #IdentThis
+	| IdentAccess'.'Ident	#IdentField	
+	| IdentAccess '[' expr ']' #IdentArray
+	| methodCallExpr			#IdentMethod
+; 
 
-identAccessTail
-:
-	| Ident
-	| Ident '.' identAccessTail
-	| Ident '[' expr ']'
-	| methodCallExpr
-	| methodCallExpr '.' identAccessTail
-;
+
+
 
 expr
 :
 	literal  #LITexpr
-	| identAccessHead  #IAHexpr
+	| IdentAccess  #IAHexpr
 	| '(' expr ')'  #PARexpr
 	| '+' expr # POSexpr
 	| '-' expr # NEGexpr

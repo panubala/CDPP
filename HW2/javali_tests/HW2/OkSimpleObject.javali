@@ -3,7 +3,7 @@ class Main {
    int field;
   
    void method() { 
-      write(this.field);
+  //    write(this.field);
       writeln();
    }
   
@@ -13,7 +13,7 @@ class Main {
 //   }
 //  
    void main() {
-      this.field = 3;
+ //     this.field = 3;
 //      method(field);
 //      method(3);
 //      method(this.field);
