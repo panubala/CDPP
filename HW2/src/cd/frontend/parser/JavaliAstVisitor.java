@@ -37,11 +37,11 @@ import cd.frontend.parser.JavaliParser.LITexprContext;
 import cd.frontend.parser.JavaliParser.MODexprContext;
 import cd.frontend.parser.JavaliParser.MULTexprContext;
 import cd.frontend.parser.JavaliParser.MemberListContext;
-import cd.frontend.parser.JavaliParser.MethodAccessContext;
+
 import cd.frontend.parser.JavaliParser.MethodCallExprContext;
 import cd.frontend.parser.JavaliParser.MethodCallStmtContext;
 import cd.frontend.parser.JavaliParser.MethodDeclContext;
-import cd.frontend.parser.JavaliParser.MethodFieldContext;
+
 import cd.frontend.parser.JavaliParser.NEGexprContext;
 import cd.frontend.parser.JavaliParser.NOTexprContext;
 import cd.frontend.parser.JavaliParser.NULLlitContext;
@@ -220,20 +220,28 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 
 
 
-	@Override
-	public List<Ast> visitMethodAccess(MethodAccessContext ctx) {
-		
-		ArrayList<Ast> astList = new ArrayList<Ast>();
-		
-		
-		
-		return super.visitMethodAccess(ctx);
-	}
+
+
 
 	@Override
-	public List<Ast> visitMethodField(MethodFieldContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitMethodField(ctx);
+	public List<Ast> visitMethodCallExpr(MethodCallExprContext ctx) {
+		ArrayList<Ast> astList = new ArrayList<Ast>();
+		ArrayList<Ast.Expr> args = new ArrayList<Ast.Expr>();
+		
+		Ast.Expr rcvr = new Ast.ThisRef();
+		
+		if (ctx.actualParamList() != null){
+			for(Ast ast: visit(ctx.actualParamList())){
+				 Ast.Expr expr = (Ast.Expr) ast;
+	             args.add(expr);
+			}
+		}
+		
+		String methodName = ctx.Ident().toString();
+		
+		astList.add(new Ast.MethodCallExpr(rcvr, methodName, args));
+		
+		return astList;
 	}
 
 	@Override

@@ -161,8 +161,8 @@ readExpr
 
 methodCallExpr
 :
-	Ident '(' ( actualParamList )? ')' #methodAccess
-	| IdentAccess '.' Ident '(' ( actualParamList )? ')' #methodField
+	Ident '(' ( actualParamList )? ')' 
+	| IdentAccess '.' Ident '(' ( actualParamList )? ')'
 ;
 
 
