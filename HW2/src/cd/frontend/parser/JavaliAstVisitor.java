@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.stringtemplate.v4.debug.AddAttributeEvent;
 
 import cd.frontend.parser.JavaliParser.ADDexprContext;
 import cd.frontend.parser.JavaliParser.ANDexprContext;
@@ -29,6 +30,7 @@ import cd.frontend.parser.JavaliParser.IdentArrayContext;
 import cd.frontend.parser.JavaliParser.IdentFieldContext;
 import cd.frontend.parser.JavaliParser.IdentIdentContext;
 import cd.frontend.parser.JavaliParser.IdentMethodContext;
+import cd.frontend.parser.JavaliParser.IdentMethodFieldContext;
 import cd.frontend.parser.JavaliParser.IdentThisContext;
 import cd.frontend.parser.JavaliParser.IfStmtContext;
 import cd.frontend.parser.JavaliParser.LEQexprContext;
@@ -38,7 +40,7 @@ import cd.frontend.parser.JavaliParser.MODexprContext;
 import cd.frontend.parser.JavaliParser.MULTexprContext;
 import cd.frontend.parser.JavaliParser.MemberListContext;
 
-import cd.frontend.parser.JavaliParser.MethodCallExprContext;
+
 import cd.frontend.parser.JavaliParser.MethodCallStmtContext;
 import cd.frontend.parser.JavaliParser.MethodDeclContext;
 
@@ -146,7 +148,6 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 		return astList;
 	}
 
-	// TODO implement 'this'
 
 	@Override
 	public List<Ast> visitMethodDecl(MethodDeclContext ctx) {
@@ -191,8 +192,9 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 
 	@Override
 	public List<Ast> visitIdentThis(IdentThisContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitIdentThis(ctx);
+		ArrayList<Ast> astList = new ArrayList<Ast>();
+		astList.add(new Ast.ThisRef());
+		return astList;
 	}
 
 	@Override
@@ -210,7 +212,7 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 
 		ArrayList<Ast> astList = new ArrayList<Ast>();
 		
-		Ast.Expr array = (Ast.Expr) visit(ctx.IdentAccess()).get(0);
+		Ast.Expr array = (Ast.Expr) visit(ctx.identAccess()).get(0);
 		Ast.Expr index = (Ast.Expr) visit(ctx.expr()).get(0);
 		
 		astList.add(new Ast.Index(array, index));
@@ -220,11 +222,29 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 
 
 
-
-
+	@Override
+	public List<Ast> visitIdentMethod(IdentMethodContext ctx) {
+		ArrayList<Ast> astList = new ArrayList<Ast>();
+		ArrayList<Ast.Expr> args = new ArrayList<Ast.Expr>();
+		
+		Ast.Expr rcvr = new Ast.ThisRef();
+		
+		if (ctx.actualParamList() != null){
+			for(Ast ast: visit(ctx.actualParamList())){
+				 Ast.Expr expr = (Ast.Expr) ast;
+	             args.add(expr);
+			}
+		}
+		
+		String methodName = ctx.Ident().toString();
+		
+		astList.add(new Ast.MethodCallExpr(rcvr, methodName, args));
+		
+		return astList;
+	}
 
 	@Override
-	public List<Ast> visitMethodCallExpr(MethodCallExprContext ctx) {
+	public List<Ast> visitIdentMethodField(IdentMethodFieldContext ctx) {
 		ArrayList<Ast> astList = new ArrayList<Ast>();
 		ArrayList<Ast.Expr> args = new ArrayList<Ast.Expr>();
 		
@@ -246,20 +266,25 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 
 	@Override
 	public List<Ast> visitIdentField(IdentFieldContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitIdentField(ctx);
+		ArrayList<Ast> astList = new ArrayList<Ast>();
+		
+		String fieldName = ctx.Ident().toString();
+		
+		Ast.Expr arg = (Ast.Expr) visit(ctx.identAccess()).get(0);
+		
+		astList.add(new Ast.Field(arg, fieldName));
+		
+		return astList;
 	}
 
 	@Override
 	public List<Ast> visitMethodCallStmt(MethodCallStmtContext ctx) {
-		return visit(ctx.MethodCallExpr()) ;
+		ArrayList<Ast> astList = new ArrayList<Ast>();
+		//TODO
+		return astList ;
 	}
 
-	@Override
-	public List<Ast> visitIdentMethod(IdentMethodContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitIdentMethod(ctx);
-	}
+	
 
 	@Override
 	public List<Ast> visitWriteStmt(WriteStmtContext ctx) {
@@ -294,7 +319,7 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 	}
 
 
-	// TODO not tested
+	// not tested
 	//What happen if we have several else-Stmt?
 	//What happen if there is no stmt in thenBlock?
 	@Override
@@ -364,9 +389,6 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 	@Override
 	public List<Ast> visitStmt(StmtContext ctx) {
 		System.out.println("==Stmt");
-		
-		
-		
 		
 		return visitChildren(ctx);
 	}

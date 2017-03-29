@@ -100,12 +100,13 @@ stmtBlock
 
 methodCallStmt
 :
-	MethodCallExpr ';'
+	Ident '(' ( actualParamList )? ')' 
+	| identAccess '.' Ident '(' ( actualParamList )? ')'
 ;
 
 assignmentStmt
 :
-	IdentAccess '='
+	identAccess '='
 	(
 		expr
 		| newExpr
@@ -159,11 +160,11 @@ readExpr
 	'read' '(' ')'
 ;
 
-methodCallExpr
-:
-	Ident '(' ( actualParamList )? ')' 
-	| IdentAccess '.' Ident '(' ( actualParamList )? ')'
-;
+//methodCallExpr
+//:
+//	Ident '(' ( actualParamList )? ')' 
+//	| identAccess '.' Ident '(' ( actualParamList )? ')'
+//;
 
 
 
@@ -179,9 +180,10 @@ identAccess
 :
 	Ident #IdentIdent
 	| 'this' #IdentThis
-	| IdentAccess'.'Ident	#IdentField	
-	| IdentAccess '[' expr ']' #IdentArray
-	| methodCallExpr			#IdentMethod
+	| identAccess'.'Ident	#IdentField	
+	| identAccess '[' expr ']' #IdentArray
+	| Ident '(' ( actualParamList )? ')' #IdentMethod
+	| identAccess '.' Ident '(' ( actualParamList )? ')' #IdentMethodField
 ; 
 
 
@@ -190,7 +192,7 @@ identAccess
 expr
 :
 	literal  #LITexpr
-	| IdentAccess  #IAHexpr
+	| identAccess  #IAHexpr
 	| '(' expr ')'  #PARexpr
 	| '+' expr # POSexpr
 	| '-' expr # NEGexpr
