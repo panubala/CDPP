@@ -167,15 +167,9 @@ readExpr
 
 methodCallExpr
 :
-	Ident '('
-	(
-		actualParamList
-	)? ')'
-	| 'this' '.' identAccessTail
-	| Ident '('
-	(
-		actualParamList
-	)? ')' '.' identAccessTail
+	Ident '('(actualParamList)? ')' #call
+	| 'this' '.' identAccessTail #localCall
+	| Ident '('(actualParamList)? ')' '.' identAccessTail #refCall
 ;
 
 actualParamList

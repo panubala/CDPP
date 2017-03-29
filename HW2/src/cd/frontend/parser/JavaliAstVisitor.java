@@ -1,6 +1,7 @@
 package cd.frontend.parser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -12,6 +13,7 @@ import cd.frontend.parser.JavaliParser.ArrayTypeContext;
 import cd.frontend.parser.JavaliParser.AssignmentStmtContext;
 import cd.frontend.parser.JavaliParser.BOOLlitContext;
 import cd.frontend.parser.JavaliParser.CASTexprContext;
+import cd.frontend.parser.JavaliParser.CallContext;
 import cd.frontend.parser.JavaliParser.ClassDeclContext;
 import cd.frontend.parser.JavaliParser.DIVexprContext;
 import cd.frontend.parser.JavaliParser.EQexprContext;
@@ -26,6 +28,7 @@ import cd.frontend.parser.JavaliParser.IfStmtContext;
 import cd.frontend.parser.JavaliParser.LEQexprContext;
 import cd.frontend.parser.JavaliParser.LESexprContext;
 import cd.frontend.parser.JavaliParser.LITexprContext;
+import cd.frontend.parser.JavaliParser.LocalCallContext;
 import cd.frontend.parser.JavaliParser.MODexprContext;
 import cd.frontend.parser.JavaliParser.MULTexprContext;
 import cd.frontend.parser.JavaliParser.MemberListContext;
@@ -41,6 +44,7 @@ import cd.frontend.parser.JavaliParser.PARexprContext;
 import cd.frontend.parser.JavaliParser.POSexprContext;
 import cd.frontend.parser.JavaliParser.PrimitiveTypeContext;
 import cd.frontend.parser.JavaliParser.ReadExprContext;
+import cd.frontend.parser.JavaliParser.RefCallContext;
 import cd.frontend.parser.JavaliParser.ReferenceTypeContext;
 import cd.frontend.parser.JavaliParser.ReturnStmtContext;
 import cd.frontend.parser.JavaliParser.SUBexprContext;
@@ -74,7 +78,11 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 		System.out.println("==ClassDecl");
 		
 		String name = ctx.getChild(1).getText();
+		
 		String superClass = "Object";
+		if(ctx.getChild(2).getText().equals("extends")) //not so beautiful
+			superClass = ctx.getChild(3).getText();
+		
 		List<Ast> members = visit(ctx.memberList());
 
 		classDecls.add(new Ast.ClassDecl(name, superClass, members));
@@ -173,6 +181,7 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 		// Statements
 		ArrayList<Ast> statements = new ArrayList<>();
 		for (StmtContext currentStmt : ctx.stmt()) {
+			System.out.println(currentStmt.getText());
 			statements.addAll(visit(currentStmt));
 		}
 		Seq body = new Ast.Seq(statements);
@@ -205,8 +214,42 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 	// TODO implement
 	@Override
 	public List<Ast> visitMethodCallStmt(MethodCallStmtContext ctx) {
-		System.out.println("==Method Call");
-		return visitChildren(ctx);
+		System.out.println("==Method Call Stmt");
+		
+		return visit(ctx.methodCallExpr());
+	}
+
+	@Override
+	public List<Ast> visitRefCall(RefCallContext ctx) {
+		System.out.println("==refCall");
+		// TODO Auto-generated method stub
+		return super.visitRefCall(ctx);
+	}
+
+	@Override
+	public List<Ast> visitLocalCall(LocalCallContext ctx) {
+		System.out.println("==localCall");
+		// TODO Auto-generated method stub
+		return super.visitLocalCall(ctx);
+	}
+
+	@Override
+	public List<Ast> visitCall(CallContext ctx) {
+		System.out.println("==call");
+		List<Ast> astList = new ArrayList<>();
+		
+		Expr rcvr = (Ast.Expr) visit(ctx.Ident());
+		String methodName = ctx.Ident().getText();		
+		ArrayList<Expr> arguments = new ArrayList<Expr>();
+		
+		for(Ast ast : visit(ctx.actualParamList())){
+			arguments.add((Ast.Expr)ast);
+		}
+		if(rcvr == null)
+		
+		astList.add(new Ast.MethodCallExpr(rcvr, methodName, arguments));
+		return astList;
+		
 	}
 
 	@Override
@@ -219,22 +262,18 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 		return astList;
 	}
 
-	// TODO implement
-	@Override
-	public List<Ast> visitMethodCallExpr(MethodCallExprContext ctx) {
-		System.out.println("==Method Call");
-
-		// ctx.
-
-		// new Ast.MethodCallExpr(Expr rcvr, String methodName, List<Expr>
-		// arguments)
-		return visitChildren(ctx);
-	}
 
 	// TODO implement
+	//What happen if we have several else-blocks?
 	@Override
 	public List<Ast> visitIfStmt(IfStmtContext ctx) {
 		System.out.println("==If stmt");
+		
+		ArrayList<Ast> astList = new ArrayList<Ast>();
+
+		
+//		astList.add(new Ast.IfElse((Ast.Expr) visit(ctx.expr()), visit(ctx.stmtBlock()).get(0), visit(ctx.stmtBlock()).get(1)));
+		
 		return visitChildren(ctx);
 	}
 
@@ -285,6 +324,7 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 	// TODO implement
 	@Override
 	public List<Ast> visitLITexpr(LITexprContext ctx) {
+		System.out.println("==LITexpr");
 		return super.visitLITexpr(ctx);
 	}
 
@@ -292,14 +332,26 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 	// identAccesHead
 	@Override
 	public List<Ast> visitIAHexpr(IAHexprContext ctx) {
+		System.out.println("==IAexpr");
+		
+		//ctx.identAccessHead();	
 		return super.visitIAHexpr(ctx);
 	}
 
-	// TODO implement
+	// TODO not tested
 	// cast
 	@Override
 	public List<Ast> visitCASTexpr(CASTexprContext ctx) {
-		return super.visitCASTexpr(ctx);
+		System.out.println("==CASTexpr");
+		ArrayList<Ast> astList = new ArrayList<>();
+		
+		
+		Ast.Expr expr = (Ast.Expr) visit(ctx.expr()).get(0);
+		String typeName = ctx.referenceType().getText();
+		
+		astList.add(new Ast.Cast(expr, typeName));
+		
+		return astList;
 	}
 
 	// parantheses

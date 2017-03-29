@@ -7,16 +7,16 @@ class Main {
       writeln();
    }
   
-   void method(int withArg) {
-      write(withArg);
-      writeln();
-   }
-  
+//   void method(int withArg) {
+//      write(withArg);
+//      writeln();
+//   }
+//  
    void main() {
       this.field = 3;
-      method(field);
-      method(3);
-      method(this.field);
+//      method(field);
+//      method(3);
+//      method(this.field);
       method();
    }
 }

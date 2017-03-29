@@ -172,15 +172,41 @@ public interface JavaliListener extends ParseTreeListener {
 	 */
 	void exitReadExpr(JavaliParser.ReadExprContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link JavaliParser#methodCallExpr}.
+	 * Enter a parse tree produced by the {@code call}
+	 * labeled alternative in {@link JavaliParser#methodCallExpr}.
 	 * @param ctx the parse tree
 	 */
-	void enterMethodCallExpr(JavaliParser.MethodCallExprContext ctx);
+	void enterCall(JavaliParser.CallContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link JavaliParser#methodCallExpr}.
+	 * Exit a parse tree produced by the {@code call}
+	 * labeled alternative in {@link JavaliParser#methodCallExpr}.
 	 * @param ctx the parse tree
 	 */
-	void exitMethodCallExpr(JavaliParser.MethodCallExprContext ctx);
+	void exitCall(JavaliParser.CallContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code localCall}
+	 * labeled alternative in {@link JavaliParser#methodCallExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterLocalCall(JavaliParser.LocalCallContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code localCall}
+	 * labeled alternative in {@link JavaliParser#methodCallExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitLocalCall(JavaliParser.LocalCallContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code refCall}
+	 * labeled alternative in {@link JavaliParser#methodCallExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterRefCall(JavaliParser.RefCallContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code refCall}
+	 * labeled alternative in {@link JavaliParser#methodCallExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitRefCall(JavaliParser.RefCallContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link JavaliParser#actualParamList}.
 	 * @param ctx the parse tree
