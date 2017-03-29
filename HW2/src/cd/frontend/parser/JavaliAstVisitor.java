@@ -47,7 +47,9 @@ import cd.frontend.parser.JavaliParser.POSexprContext;
 import cd.frontend.parser.JavaliParser.PrimitiveTypeContext;
 import cd.frontend.parser.JavaliParser.ReadExprContext;
 import cd.frontend.parser.JavaliParser.RefCallContext;
+import cd.frontend.parser.JavaliParser.ReferenceTypeArrayContext;
 import cd.frontend.parser.JavaliParser.ReferenceTypeContext;
+import cd.frontend.parser.JavaliParser.ReferenceTypeIdentContext;
 import cd.frontend.parser.JavaliParser.ReturnStmtContext;
 import cd.frontend.parser.JavaliParser.SUBexprContext;
 import cd.frontend.parser.JavaliParser.StmtBlockContext;
@@ -547,19 +549,7 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
 
-	// Types
 	
-	
-	// ReferenceType
-	// TODO implement
-	@Override
-	public List<Ast> visitReferenceType(ReferenceTypeContext ctx) {
-		System.out.println("==RefType");
-		
-		
-		
-		return super.visitReferenceType(ctx);
-	}
 
 	// Type
 	// TODO implement
@@ -569,13 +559,29 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 		return super.visitType(ctx);
 	}
 
+	@Override
+	public List<Ast> visitReferenceTypeArray(ReferenceTypeArrayContext ctx) {
+		return visit(ctx.arrayType());
+	}
+
+	@Override
+	public List<Ast> visitReferenceTypeIdent(ReferenceTypeIdentContext ctx) {
+		ArrayList<Ast> astList = new ArrayList<>();
+		astList.add(new VarDecl(null, null));
+		return astList;
+	}
+
 	// PrimitiveType
 	// TODO implement
 	@Override
 	public List<Ast> visitPrimitiveType(PrimitiveTypeContext ctx) {
 		
 		ArrayList<Ast> astList = new ArrayList<>();
-		astList.add(new Ast.VarDecl(null, null));
+		
+		String type = ctx.getText();
+		
+		astList.add(new VarDecl(type, null));
+		
 		return astList;
 	}
 
@@ -586,13 +592,15 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 		Ast.VarDecl varDecl = (Ast.VarDecl) visit(ctx.primitiveType()).get(0);
 		astList.add(varDecl);
 		
+		
 		return astList;
 	}
 
 	@Override
 	public List<Ast> visitArrayTypeIdent(ArrayTypeIdentContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitArrayTypeIdent(ctx);
+		ArrayList<Ast> astList = new ArrayList<>();
+		astList.add(new Ast.VarDecl(null, null));
+		return astList;
 	}
 
 	// Literals ////////////////////////

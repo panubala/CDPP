@@ -332,8 +332,8 @@ primitiveType
 
 referenceType
 :
-	Ident
-	| arrayType
+	Ident #referenceTypeIdent
+	| arrayType #referenceTypeArray
 ;
 
 arrayType
