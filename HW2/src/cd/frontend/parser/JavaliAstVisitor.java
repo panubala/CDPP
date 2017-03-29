@@ -265,7 +265,7 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 
 	// TODO not tested
 	//What happen if we have several else-Stmt?
-	//It does not work when no else-Stmt
+	//What happen if there is no stmt in thenBlock?
 	@Override
 	public List<Ast> visitIfStmt(IfStmtContext ctx) {
 		System.out.println("==If stmt");
@@ -276,8 +276,15 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 		
 		//Does this work? Something strange
 		Ast.Seq  thenBlock = new Ast.Seq(visit(ctx.stmtBlock(0)));
-		Ast elseBlock = new Ast.Seq(visit(ctx.stmtBlock(1)));
-
+		Ast elseBlock;
+		
+		if (ctx.stmtBlock().size() == 1){
+			elseBlock = new Ast.Nop();
+		}else{
+			elseBlock = new Ast.Seq(visit(ctx.stmtBlock(1)));
+		}
+			
+		
 		astList.add(new Ast.IfElse(conditionBlock, thenBlock, elseBlock));
 		return astList;
 	}
