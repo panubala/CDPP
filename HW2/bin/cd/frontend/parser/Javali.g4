@@ -82,12 +82,12 @@ formalParamList
 
 stmt
 :
-	assignmentStmt
-	| methodCallStmt
-	| ifStmt
-	| whileStmt
-	| returnStmt
-	| writeStmt
+	assignmentStmt #StmtAssign
+	| methodCallStmt #StmtMethod
+	| ifStmt #StmtIf
+	| whileStmt #StmtIf
+	| returnStmt #StmtReturn
+	| writeStmt #StmtWrite
 ;
 
 stmtBlock

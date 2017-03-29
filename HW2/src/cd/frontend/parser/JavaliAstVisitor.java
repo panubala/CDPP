@@ -60,9 +60,13 @@ import cd.frontend.parser.JavaliParser.ReferenceTypeContext;
 import cd.frontend.parser.JavaliParser.ReferenceTypeIdentContext;
 import cd.frontend.parser.JavaliParser.ReturnStmtContext;
 import cd.frontend.parser.JavaliParser.SUBexprContext;
+import cd.frontend.parser.JavaliParser.StmtAssignContext;
 import cd.frontend.parser.JavaliParser.StmtBlockContext;
 import cd.frontend.parser.JavaliParser.StmtContext;
-
+import cd.frontend.parser.JavaliParser.StmtIfContext;
+import cd.frontend.parser.JavaliParser.StmtMethodContext;
+import cd.frontend.parser.JavaliParser.StmtReturnContext;
+import cd.frontend.parser.JavaliParser.StmtWriteContext;
 import cd.frontend.parser.JavaliParser.TypeContext;
 import cd.frontend.parser.JavaliParser.UEQexprContext;
 import cd.frontend.parser.JavaliParser.UnitContext;
@@ -399,16 +403,35 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 		return astList;
 	}
 
-	// TODO implement
-	@Override
-	public List<Ast> visitStmt(StmtContext ctx) {
-		System.out.println("==Stmt");
-		
-		return visitChildren(ctx);
-	}
+
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	// Expressions
+
+	@Override
+	public List<Ast> visitStmtReturn(StmtReturnContext ctx) {
+		return visit(ctx.returnStmt());
+	}
+
+	@Override
+	public List<Ast> visitStmtAssign(StmtAssignContext ctx) {
+		return visit(ctx.assignmentStmt());
+	}
+
+	@Override
+	public List<Ast> visitStmtIf(StmtIfContext ctx) {
+		return visit(ctx.ifStmt());
+	}
+
+	@Override
+	public List<Ast> visitStmtMethod(StmtMethodContext ctx) {
+		return visit(ctx.methodCallStmt());
+	}
+
+	@Override
+	public List<Ast> visitStmtWrite(StmtWriteContext ctx) {
+		return visit(ctx.writeStmt());
+	}
 
 	@Override
 	public List<Ast> visitLITexpr(LITexprContext ctx) {
