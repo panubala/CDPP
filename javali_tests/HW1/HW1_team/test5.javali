@@ -1,0 +1,16 @@
+//Testing Unary Operation in combination with write() and values
+
+class Main {
+	void main() {
+		int i0, i1;
+		
+		i0=+-+-2+-+-2;
+		i1=-+-+2-+-+2;
+		
+		write(-+5-+5-+5);
+		write(+-5+-5+-5);
+		
+		write(-1*+-1/+-1*--1/--1);
+	}
+}
+		
