@@ -1,0 +1,46 @@
+Debug information for file: javali_tests/HW2/OkSimpleObject.javali
+AST Resulting From Parsing Stage:
+ClassDecl (name: Main, superClass: Object)
+| MethodDecl (argumentNames: [], argumentTypes: [], name: method, returnType: void)
+| | Seq ()
+| | Seq ()
+| MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)
+| | Seq ()
+| | Seq ()
+| | | Assign ()
+| | | | Field (fieldName: field)
+| | | | | ThisRef ()
+| | | | IntConst (value: 3)
+
+Phase parser failed because we expected to see:
+ClassDecl (name: Main, superClass: Object)
+| VarDecl (name: field, type: int)
+| MethodDecl (argumentNames: [], argumentTypes: [], name: method, returnType: void)
+| | Seq ()
+| | Seq ()
+| MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)
+| | Seq ()
+| | Seq ()
+| | | Assign ()
+| | | | Field (fieldName: field)
+| | | | | ThisRef ()
+| | | | IntConst (value: 3)
+
+But we actually saw:
+ClassDecl (name: Main, superClass: Object)
+| MethodDecl (argumentNames: [], argumentTypes: [], name: method, returnType: void)
+| | Seq ()
+| | Seq ()
+| MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)
+| | Seq ()
+| | Seq ()
+| | | Assign ()
+| | | | Field (fieldName: field)
+| | | | | ThisRef ()
+| | | | IntConst (value: 3)
+
+The difference is:
+At line   2 /   2:
+< | VarDecl (name: field, type: int)
+Line  13 /  12:
+
