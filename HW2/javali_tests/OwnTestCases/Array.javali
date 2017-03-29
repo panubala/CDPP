@@ -1,0 +1,14 @@
+class Main {
+
+  
+   void main() {
+   
+   		int i;
+   		int array[] = new int[5];
+   		
+   		array[i] = 8; 
+   
+	
+	}
+
+}

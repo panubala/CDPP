@@ -160,6 +160,8 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 
 		String returnType = ctx.getChild(0).getText();
 		String name = ctx.getChild(1).getText();
+		
+		
 
 		// Arguments
 		ArrayList<Pair<String>> formalParams = new ArrayList<Pair<String>>();
@@ -185,10 +187,14 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 		// Statements
 		ArrayList<Ast> statements = new ArrayList<>();
 		for (StmtContext currentStmt : ctx.stmt()) {
-			System.out.println(currentStmt.getText());
+			System.out.println("Current Stmt: " + currentStmt.getText());
 			statements.addAll(visit(currentStmt));
 		}
 		Seq body = new Ast.Seq(statements);
+		
+		
+		
+		//new Ast.MethodDecl(returnType, name, formalParams, decls, body)
 
 		astList.add(new Ast.MethodDecl(returnType, name, formalParams, decls, body));
 		return astList;
