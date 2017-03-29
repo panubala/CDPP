@@ -1,3 +1,5 @@
+//Testing write() in combination of changing variable values 
+
 class Main {
 	void main() {
 		int i0,  i1,  i2;

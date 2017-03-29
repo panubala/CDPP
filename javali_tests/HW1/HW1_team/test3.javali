@@ -1,3 +1,5 @@
+//Testing Division & Multiplication in Combination with write() and no variables
+
 class Main {
 	void main() {
 		write(1+2*3);		

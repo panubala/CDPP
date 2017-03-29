@@ -1,4 +1,6 @@
-class Main {
+//Testing Division in Combination with write() and Variables
+
+class Main {	
 	void main() {
 		int i1, i2, i3, i4;
 		i1=1;
