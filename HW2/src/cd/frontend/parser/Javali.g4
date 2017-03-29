@@ -304,8 +304,8 @@ literal
 
 type
 :
-	primitiveType
-	| referenceType
+	primitiveType #primType
+	| referenceType #refType
 ;
 
 primitiveType

@@ -51,9 +51,10 @@ import cd.frontend.parser.JavaliParser.NewExprContext;
 import cd.frontend.parser.JavaliParser.ORexprContext;
 import cd.frontend.parser.JavaliParser.PARexprContext;
 import cd.frontend.parser.JavaliParser.POSexprContext;
+import cd.frontend.parser.JavaliParser.PrimTypeContext;
 import cd.frontend.parser.JavaliParser.PrimitiveTypeContext;
 import cd.frontend.parser.JavaliParser.ReadExprContext;
-
+import cd.frontend.parser.JavaliParser.RefTypeContext;
 import cd.frontend.parser.JavaliParser.ReferenceTypeArrayContext;
 import cd.frontend.parser.JavaliParser.ReferenceTypeContext;
 import cd.frontend.parser.JavaliParser.ReferenceTypeIdentContext;
@@ -117,7 +118,6 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 	@Override
 	public List<Ast> visitNewExpr(NewExprContext ctx) {
 		System.out.println("==New Expr");
-		
 		
 		return null;
 	}
@@ -280,8 +280,22 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 	@Override
 	public List<Ast> visitMethodCallStmt(MethodCallStmtContext ctx) {
 		ArrayList<Ast> astList = new ArrayList<Ast>();
-		//TODO
-		return astList ;
+		ArrayList<Ast.Expr> args = new ArrayList<Ast.Expr>();
+		
+		Ast.Expr rcvr = new Ast.ThisRef();
+		
+		if (ctx.actualParamList() != null){
+			for(Ast ast: visit(ctx.actualParamList())){
+				 Ast.Expr expr = (Ast.Expr) ast;
+	             args.add(expr);
+			}
+		}
+		
+		String methodName = ctx.Ident().toString();
+		
+		astList.add(new Ast.MethodCallExpr(rcvr, methodName, args));
+		
+		return astList;
 	}
 
 	
@@ -379,7 +393,7 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 		ArrayList<Ast> astList = new ArrayList<>();
 		
 		for (int i = 0; i < ctx.expr().size(); i++) {
-			astList.add(visit(ctx.expr(0)).get(i));
+			astList.add(visit(ctx.expr(i)).get(0));
 		}
 		
 		return astList;
@@ -396,21 +410,17 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	// Expressions
 
-	// TODO implement
 	@Override
 	public List<Ast> visitLITexpr(LITexprContext ctx) {
 		System.out.println("==LITexpr");
-		return super.visitLITexpr(ctx);
+		return visit(ctx.literal());
 	}
 
-	// TODO implement
-	// identAccesHead
+	
 	@Override
 	public List<Ast> visitIAHexpr(IAHexprContext ctx) {
 		System.out.println("==IAexpr");
-		
-		//ctx.identAccessHead();	
-		return super.visitIAHexpr(ctx);
+		return visit(ctx.identAccess());
 	}
 
 	// not tested
@@ -597,19 +607,20 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
 
-	
-
-	// Type
-	// TODO implement
-	@Override
-	public List<Ast> visitType(TypeContext ctx) {
-		System.out.println("==Type");
-		return super.visitType(ctx);
-	}
 
 	@Override
 	public List<Ast> visitReferenceTypeArray(ReferenceTypeArrayContext ctx) {
 		return visit(ctx.arrayType());
+	}
+
+	@Override
+	public List<Ast> visitRefType(RefTypeContext ctx) {
+		return visit(ctx.referenceType());
+	}
+
+	@Override
+	public List<Ast> visitPrimType(PrimTypeContext ctx) {
+		return visit(ctx.primitiveType());
 	}
 
 	@Override
@@ -620,7 +631,6 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 	}
 
 	// PrimitiveType
-	// TODO implement
 	@Override
 	public List<Ast> visitPrimitiveType(PrimitiveTypeContext ctx) {
 		
@@ -628,6 +638,7 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 		
 		String type = ctx.getText();
 		
+		//TODO: instead of null?
 		astList.add(new VarDecl(type, null));
 		
 		return astList;
