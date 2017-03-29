@@ -147,12 +147,12 @@ returnStmt
 
 newExpr
 :
-	'new'
-	(
-		Ident '(' ')'
-		| Ident '[' expr ']'
-		| primitiveType '[' expr ']'
-	)
+	
+	
+	'new' Ident '(' ')' #NewMethod
+	|  'new' Ident '[' expr ']' #NewArray
+	| 'new' primitiveType '[' expr ']' #NewType
+	
 ;
 
 readExpr
