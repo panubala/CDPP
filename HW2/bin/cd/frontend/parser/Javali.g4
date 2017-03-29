@@ -318,16 +318,16 @@ literal
 
 // types
 
-primitiveType
-:
-	'boolean'
-	| 'int'
-;
-
 type
 :
 	primitiveType
 	| referenceType
+;
+
+primitiveType
+:
+	'boolean'
+	| 'int'
 ;
 
 referenceType
@@ -338,8 +338,8 @@ referenceType
 
 arrayType
 :
-	Ident '[' ']'
-	| primitiveType '[' ']'
+	Ident '[' ']' #arrayTypeIdent
+	| primitiveType '[' ']'#arrayTypePrimitive
 ;
 
 // comments and white space does not produce tokens:
