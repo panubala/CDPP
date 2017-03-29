@@ -263,18 +263,23 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 	}
 
 
-	// TODO implement
-	//What happen if we have several else-blocks?
+	// TODO not tested
+	//What happen if we have several else-Stmt?
+	//It does not work when no else-Stmt
 	@Override
 	public List<Ast> visitIfStmt(IfStmtContext ctx) {
 		System.out.println("==If stmt");
 		
 		ArrayList<Ast> astList = new ArrayList<Ast>();
+		
+		Ast.Expr conditionBlock = (Ast.Expr) visit(ctx.expr()).get(0);
+		
+		//Does this work? Something strange
+		Ast.Seq  thenBlock = new Ast.Seq(visit(ctx.stmtBlock(0)));
+		Ast elseBlock = new Ast.Seq(visit(ctx.stmtBlock(1)));
 
-		
-//		astList.add(new Ast.IfElse((Ast.Expr) visit(ctx.expr()), visit(ctx.stmtBlock()).get(0), visit(ctx.stmtBlock()).get(1)));
-		
-		return visitChildren(ctx);
+		astList.add(new Ast.IfElse(conditionBlock, thenBlock, elseBlock));
+		return astList;
 	}
 
 	@Override
@@ -528,6 +533,7 @@ public final class JavaliAstVisitor extends JavaliBaseVisitor<List<Ast>> {
 	@Override
 	public List<Ast> visitReferenceType(ReferenceTypeContext ctx) {
 		System.out.println("==RefType");
+		
 		return super.visitReferenceType(ctx);
 	}
 
