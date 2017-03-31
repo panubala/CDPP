@@ -1,0 +1,15 @@
+class Main {
+
+  
+   void main() {
+   
+   		int i, j, z;
+   		
+   		i = 5;
+   		j = 0;
+   		z= i/j;
+   
+	
+	}
+
+}
