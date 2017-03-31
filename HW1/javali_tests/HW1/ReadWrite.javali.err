@@ -1,0 +1,71 @@
+<<<<<<< HEAD
+Debug information for file: javali_tests/HW1/ReadWrite.javali
+=======
+Debug information for file: javali_tests\HW1\ReadWrite.javali
+>>>>>>> origin/master
+AST Resulting From Parsing Stage:
+ClassDecl (name: Main, superClass: Object)
+| MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)
+| | Seq ()
+| | | VarDecl (name: r1, type: int)
+| | | VarDecl (name: r2, type: int)
+| | | VarDecl (name: i0, type: int)
+| | | VarDecl (name: i1, type: int)
+| | | VarDecl (name: i2, type: int)
+| | Seq ()
+| | | Assign ()
+| | | | Var (name: i0)
+| | | | IntConst (value: 5)
+| | | Assign ()
+| | | | Var (name: i1)
+<<<<<<< HEAD
+| | | | BuiltInRead ()
+| | | BuiltInWrite ()
+| | | | Var (name: i1)
+| | | Assign ()
+| | | | Var (name: r1)
+| | | | BinaryOp (operator: B_PLUS)
+| | | | | Var (name: i0)
+| | | | | Var (name: i1)
+| | | BuiltInWrite ()
+| | | | Var (name: r1)
+| | | BuiltInWriteln ()
+| | | BuiltInWrite ()
+| | | | BinaryOp (operator: B_MINUS)
+| | | | | Var (name: r1)
+| | | | | IntConst (value: 3)
+| | | BuiltInWriteln ()
+
+Phase exec failed because we expected to see:
+4449
+46
+
+But we actually saw:
+Error: 139
+
+The difference is:
+At line   1 /   1:
+< 4449
+< 46
+> Error: 139
+=======
+| | | | IntConst (value: 4)
+| | | Assign ()
+| | | | Var (name: i1)
+| | | | BinaryOp (operator: B_DIV)
+| | | | | Var (name: i1)
+| | | | | BinaryOp (operator: B_PLUS)
+| | | | | | Var (name: i1)
+| | | | | | IntConst (value: 4)
+
+Phase exec failed because we expected to see:
+
+But we actually saw:
+Error: 34816
+
+The difference is:
+At line   1 /   1:
+< 
+> Error: 34816
+>>>>>>> origin/master
+

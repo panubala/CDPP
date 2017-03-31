@@ -1,8 +1,6 @@
 /Javali.tokens
-/JavaliBaseListener.java
 /JavaliBaseVisitor.java
 /JavaliLexer.java
 /JavaliLexer.tokens
-/JavaliListener.java
 /JavaliParser.java
 /JavaliVisitor.java

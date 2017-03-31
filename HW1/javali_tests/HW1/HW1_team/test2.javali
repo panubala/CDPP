@@ -1,0 +1,23 @@
+class Main {
+	void main() {
+		int i0,  i1,  i2;
+
+		i1=1;
+		i2=2;
+		write(i1);
+		writeln();
+		write(i2);
+		writeln();
+		
+		i0=i1;
+		i1=i2;
+		i2=i0;
+				
+		write(i1);
+		writeln();
+		write(i2);
+		writeln();
+
+	}
+}
+		
