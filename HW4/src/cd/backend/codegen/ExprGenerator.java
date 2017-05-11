@@ -132,6 +132,8 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 		System.out.println("==BooleanConst");
 		{
 			throw new ToDoException();
+			
+			//cg.rm.getRegister()
 		}
 	}
 
@@ -156,6 +158,8 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 		System.out.println("==Cast");
 		{
 			throw new ToDoException();
+			
+			
 		}
 	}
 

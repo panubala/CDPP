@@ -104,8 +104,9 @@ public class RegisterManager {
 	 */
 	public void releaseRegister(Register reg) {
 		assert !registers.contains(reg);
-		System.out.println("==Releasse Register " + reg.repr);
+		System.out.println("==Release Register " + reg.repr);
 		registers.add(reg);
+		
 	}
 
 	/**

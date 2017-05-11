@@ -200,7 +200,21 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 	public Register returnStmt(ReturnStmt ast, Void arg) {
 		System.out.println("==ReturnStmt");
 		{
-			throw new ToDoException();
+			
+			if (ast.arg() == null){
+				cg.emitMethodSuffix(true);
+			}else{
+				
+				Register reg = cg.eg.gen(ast.arg());
+				//TODO: Panuya: Need to find out where I should put the reg
+				cg.emit.emitMove(reg, Register.EDI);
+				cg.emitMethodSuffix(false);
+				cg.rm.releaseRegister(reg);
+			}
+			
+			
+			
+			return null;
 		}
 	}
 

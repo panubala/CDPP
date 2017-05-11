@@ -1,8 +1,11 @@
 class Main{
     void main() {
-		k();
+		int a;
+		a = 5;
+		
 	}
-
-	void k(){
+	
+	int hallo(){
+		return 8;
 	}
 }
