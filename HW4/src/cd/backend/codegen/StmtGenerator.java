@@ -132,7 +132,20 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 	public Register ifElse(IfElse ast, Void arg) {
 		System.out.println("==IfElse");
 		{
-			throw new ToDoException();
+			//TODO:
+			Register conditionReg = cg.eg.gen(ast.condition());
+			
+			if(ast.otherwise() == null){
+				
+				
+				//Then part
+				visit(ast.then(),arg);
+				
+			}else{
+				
+			}
+			
+			return null;
 		}
 	}
 

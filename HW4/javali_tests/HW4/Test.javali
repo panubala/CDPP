@@ -1,11 +1,22 @@
-class Main{
-    void main() {
-		int a;
-		a = 5;
-		
+class Main {
+
+   int m() {
+      return 0;
+   }
+	
+	void main() {
+	
+	  int res;
+	  res = -1;
+
+      res = m();
+    //  write(res);
+    //  writeln();
+      
+     // res = this.m();
+     // write(res);
+     // writeln();
+      
 	}
 	
-	int hallo(){
-		return 8;
-	}
 }
