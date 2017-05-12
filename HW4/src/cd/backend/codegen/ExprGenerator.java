@@ -131,9 +131,14 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 	public Register booleanConst(BooleanConst ast, Void arg) {
 		System.out.println("==BooleanConst");
 		{
-			throw new ToDoException();
+			Register reg = cg.rm.getRegister();
 			
-			//cg.rm.getRegister()
+			String bool = (ast.value == true) ? constant(1) : constant(0);
+			
+			cg.emit.emitMove(bool, reg);
+			
+			return reg;
+			
 		}
 	}
 
