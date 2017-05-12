@@ -1,8 +1,14 @@
 class Main {
 	
 	void main() {
-	int a;
-	 a = Null;
+	int a,b;
+	a=7;
+	b=9;
+	if(false){
+		a =8;
+	}else{
+		a =89;
+	}
 
       
 	}
