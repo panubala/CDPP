@@ -131,9 +131,14 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 	public Register booleanConst(BooleanConst ast, Void arg) {
 		System.out.println("==BooleanConst");
 		{
-			throw new ToDoException();
+			Register reg = cg.rm.getRegister();
 			
-			//cg.rm.getRegister()
+			String bool = (ast.value == true) ? constant(1) : constant(0);
+			
+			cg.emit.emitMove(bool, reg);
+			
+			return reg;
+			
 		}
 	}
 
@@ -157,6 +162,7 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 	public Register cast(Cast ast, Void arg) {
 		System.out.println("==Cast");
 		{
+			//TODO
 			throw new ToDoException();
 			
 			
@@ -167,6 +173,7 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 	public Register index(Index ast, Void arg) {
 		System.out.println("==index");
 		{
+			//TODO
 			throw new ToDoException();
 		}
 	}
@@ -185,6 +192,7 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 	public Register field(Field ast, Void arg) {
 		System.out.println("==Field");
 		{
+			//TODO
 			throw new ToDoException();
 		}
 	}
@@ -193,6 +201,7 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 	public Register newArray(NewArray ast, Void arg) {
 		System.out.println("==NewArray");
 		{
+			//TODO
 			throw new ToDoException();
 		}
 	}
@@ -201,6 +210,7 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 	public Register newObject(NewObject ast, Void arg) {
 		System.out.println("==NewObject");
 		{
+			//TODO
 			throw new ToDoException();
 		}
 	}
@@ -209,7 +219,10 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 	public Register nullConst(NullConst ast, Void arg) {
 		System.out.println("==NullConst");
 		{
-			throw new ToDoException();
+			//TODO
+			Register reg = cg.rm.getRegister();
+			cg.emit.emitMove(constant(0), reg);
+			return reg;
 		}
 	}
 
