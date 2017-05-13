@@ -107,7 +107,7 @@ public class AstCodeGenerator {
 			VTable currT = new VTable(ast.name);
 			vTables.put(ast.name, currT);
 			
-			int offSet = 1; //TODO implemetn better
+			int offSet = 0; //TODO implemetn better
 			for(MethodDecl mths : ast.methods()){
 				String label = Config.DOT_INT + " " + ast.name + "." + mths.name;
 				currT.addMethod(mths.name, offSet);

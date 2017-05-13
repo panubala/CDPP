@@ -1,11 +1,11 @@
 class Main{
     void main() {
-		int a;
-		a = 5;
-		
+    	int k;
+    	k = hallo();
+		write(k);
 	}
 	
 	int hallo(){
-		return 8;
+		return 5;
 	}
 }

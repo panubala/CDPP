@@ -3,6 +3,7 @@ package cd.backend.codegen;
 import static cd.Config.MAIN;
 import static cd.backend.codegen.AssemblyEmitter.constant;
 import static cd.backend.codegen.RegisterManager.STACK_REG;
+import static cd.backend.codegen.RegisterManager.BASE_REG;
 
 import java.util.List;
 
@@ -58,35 +59,8 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 	public Register methodCall(MethodCall ast, Void dummy) {
 		System.out.println("==MethodCall");
 		
-		List<Expr> args = ast.getMethodCallExpr().allArguments();
-		//Make space for arguments
-		cg.emit.emit("subl", args.size()*4, cg.rm.STACK_REG); //TODO 4?
+		gen(ast.getMethodCallExpr());
 		
-		int offset = 0;
-		for(Expr arg : args){
-			//TODO add emitMove(reg, offset, baseP)
-			String dest = offset + "(" + cg.rm.STACK_REG.repr + ")";
-			Register reg = cg.eg.gen(arg);
-			cg.emit.emitMove(reg, dest);
-			offset +=4;
-		}
-		//push returnAdress onto the stack
-		//cg.emit.emit("pushl", cg.rm.STACK_REG.repr);
-		
-		VTable vTable = AstCodeGenerator.vTables.get(currentClass);
-		
-		Register reg = cg.rm.getRegister();
-		
-		//Load adress of MainFnc
-		cg.emit.emit("leal", currentClass, reg);
-		
-		//Add Offset of method
-		int offSet = vTable.getMethodOffset(ast.getMethodCallExpr().methodName);
-		
-		cg.emit.emit("addl", "$"+offSet, reg);
-		cg.emit.emit("call", "*"+reg);
-		
-		cg.rm.releaseRegister(reg);
 		return null;
 	}
 
@@ -120,7 +94,14 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 			cg.emit.emitLabel(currentClass + "." + ast.name);
 
 			cg.emit.emit("enter", "$8", "$0");
-			cg.emit.emit("and", -16, STACK_REG);
+			cg.emit.emit("and", -16, STACK_REG); //What is the use of that?
+			
+			int currentOffset = 8; //Dont know exactly why, i guess it's because retAdress is above BasePointer
+			for(String argName: ast.argumentNames){			
+				varLoc.putParameters(argName, currentOffset);
+				currentOffset += 4;
+			}
+			
 			gen(ast.body());
 			cg.emitMethodSuffix(true);
 
@@ -157,7 +138,7 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 			cg.emit.emit("movl", rhsReg, lhsReg);
 
 			// TODO store left side correctly onto the stack
-
+			
 			if (ast.left() instanceof Var) {
 				Var var = (Var) ast.left();
 				cg.emit.emitMove(lhsReg, varLoc.getVariableLocation(var.name));
@@ -199,15 +180,14 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 	@Override
 	public Register returnStmt(ReturnStmt ast, Void arg) {
 		System.out.println("==ReturnStmt");
-		{
-			
+		{			
 			if (ast.arg() == null){
 				cg.emitMethodSuffix(true);
 			}else{
 				
 				Register reg = cg.eg.gen(ast.arg());
-				//TODO: Panuya: Need to find out where I should put the reg
-				cg.emit.emitMove(reg, Register.EDI);
+				//TODO: Panuya: Need to find out where I should put the reg - Into the EAX register
+				cg.emit.emitMove(reg, Register.EAX);
 				cg.emitMethodSuffix(false);
 				cg.rm.releaseRegister(reg);
 			}

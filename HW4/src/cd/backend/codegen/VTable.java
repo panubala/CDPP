@@ -4,6 +4,8 @@ import java.util.HashMap;
 
 public class VTable {
 	
+	//A VTable represents a class
+	
 	public VTable(String name){
 		this.className = name;
 	}

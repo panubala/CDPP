@@ -226,9 +226,50 @@ class ExprGenerator extends ExprVisitor<Register, Void> {
 	@Override
 	public Register methodCall(MethodCallExpr ast, Void arg) {
 		System.out.println("==Expr-MethodCall");		
-		{
-			throw new ToDoException();
+		List<Expr> args = ast.argumentsWithoutReceiver();
+		//Make space for arguments
+		cg.emit.emit("subl", args.size()*4, cg.rm.STACK_REG); //TODO 4?
+		cg.currentStackPointerOffset -= args.size()*4;
+		
+		int offset = 0;
+		for(Expr argument : args){
+			//TODO add emitMove(reg, offset, baseP)
+			String dest = offset + "(" + cg.rm.STACK_REG.repr + ")";
+			Register reg = cg.eg.gen(argument);
+			cg.emit.emitMove(reg, dest);
+			cg.rm.releaseRegister(reg);
+			offset +=4;
 		}
+		//push returnAdress onto the stack
+		//cg.emit.emit("pushl", cg.rm.STACK_REG.repr);
+		
+		//TODO receiver
+		VTable vTable = AstCodeGenerator.vTables.get("Main"); //TODO Main harcoded
+		
+		Register reg = cg.rm.getRegister();
+		
+		//Load adress of MainFnc
+		cg.emit.emit("leal", "Main", reg);
+		
+		//Add Offset of method
+		int offSet = vTable.getMethodOffset(ast.methodName);
+		
+		cg.emit.emit("addl", "$"+offSet, reg);
+		
+		cg.emit.emit("movl", "0(" + reg + ")", reg);
+		cg.emit.emit("call", "*"+reg);
+		
+		cg.rm.releaseRegister(reg);
+		System.out.println("----------------------------------------");
+		
+		//Return value
+		
+		Register retValue = cg.rm.getRegister();
+		
+		cg.emit.emit("movl", Register.EAX, retValue);
+		//cg.rm.releaseRegister(Register.EAX);
+		
+		return retValue;
 	}
 
 	@Override
