@@ -33,6 +33,7 @@ import cd.util.debug.AstOneLine;
  * Generates code to process statements and declarations.
  */
 class StmtGenerator extends AstVisitor<Register, VarLocation> {
+
 	protected final AstCodeGenerator cg;
 
 	StmtGenerator(AstCodeGenerator astCodeGenerator) {
@@ -57,7 +58,8 @@ class StmtGenerator extends AstVisitor<Register, VarLocation> {
 	public Register methodCall(MethodCall ast, VarLocation dummy) {
 		System.out.println("==MethodCall");
 
-		cg.eg.gen(ast.getMethodCallExpr(), dummy);
+		Register reg = cg.eg.gen(ast.getMethodCallExpr(), dummy);
+		cg.rm.releaseRegister(reg);
 
 		return null;
 	}
@@ -72,44 +74,37 @@ class StmtGenerator extends AstVisitor<Register, VarLocation> {
 	public Register classDecl(ClassDecl ast, VarLocation arg) {
 		System.out.println("==ClassDecl");
 
-		arg.currentClass = ast.name;
-		cg.emit.emit("subl", 4, RegisterManager.STACK_REG);
-		cg.currentStackPointerOffset -= 4;
-		// Allocate space for fields
-		for (VarDecl field : ast.fields()) {
-			cg.emit.emit("subl", 8, RegisterManager.STACK_REG);
-			cg.emit.emit("movl", "$1", "0(" + RegisterManager.STACK_REG + ")");
-			cg.emit.emit("movl", "$4", "4(" + RegisterManager.STACK_REG + ")"); // TODO
-																				// not
-																				// only
-																				// alwasys
-																				// 4
-																				// i
-																				// guess,
-
-			cg.emit.emit("call", Config.CALLOC);
-
-			cg.emit.emit("addl", 8, RegisterManager.STACK_REG);
-
-			Register reg = cg.rm.getRegister();
-			cg.emit.emit("movl", Register.EAX, reg);
-
-			cg.emit.emitMove(reg, cg.currentStackPointerOffset + "(" + cg.rm.BASE_REG.repr + ")");
-			
-			cg.classTables.get(arg.currentClass).addField(field.name, cg.currentStackPointerOffset);
-			
-			cg.emit.emit("addl", "$-4", cg.rm.STACK_REG);
+		if (ast.name.equals("Main")) {
+			arg.currentClass = ast.name;
+		} else {
+			arg.currentClass = ast.name;
+			cg.emit.emit("subl", 4, RegisterManager.STACK_REG);
 			cg.currentStackPointerOffset -= 4;
 
-			
+			System.out.println(">>>>StackPointer is now at: " + cg.currentStackPointerOffset);
+			// Allocate space for fields
+			for (VarDecl field : ast.fields()) {
+				cg.emit.emit("subl", 8, RegisterManager.STACK_REG);
+				cg.emit.emit("movl", "$1", "0(" + RegisterManager.STACK_REG + ")");
+				// TODO not always 4
+				cg.emit.emit("movl", "$4", "4(" + RegisterManager.STACK_REG + ")");
 
-			 // move the
-															// stackpointer
+				cg.emit.emit("call", Config.CALLOC);
+				cg.emit.emit("addl", 8, RegisterManager.STACK_REG);
 
+				Register reg = cg.rm.getRegister();
+				cg.emit.emit("movl", Register.EAX, reg);
+				cg.emit.emitMove(reg, cg.currentStackPointerOffset + "(" + cg.rm.BASE_REG.repr + ")");
+				cg.classTables.get(arg.currentClass).addField(field.name, cg.currentStackPointerOffset);
+				cg.emit.emit("addl", "$-4", cg.rm.STACK_REG);
+				cg.currentStackPointerOffset -= 4;
+
+				System.out.println(">>>>StackPointer is now at: " + cg.currentStackPointerOffset);
+			}
 		}
 
-		return visitChildren(ast, arg);
-
+		visitChildren(ast, arg);
+		return null;
 	}
 
 	@Override
@@ -120,23 +115,33 @@ class StmtGenerator extends AstVisitor<Register, VarLocation> {
 		arg.currentClass = argOld.currentClass;
 		System.out.println(arg);
 
-//		if (ast.name.equals("main")) {
-//			cg.emit.emitLabel(MAIN);
-//		}
+		// if (ast.name.equals("main")) {
+		// cg.emit.emitLabel(MAIN);
+		// }
 
 		cg.emit.emitLabel(arg.currentClass + "." + ast.name);
 
-		//cg.emit.emit("enter", "$8", "$0");
-		//cg.emit.emit("and", -16, STACK_REG); // What is the use of that?
+		if (!arg.currentClass.equals("Main") || !ast.name.equals("main")) {
+			cg.emit.emit("enter", "$0", "$0");
+		//	AstCodeGenerator.classTables.get(arg.currentClass).adjustOffSet(24);
+		}
+		// cg.emit.emit("and", -16, STACK_REG); // What is the use of that?
 
 		int currentOffset = 8; // Dont know exactly why, i guess it's because
 								// retAdress is above BasePointer
+		
+
+		
 		for (String argName : ast.argumentNames) {
 			arg.putParameters(argName, currentOffset);
 			currentOffset += 4;
 		}
 
 		gen(ast.body(), arg);
+		
+		if (!arg.currentClass.equals("Main") || !ast.name.equals("main")) {
+		//	AstCodeGenerator.classTables.get(arg.currentClass).adjustOffSet(-24);
+		}
 
 		System.out.println(arg);
 
@@ -204,8 +209,7 @@ class StmtGenerator extends AstVisitor<Register, VarLocation> {
 			// if (!(ast.left() instanceof Var))
 			// throw new RuntimeException("LHS must be var in HW1");
 			// Var var = (Var) ast.left();
-			
-			
+
 			Register rhsReg = cg.eg.gen(ast.right(), arg);
 
 			Register lhsReg = cg.rm.getRegister();
@@ -214,7 +218,7 @@ class StmtGenerator extends AstVisitor<Register, VarLocation> {
 
 			if (ast.left() instanceof Var) {
 				Var var = (Var) ast.left();
-				
+
 				if (ast.right() instanceof NewObject) {
 					VTable vt = AstCodeGenerator.classTables.get(ast.left().type.name).copy();
 					AstCodeGenerator.objectTables.put(var.name, new VTable(vt.className));
@@ -222,29 +226,29 @@ class StmtGenerator extends AstVisitor<Register, VarLocation> {
 
 				if (var.sym.kind == Kind.LOCAL) {
 					lhsReg = cg.eg.gen(ast.left(), arg);
-					
+
 					cg.emit.emit("movl", rhsReg, lhsReg);
 					cg.emit.emitMove(lhsReg, arg.getVariableLocation(var.name));
 
 				}
 
 				if (var.sym.kind == Kind.FIELD) {
-					
+
 					VTable vt = AstCodeGenerator.classTables.get(arg.currentClass);
 					int offSet = vt.getFieldOffset(var.name);
 					cg.emit.emit("movl", offSet + "(" + cg.rm.BASE_REG + ")", lhsReg);
-					
-					//cg.emit.emit("movl", "0(" + lhsReg + ")", lhsReg);
+
+					// cg.emit.emit("movl", "0(" + lhsReg + ")", lhsReg);
 					cg.emit.emit("movl", rhsReg, "0(" + lhsReg + ")");
-					
-					//cg.emit.emitMove(rhsReg, "0(" + lhsReg + ")");
-					//cg.emit.emitMove();
+
+					// cg.emit.emitMove(rhsReg, "0(" + lhsReg + ")");
+					// cg.emit.emitMove();
 				}
 			} else
 				throw new RuntimeException("LHS must be var in HW1");
 			cg.rm.releaseRegister(rhsReg);
 			cg.rm.releaseRegister(lhsReg);
-			
+
 			return null;
 		}
 	}

@@ -55,6 +55,14 @@ public class VTable {
 		return newVT;
 
 	}
+	
+	public void adjustOffSet(int correction){
+		for(String f : fields.keySet()){
+			fields.put(f, fields.get(f) + correction);
+		}
+	}
+	
+	
 
 	public String toString() {
 		String s = new String();

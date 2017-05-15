@@ -21,6 +21,8 @@ public class VarLocation {
 			cg.emit.emit("addl", "$-4", cg.rm.STACK_REG); // move the
 															// stackpointer
 			cg.currentStackPointerOffset -= 4;
+
+			System.out.println(">>>>StackPointer is now at: " + cg.currentStackPointerOffset);
 			varLocation.put(variableName, cg.currentStackPointerOffset);
 		}
 		return varLocation.get(variableName);

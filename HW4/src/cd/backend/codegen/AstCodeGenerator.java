@@ -22,6 +22,7 @@ public class AstCodeGenerator {
 	protected StmtGenerator sg;
 	
 	public int currentStackPointerOffset;
+	public int oldBasePointer;
 	
 	public static HashMap<String, VTable> classTables = new HashMap<String, VTable>();
 	public static HashMap<String, VTable> objectTables = new HashMap<String, VTable>();
@@ -84,14 +85,43 @@ public class AstCodeGenerator {
 		this.emit.emitRaw(".globl " + MAIN);
 		this.emit.emitLabel(MAIN);
 		
-		this.emit.emit("enter", "$8", "$0");
+		this.emit.emit("enter", "$0", "$0");
 		this.emit.emit("and", -16, STACK_REG); // What is the use of that?
 		
-		String calledClass = "Main";
-		VTable vTable = AstCodeGenerator.classTables.get(calledClass);
+		ClassDecl mainClass = null;
+		
+		for (ClassDecl classDecl : astRoots) {
+			if(classDecl.name.equals("Main")){	
+				mainClass = classDecl;
+				for (VarDecl field : mainClass.fields()) {
+					this.emit.emit("subl", 8, RegisterManager.STACK_REG);
+					this.emit.emit("movl", "$1", "0(" + RegisterManager.STACK_REG + ")");
+					//TODO not always 4
+					this.emit.emit("movl", "$4", "4(" + RegisterManager.STACK_REG + ")");
+					this.emit.emit("call", Config.CALLOC);
+					this.emit.emit("addl", 8, RegisterManager.STACK_REG);
+
+					Register reg1 = this.rm.getRegister();
+					this.emit.emit("movl", Register.EAX, reg1);
+
+		
+					
+					this.emit.emit("addl", "$-4", this.rm.STACK_REG);
+					this.currentStackPointerOffset -= 4;
+					this.emit.emitMove(reg1, this.currentStackPointerOffset + "(" + this.rm.BASE_REG.repr + ")");	
+					
+					this.classTables.get("Main").addField(field.name, this.currentStackPointerOffset);
+					
+					System.out.println(">>>>StackPointer is now at: " + this.currentStackPointerOffset);
+				}
+			}	
+		}
+		
+		//Call Main method
+		VTable vTable = AstCodeGenerator.classTables.get("Main");
 		Register reg = this.rm.getRegister();
 		// Load adress of CalledFnc
-		this.emit.emit("leal", calledClass, reg);
+		this.emit.emit("leal", "Main", reg);
 		// Add Offset of method
 		int offSet = vTable.getMethodOffset("main");
 
@@ -100,13 +130,18 @@ public class AstCodeGenerator {
 		this.emit.emit("call", "*" + reg);
 		this.rm.releaseRegister(reg);
 		
-		///////////////////////////////////////////////////
+//		for(MethodDecl method : mainClass.methods()){
+//			if(method.name.equals("main")){
+//				VarLocation vl = new VarLocation(this);
+//				vl.currentClass = "Main";
+//				sg.gen(method, vl);
+//				break;
+//			}
+//		}
 		
-		for (ClassDecl ast : astRoots) {
-			
-			sg.gen(ast, new VarLocation(this));
+		for (ClassDecl classDecl : astRoots) {
+			sg.gen(classDecl, new VarLocation(this));
 		}
-		
 		printTables();
 	}
 
@@ -148,15 +183,6 @@ public class AstCodeGenerator {
 			emit.emit("movl", "$0", Register.EAX);
 		emit.emitRaw("leave");
 		emit.emitRaw("ret");
-	}
-	
-	protected void call(){
-		
-		//save calle registers
-		//push arguments
-		//TODO, implemetn function for better overview
-		
-		
 	}
 	
 	public void printTables(){

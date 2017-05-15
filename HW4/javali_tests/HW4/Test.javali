@@ -2,11 +2,16 @@ class Main{
     int k;
     void main() {
     	k = 3;
+    	m();
     	write(k);
+    }
+    void m(){
+    	f();
+    }
+    
+    void f(){
+    	k = 4;
     }
 }
 
-class B{
-	int z;
-}
 
