@@ -1,12 +1,12 @@
 class Main{
+    int k;
     void main() {
-    	int k;
-    	k = hallo();
-		write(k);
-	}
-	
-	int hallo(){
-		return 5;
-	}
-	
+    	k = 3;
+    	write(k);
+    }
 }
+
+class B{
+	int z;
+}
+

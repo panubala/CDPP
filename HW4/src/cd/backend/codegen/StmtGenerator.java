@@ -3,7 +3,6 @@ package cd.backend.codegen;
 import static cd.Config.MAIN;
 import static cd.backend.codegen.AssemblyEmitter.constant;
 import static cd.backend.codegen.RegisterManager.STACK_REG;
-import static cd.backend.codegen.RegisterManager.BASE_REG;
 
 import java.util.List;
 
@@ -16,37 +15,36 @@ import cd.ir.Ast.BuiltInWrite;
 import cd.ir.Ast.BuiltInWriteln;
 import cd.ir.Ast.ClassDecl;
 import cd.ir.Ast.Expr;
+import cd.ir.Ast.Field;
 import cd.ir.Ast.IfElse;
 import cd.ir.Ast.MethodCall;
 import cd.ir.Ast.MethodDecl;
+import cd.ir.Ast.NewObject;
 import cd.ir.Ast.ReturnStmt;
 import cd.ir.Ast.Var;
 import cd.ir.Ast.VarDecl;
 import cd.ir.Ast.WhileLoop;
 import cd.ir.AstVisitor;
 import cd.ir.Symbol.MethodSymbol;
+import cd.ir.Symbol.VariableSymbol.Kind;
 import cd.util.debug.AstOneLine;
 
 /**
  * Generates code to process statements and declarations.
  */
-class StmtGenerator extends AstVisitor<Register, Void> {
+class StmtGenerator extends AstVisitor<Register, VarLocation> {
 	protected final AstCodeGenerator cg;
-	protected VarLocation varLoc;
 
-	private String currentClass;
-
-	StmtGenerator(AstCodeGenerator astCodeGenerator, VarLocation varLocation) {
+	StmtGenerator(AstCodeGenerator astCodeGenerator) {
 		cg = astCodeGenerator;
-		varLoc = varLocation;
 	}
 
-	public void gen(Ast ast) {
-		visit(ast, null);
+	public void gen(Ast ast, VarLocation varLocation) {
+		visit(ast, varLocation);
 	}
 
 	@Override
-	public Register visit(Ast ast, Void arg) {
+	public Register visit(Ast ast, VarLocation arg) {
 		try {
 			cg.emit.increaseIndent("Emitting " + AstOneLine.toString(ast));
 			return super.visit(ast, arg);
@@ -56,11 +54,11 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 	}
 
 	@Override
-	public Register methodCall(MethodCall ast, Void dummy) {
+	public Register methodCall(MethodCall ast, VarLocation dummy) {
 		System.out.println("==MethodCall");
-		
-		gen(ast.getMethodCallExpr());
-		
+
+		cg.eg.gen(ast.getMethodCallExpr(), dummy);
+
 		return null;
 	}
 
@@ -71,96 +69,128 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 
 	// Emit vtable for arrays of this class:
 	@Override
-	public Register classDecl(ClassDecl ast, Void arg) {
+	public Register classDecl(ClassDecl ast, VarLocation arg) {
 		System.out.println("==ClassDecl");
-		{
-			// if (!ast.name.equals("Main"))
-			// throw new RuntimeException(
-			// "Only expected one class, named 'main'");
-			currentClass = ast.name;
-			return visitChildren(ast, arg);
+
+		arg.currentClass = ast.name;
+		cg.emit.emit("subl", 4, RegisterManager.STACK_REG);
+		cg.currentStackPointerOffset -= 4;
+		// Allocate space for fields
+		for (VarDecl field : ast.fields()) {
+			cg.emit.emit("subl", 8, RegisterManager.STACK_REG);
+			cg.emit.emit("movl", "$1", "0(" + RegisterManager.STACK_REG + ")");
+			cg.emit.emit("movl", "$4", "4(" + RegisterManager.STACK_REG + ")"); // TODO
+																				// not
+																				// only
+																				// alwasys
+																				// 4
+																				// i
+																				// guess,
+
+			cg.emit.emit("call", Config.CALLOC);
+
+			cg.emit.emit("addl", 8, RegisterManager.STACK_REG);
+
+			Register reg = cg.rm.getRegister();
+			cg.emit.emit("movl", Register.EAX, reg);
+
+			cg.emit.emitMove(reg, cg.currentStackPointerOffset + "(" + cg.rm.BASE_REG.repr + ")");
+			
+			cg.classTables.get(arg.currentClass).addField(field.name, cg.currentStackPointerOffset);
+			
+			cg.emit.emit("addl", "$-4", cg.rm.STACK_REG);
+			cg.currentStackPointerOffset -= 4;
+
+			
+
+			 // move the
+															// stackpointer
+
 		}
+
+		return visitChildren(ast, arg);
+
 	}
 
 	@Override
-	public Register methodDecl(MethodDecl ast, Void arg) {
+	public Register methodDecl(MethodDecl ast, VarLocation argOld) {
 		System.out.println("==MethodDecl");
-		{
 
-			if (ast.name.equals("main")) {
-				cg.emit.emitLabel(MAIN);
-			}
+		VarLocation arg = new VarLocation(cg);
+		arg.currentClass = argOld.currentClass;
+		System.out.println(arg);
 
-			cg.emit.emitLabel(currentClass + "." + ast.name);
+//		if (ast.name.equals("main")) {
+//			cg.emit.emitLabel(MAIN);
+//		}
 
-			cg.emit.emit("enter", "$8", "$0");
-			cg.emit.emit("and", -16, STACK_REG); //What is the use of that?
-			
-			int currentOffset = 8; //Dont know exactly why, i guess it's because retAdress is above BasePointer
-			for(String argName: ast.argumentNames){			
-				varLoc.putParameters(argName, currentOffset);
-				currentOffset += 4;
-			}
-			
-			gen(ast.body());
-			cg.emitMethodSuffix(true);
+		cg.emit.emitLabel(arg.currentClass + "." + ast.name);
 
-			return null;
+		//cg.emit.emit("enter", "$8", "$0");
+		//cg.emit.emit("and", -16, STACK_REG); // What is the use of that?
+
+		int currentOffset = 8; // Dont know exactly why, i guess it's because
+								// retAdress is above BasePointer
+		for (String argName : ast.argumentNames) {
+			arg.putParameters(argName, currentOffset);
+			currentOffset += 4;
 		}
+
+		gen(ast.body(), arg);
+
+		System.out.println(arg);
+
+		cg.emitMethodSuffix(true);
+
+		return null;
+
 	}
 
 	@Override
-	public Register ifElse(IfElse ast, Void arg) {
+	public Register ifElse(IfElse ast, VarLocation arg) {
 		System.out.println("==IfElse");
 		{
-			
+
 			String labelThen = cg.emit.uniqueLabel();
 			String labelOtherwise = cg.emit.uniqueLabel();
 			String doneLabel = cg.emit.uniqueLabel();
-			//TODO:
-			Register conditionReg = cg.eg.gen(ast.condition());
-			
+			// TODO:
+			Register conditionReg = cg.eg.gen(ast.condition(), arg);
+
 			cg.emit.emit("cmpl", constant(0), conditionReg);
-			
-			
-				
-//				System.out.println("Here");
-//				cg.emit.emitLabel(labelThen);
-				cg.emit.emit("je", labelThen);
-				visit(ast.then(), arg);
-				cg.emit.emit("jmp", labelOtherwise);
-				cg.emit.emitLabel(labelThen);
-//				
-//	            visit(ast.then(), arg);
-//	            cg.emit.emit("jmp", doneLabel);
-//	           
-	            visit(ast.otherwise(),arg);
-//	            cg.emit.emit("jmp", doneLabel);
-	            cg.emit.emitLabel(labelOtherwise);
-				
-			
-			
-			
-			
-			
-			visit(ast.otherwise(),arg);
-			
-//			if(ast.otherwise() == null){
-//				
-//				
-//				//Then part
-//				visit(ast.then(),arg);
-//				
-//			}else{
-//				
-//			}
-			
+
+			// System.out.println("Here");
+			// cg.emit.emitLabel(labelThen);
+			cg.emit.emit("je", labelThen);
+			visit(ast.then(), arg);
+			cg.emit.emit("jmp", labelOtherwise);
+			cg.emit.emitLabel(labelThen);
+			//
+			// visit(ast.then(), arg);
+			// cg.emit.emit("jmp", doneLabel);
+			//
+			visit(ast.otherwise(), arg);
+			// cg.emit.emit("jmp", doneLabel);
+			cg.emit.emitLabel(labelOtherwise);
+
+			visit(ast.otherwise(), arg);
+
+			// if(ast.otherwise() == null){
+			//
+			//
+			// //Then part
+			// visit(ast.then(),arg);
+			//
+			// }else{
+			//
+			// }
+
 			return null;
 		}
 	}
 
 	@Override
-	public Register whileLoop(WhileLoop ast, Void arg) {
+	public Register whileLoop(WhileLoop ast, VarLocation arg) {
 		System.out.println("==WhileLoop");
 		{
 			throw new ToDoException();
@@ -168,35 +198,62 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 	}
 
 	@Override
-	public Register assign(Assign ast, Void arg) {
+	public Register assign(Assign ast, VarLocation arg) {
 		System.out.println("==Assign");
 		{
 			// if (!(ast.left() instanceof Var))
 			// throw new RuntimeException("LHS must be var in HW1");
 			// Var var = (Var) ast.left();
-			Register lhsReg = cg.eg.gen(ast.left());
-			Register rhsReg = cg.eg.gen(ast.right());
-
-			cg.emit.emit("movl", rhsReg, lhsReg);
-
-			// TODO store left side correctly onto the stack
 			
+			
+			Register rhsReg = cg.eg.gen(ast.right(), arg);
+
+			Register lhsReg = cg.rm.getRegister();
+
+			// TODO left side, Array, field, ...
+
 			if (ast.left() instanceof Var) {
 				Var var = (Var) ast.left();
-				cg.emit.emitMove(lhsReg, varLoc.getVariableLocation(var.name));
+				
+				if (ast.right() instanceof NewObject) {
+					VTable vt = AstCodeGenerator.classTables.get(ast.left().type.name).copy();
+					AstCodeGenerator.objectTables.put(var.name, new VTable(vt.className));
+				}
+
+				if (var.sym.kind == Kind.LOCAL) {
+					lhsReg = cg.eg.gen(ast.left(), arg);
+					
+					cg.emit.emit("movl", rhsReg, lhsReg);
+					cg.emit.emitMove(lhsReg, arg.getVariableLocation(var.name));
+
+				}
+
+				if (var.sym.kind == Kind.FIELD) {
+					
+					VTable vt = AstCodeGenerator.classTables.get(arg.currentClass);
+					int offSet = vt.getFieldOffset(var.name);
+					cg.emit.emit("movl", offSet + "(" + cg.rm.BASE_REG + ")", lhsReg);
+					
+					//cg.emit.emit("movl", "0(" + lhsReg + ")", lhsReg);
+					cg.emit.emit("movl", rhsReg, "0(" + lhsReg + ")");
+					
+					//cg.emit.emitMove(rhsReg, "0(" + lhsReg + ")");
+					//cg.emit.emitMove();
+				}
 			} else
 				throw new RuntimeException("LHS must be var in HW1");
 			cg.rm.releaseRegister(rhsReg);
 			cg.rm.releaseRegister(lhsReg);
+			
 			return null;
 		}
 	}
 
 	@Override
-	public Register builtInWrite(BuiltInWrite ast, Void arg) {
+	public Register builtInWrite(BuiltInWrite ast, VarLocation arg) {
 		System.out.println("==Write");
 		{
-			Register reg = cg.eg.gen(ast.arg());
+			Register reg = cg.eg.gen(ast.arg(), arg);
 			cg.emit.emit("sub", constant(16), STACK_REG);
 			cg.emit.emitStore(reg, 4, STACK_REG);
 			cg.emit.emitStore("$STR_D", 0, STACK_REG);
@@ -208,7 +265,7 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 	}
 
 	@Override
-	public Register builtInWriteln(BuiltInWriteln ast, Void arg) {
+	public Register builtInWriteln(BuiltInWriteln ast, VarLocation arg) {
 		System.out.println("==Writeln");
 		{
 			cg.emit.emit("sub", constant(16), STACK_REG);
@@ -220,22 +277,21 @@ class StmtGenerator extends AstVisitor<Register, Void> {
 	}
 
 	@Override
-	public Register returnStmt(ReturnStmt ast, Void arg) {
+	public Register returnStmt(ReturnStmt ast, VarLocation arg) {
 		System.out.println("==ReturnStmt");
-		{			
-			if (ast.arg() == null){
+		{
+			if (ast.arg() == null) {
 				cg.emitMethodSuffix(true);
-			}else{
-				
-				Register reg = cg.eg.gen(ast.arg());
-				//TODO: Panuya: Need to find out where I should put the reg - Into the EAX register
+			} else {
+
+				Register reg = cg.eg.gen(ast.arg(), arg);
+				// TODO: Panuya: Need to find out where I should put the reg -
+				// Into the EAX register
 				cg.emit.emitMove(reg, Register.EAX);
 				cg.emitMethodSuffix(false);
 				cg.rm.releaseRegister(reg);
 			}
-			
-			
-			
+
 			return null;
 		}
 	}

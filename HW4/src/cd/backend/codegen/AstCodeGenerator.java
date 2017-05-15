@@ -1,6 +1,7 @@
 package cd.backend.codegen;
 
 import static cd.Config.MAIN;
+import static cd.backend.codegen.RegisterManager.STACK_REG;
 
 import java.io.Writer;
 import java.util.HashMap;
@@ -20,11 +21,10 @@ public class AstCodeGenerator {
 	protected ExprGenerator eg;
 	protected StmtGenerator sg;
 	
-	protected VarLocation vt;
-	
 	public int currentStackPointerOffset;
 	
-	public static HashMap<String, VTable> vTables = new HashMap();
+	public static HashMap<String, VTable> classTables = new HashMap<String, VTable>();
+	public static HashMap<String, VTable> objectTables = new HashMap<String, VTable>();
 	
 	protected final Main main;
 	
@@ -42,10 +42,8 @@ public class AstCodeGenerator {
 		this.main = main;
 		this.rnv = new RegsNeededVisitor();
 		
-		this.vt = new VarLocation(this);
-		
-		this.eg = new ExprGenerator(this, vt);
-		this.sg = new StmtGenerator(this, vt);
+		this.eg = new ExprGenerator(this);
+		this.sg = new StmtGenerator(this);
 	}
 
 	protected void debug(String format, Object... args) {
@@ -81,14 +79,35 @@ public class AstCodeGenerator {
 		this.emit.emitRaw(Config.DOT_STRING + " \"%d\"");
 		
 		emitDataSection(astRoots);
-				
 
 		this.emit.emitRaw(Config.TEXT_SECTION);
 		this.emit.emitRaw(".globl " + MAIN);
+		this.emit.emitLabel(MAIN);
+		
+		this.emit.emit("enter", "$8", "$0");
+		this.emit.emit("and", -16, STACK_REG); // What is the use of that?
+		
+		String calledClass = "Main";
+		VTable vTable = AstCodeGenerator.classTables.get(calledClass);
+		Register reg = this.rm.getRegister();
+		// Load adress of CalledFnc
+		this.emit.emit("leal", calledClass, reg);
+		// Add Offset of method
+		int offSet = vTable.getMethodOffset("main");
+
+		this.emit.emit("addl", "$" + offSet, reg);
+		this.emit.emit("movl", "0(" + reg + ")", reg);
+		this.emit.emit("call", "*" + reg);
+		this.rm.releaseRegister(reg);
+		
+		///////////////////////////////////////////////////
 		
 		for (ClassDecl ast : astRoots) {
-			sg.gen(ast);
+			
+			sg.gen(ast, new VarLocation(this));
 		}
+		
+		printTables();
 	}
 
 
@@ -105,7 +124,7 @@ public class AstCodeGenerator {
 		for(ClassDecl ast: astRoots){
 			emit.emitLabel(ast.name);
 			VTable currT = new VTable(ast.name);
-			vTables.put(ast.name, currT);
+			classTables.put(ast.name, currT);
 			
 			int offSet = 0; //TODO implemetn better
 			for(MethodDecl mths : ast.methods()){
@@ -130,4 +149,32 @@ public class AstCodeGenerator {
 		emit.emitRaw("leave");
 		emit.emitRaw("ret");
 	}
+	
+	protected void call(){
+		
+		//save calle registers
+		//push arguments
+		//TODO, implemetn function for better overview
+		
+		
+	}
+	
+	public void printTables(){
+		System.out.println("////////////////////////////////");
+		System.out.println("VirtualTables:");
+		for(String vt : classTables.keySet()){
+			System.out.println(vt);
+			System.out.println(classTables.get(vt));
+		}
+		System.out.println("////////////////////////////////");
+		System.out.println("ObjectTables:");
+		for(String ot : objectTables.keySet()){
+			System.out.println(ot);
+			System.out.println(objectTables.get(ot));
+		}
+		System.out.println("////////////////////////////////");
+		
+		
+	}
+	
 }

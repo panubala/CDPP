@@ -11,16 +11,15 @@ public class VarLocation {
 		this.varLocation = new HashMap();
 		this.cg = astCodeGenerator;
 	}
+	
+	public String currentClass;
 
 	private int getVariableOffset(String variableName) {
-
-		if (!varLocation.containsKey(variableName)) { // The variable isnt
-														// stored on the stack
+		if (!varLocation.containsKey(variableName)) { // The variable does not exist local
 			
 			System.out.println("==Variable " + variableName + " is currently not stored on the stack");
 			cg.emit.emit("addl", "$-4", cg.rm.STACK_REG); // move the
 															// stackpointer
-
 			cg.currentStackPointerOffset -= 4;
 			varLocation.put(variableName, cg.currentStackPointerOffset);
 		}
@@ -28,6 +27,7 @@ public class VarLocation {
 	}
 
 	public String getVariableLocation(String variableName) {
+		if (getVariableOffset(variableName) == -70) return null;
 		return getVariableOffset(variableName) + "(" + cg.rm.BASE_REG.repr + ")";
 	}
 
@@ -35,6 +35,17 @@ public class VarLocation {
 																	// to be
 																	// positiv
 		varLocation.put(parameterName, offSet);
+	}
+	
+	public String toString(){
+		String s = new String();
+		
+		for(String k : varLocation.keySet()){
+			
+			s = s + k + " -> " + varLocation.get(k) + "\n";
+		}
+		
+		return s;
 	}
 
 }
