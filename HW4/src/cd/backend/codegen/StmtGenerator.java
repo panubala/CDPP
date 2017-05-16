@@ -113,6 +113,7 @@ class StmtGenerator extends AstVisitor<Register, VarLocation> {
 
 		VarLocation arg = new VarLocation(cg);
 		arg.currentClass = argOld.currentClass;
+		arg.numberOfParameters = ast.argumentNames.size();
 		System.out.println(arg);
 
 		// if (ast.name.equals("main")) {
@@ -121,26 +122,22 @@ class StmtGenerator extends AstVisitor<Register, VarLocation> {
 
 		cg.emit.emitLabel(arg.currentClass + "." + ast.name);
 
-		if (!arg.currentClass.equals("Main") || !ast.name.equals("main")) {
-			cg.emit.emit("enter", "$0", "$0");
-		//	AstCodeGenerator.classTables.get(arg.currentClass).adjustOffSet(24);
-		}
+		cg.emit.emit("enter", "$0", "$0");
+		// AstCodeGenerator.classTables.get(arg.currentClass).adjustOffSet(24);
+
 		// cg.emit.emit("and", -16, STACK_REG); // What is the use of that?
 
-		int currentOffset = 8; // Dont know exactly why, i guess it's because
-								// retAdress is above BasePointer
-		
+		int currentOffset = 8;
 
-		
 		for (String argName : ast.argumentNames) {
 			arg.putParameters(argName, currentOffset);
 			currentOffset += 4;
 		}
 
 		gen(ast.body(), arg);
-		
+
 		if (!arg.currentClass.equals("Main") || !ast.name.equals("main")) {
-		//	AstCodeGenerator.classTables.get(arg.currentClass).adjustOffSet(-24);
+			// AstCodeGenerator.classTables.get(arg.currentClass).adjustOffSet(-24);
 		}
 
 		System.out.println(arg);
@@ -209,7 +206,7 @@ class StmtGenerator extends AstVisitor<Register, VarLocation> {
 			// if (!(ast.left() instanceof Var))
 			// throw new RuntimeException("LHS must be var in HW1");
 			// Var var = (Var) ast.left();
-
+			
 			Register rhsReg = cg.eg.gen(ast.right(), arg);
 
 			Register lhsReg = cg.rm.getRegister();
@@ -234,8 +231,7 @@ class StmtGenerator extends AstVisitor<Register, VarLocation> {
 
 				if (var.sym.kind == Kind.FIELD) {
 
-					VTable vt = AstCodeGenerator.classTables.get(arg.currentClass);
-					int offSet = vt.getFieldOffset(var.name);
+					int offSet = 8 + arg.numberOfParameters*4;
 					cg.emit.emit("movl", offSet + "(" + cg.rm.BASE_REG + ")", lhsReg);
 
 					// cg.emit.emit("movl", "0(" + lhsReg + ")", lhsReg);

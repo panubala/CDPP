@@ -79,65 +79,64 @@ public class AstCodeGenerator {
 		this.emit.emitLabel("STR_D");
 		this.emit.emitRaw(Config.DOT_STRING + " \"%d\"");
 		
-		emitDataSection(astRoots);
+		emitDataSection(astRoots); //Emit VTables (className + methods) 
 
 		this.emit.emitRaw(Config.TEXT_SECTION);
 		this.emit.emitRaw(".globl " + MAIN);
 		this.emit.emitLabel(MAIN);
 		
 		this.emit.emit("enter", "$0", "$0");
-		this.emit.emit("and", -16, STACK_REG); // What is the use of that?
+		this.emit.emit("and", -16, STACK_REG);
 		
 		ClassDecl mainClass = null;
 		
+		//Create Instance of Class Main
+		Register locationOfMainInstance = this.rm.getRegister();
 		for (ClassDecl classDecl : astRoots) {
 			if(classDecl.name.equals("Main")){	
 				mainClass = classDecl;
-				for (VarDecl field : mainClass.fields()) {
+				
+				//for (VarDecl field : mainClass.fields()) {
 					this.emit.emit("subl", 8, RegisterManager.STACK_REG);
-					this.emit.emit("movl", "$1", "0(" + RegisterManager.STACK_REG + ")");
+					
+					
+					int numberOfFields = mainClass.fields().size() + 1; //Plus Pointer to the VTable
+					this.emit.emit("movl", "$" + numberOfFields, "0(" + RegisterManager.STACK_REG + ")");
 					//TODO not always 4
 					this.emit.emit("movl", "$4", "4(" + RegisterManager.STACK_REG + ")");
 					this.emit.emit("call", Config.CALLOC);
 					this.emit.emit("addl", 8, RegisterManager.STACK_REG);
 
-					Register reg1 = this.rm.getRegister();
-					this.emit.emit("movl", Register.EAX, reg1);
-
-		
 					
-					this.emit.emit("addl", "$-4", this.rm.STACK_REG);
-					this.currentStackPointerOffset -= 4;
-					this.emit.emitMove(reg1, this.currentStackPointerOffset + "(" + this.rm.BASE_REG.repr + ")");	
+					this.emit.emit("movl", Register.EAX, locationOfMainInstance);
 					
-					this.classTables.get("Main").addField(field.name, this.currentStackPointerOffset);
 					
-					System.out.println(">>>>StackPointer is now at: " + this.currentStackPointerOffset);
-				}
 			}	
 		}
 		
 		//Call Main method
 		VTable vTable = AstCodeGenerator.classTables.get("Main");
-		Register reg = this.rm.getRegister();
+		Register locationOfMainVtable = this.rm.getRegister();
 		// Load adress of CalledFnc
-		this.emit.emit("leal", "Main", reg);
+		this.emit.emit("leal", "Main", locationOfMainVtable);
 		// Add Offset of method
-		int offSet = vTable.getMethodOffset("main");
-
-		this.emit.emit("addl", "$" + offSet, reg);
-		this.emit.emit("movl", "0(" + reg + ")", reg);
-		this.emit.emit("call", "*" + reg);
-		this.rm.releaseRegister(reg);
+		this.emit.emit("movl", locationOfMainVtable, "0(" + locationOfMainInstance + ")"); //Add Pointer in the isntance to the vtable
 		
-//		for(MethodDecl method : mainClass.methods()){
-//			if(method.name.equals("main")){
-//				VarLocation vl = new VarLocation(this);
-//				vl.currentClass = "Main";
-//				sg.gen(method, vl);
-//				break;
-//			}
-//		}
+		this.emit.emit("addl", "$-4", this.rm.STACK_REG);
+		this.currentStackPointerOffset -= 4;
+		this.emit.emitMove(locationOfMainInstance, "0(" + this.rm.STACK_REG.repr + ")");	
+		System.out.println(">>>>StackPointer is now at: " + this.currentStackPointerOffset);
+		this.rm.releaseRegister(locationOfMainInstance);
+		
+		int offSet = vTable.getMethodOffset("main");
+		
+		this.emit.emit("addl", "$" + offSet, locationOfMainVtable);
+		this.emit.emit("movl", "0(" + locationOfMainVtable + ")", locationOfMainVtable);
+		this.emit.emit("call", "*" + locationOfMainVtable);
+		this.rm.releaseRegister(locationOfMainVtable);
+		
+		this.emit.emit("movl", "$0", "0(%esp)"); // Error 144 if not - hou?
+		this.emit.emit("call", Config.EXIT);
 		
 		for (ClassDecl classDecl : astRoots) {
 			sg.gen(classDecl, new VarLocation(this));
@@ -169,9 +168,10 @@ public class AstCodeGenerator {
 				offSet++;
 			}
 			
-			//TODO field necessary?
+			offSet = 1;
 			for(VarDecl field : ast.fields()){
-				currT.addField(field.name, 0);
+				currT.addField(field.name, offSet);
+				offSet++;
 			}
 			
 		}

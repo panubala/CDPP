@@ -13,6 +13,8 @@ public class VarLocation {
 	}
 	
 	public String currentClass;
+	
+	public int numberOfParameters;
 
 	private int getVariableOffset(String variableName) {
 		if (!varLocation.containsKey(variableName)) { // The variable does not exist local
