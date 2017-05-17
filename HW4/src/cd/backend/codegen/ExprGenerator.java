@@ -200,18 +200,47 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 		System.out.println("==Cast");
 		{
 			// TODO
-			Register rightReg = cg.rm.getRegister();
-			Register leftReg = cg.rm.getRegister();
+			System.out.println(ast.typeName);
 
-			String errorLabel = cg.emit.uniqueLabel();
+			System.out.println(ast.arg());
+			
+			//ast.arg muss von ast.typeName erben
+			
+			String parent = ast.typeName;
+			String child = ast.arg().type.name;
+			
+			System.out.println(parent);
 
-			// String vTable = VTable
+			System.out.println(child);
+			boolean found = false;
+			while(!found){
+				System.out.println(child);
+				if(!child.equals("Object")){
+					found = child.equals(parent);
+					child = AstCodeGenerator.classTables.get(child).superClass;
+				} else{
+					System.out.println("Error Downcast");
+					throw new ToDoException();
+				}
+			}
+			
+			VTable classTable = AstCodeGenerator.classTables.get(ast.arg().type.name);
 
-			// Error
-			cg.emit.emitLabel(errorLabel);
-			cg.emit.emit("call", Config.EXIT);
+			int noF = classTable.numberOfField();
 
-			return null;
+			// Add arguments for calloc(#items, size_of_1_item)
+			cg.emit.emit("subl", 16, RegisterManager.STACK_REG);
+			cg.emit.emit("movl", "$" + noF, "0(" + RegisterManager.STACK_REG + ")");
+			cg.emit.emit("movl", "$4", "4(" + RegisterManager.STACK_REG + ")");
+
+			cg.emit.emit("call", Config.CALLOC);
+
+			cg.emit.emit("addl", 16, RegisterManager.STACK_REG);
+
+			Register reg = cg.rm.getRegister();
+			cg.emit.emit("movl", Register.EAX, reg);
+
+			return reg;
 
 		}
 	}

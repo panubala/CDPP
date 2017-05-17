@@ -1,19 +1,21 @@
-
-class Main{
-
-    
+class Main {
     void main() {
-
-    	int[] a;
-    	a = new int[3];
-    	
-    	a[1] = 2;
-    	write(a[1]);
+        A a;
+        B b;
+        a = new A();
+        b = new B();
+        //b = (B) a;
+        a = (A) b;
+        a.k = 5;
+        write(a.k);
+    }
 }
-    
-  
-    
+
+class A {
+	int k;
+	
+	void m(){}
+
 }
 
-
-
+class B extends A {}
