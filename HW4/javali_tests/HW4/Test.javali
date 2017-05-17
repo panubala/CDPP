@@ -1,4 +1,5 @@
 class Main {
+<<<<<<< Updated upstream
     void main() {
         A a;
         B b;
@@ -19,3 +20,9 @@ class A {
 }
 
 class B extends A {}
+=======
+   void main() {
+
+   }
+}
+>>>>>>> Stashed changes

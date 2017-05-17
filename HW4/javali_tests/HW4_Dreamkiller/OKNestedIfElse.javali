@@ -1,0 +1,22 @@
+/* Nested If else */
+
+
+class Main {   
+   void main() {
+   int a, b,c;
+   a=4;
+   b=5;
+   b=6;
+   
+   
+    if (a<b){
+   		 a=1;
+   		 if(a<c){
+   		 a=2;
+   		 }else{
+   		 a=3;
+   		 }
+	}else{
+		a=4;
+	}
+}
