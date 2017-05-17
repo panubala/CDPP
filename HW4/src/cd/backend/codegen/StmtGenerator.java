@@ -83,7 +83,9 @@ class StmtGenerator extends AstVisitor<Register, VarLocation> {
 
 			System.out.println(">>>>StackPointer is now at: " + arg.currentStackPointerOffset);
 			// Allocate space for fields
-			for (VarDecl field : ast.fields()) {
+			
+			
+			for (String field : cg.classTables.get(arg.currentClass).getFields()) {
 				cg.emit.emit("subl", 8, RegisterManager.STACK_REG);
 				cg.emit.emit("movl", "$1", "0(" + RegisterManager.STACK_REG + ")");
 				// TODO not always 4
@@ -95,13 +97,17 @@ class StmtGenerator extends AstVisitor<Register, VarLocation> {
 				Register reg = cg.rm.getRegister();
 				cg.emit.emit("movl", Register.EAX, reg);
 				cg.emit.emitMove(reg, arg.currentStackPointerOffset + "(" + cg.rm.BASE_REG.repr + ")");
-				cg.classTables.get(arg.currentClass).addField(field.name, arg.currentStackPointerOffset);
+				cg.classTables.get(arg.currentClass).addField(field, arg.currentStackPointerOffset);
 				cg.emit.emit("addl", "$-4", cg.rm.STACK_REG);
 				arg.currentStackPointerOffset -= 4;
+				
+				cg.rm.releaseRegister(reg);
 
 				System.out.println(">>>>StackPointer is now at: " + arg.currentStackPointerOffset);
 			}
 		}
+		
+		cg.printTables();
 
 		visitChildren(ast, arg);
 		return null;
@@ -168,16 +174,17 @@ class StmtGenerator extends AstVisitor<Register, VarLocation> {
 			cg.rm.releaseRegister(conditionReg);
 
 			cg.emit.emit("je", labelThen);
-			visit(ast.then(), arg);
+			visit(ast.otherwise(), arg);
+			
 			cg.emit.emit("jmp", labelOtherwise);
 			cg.emit.emitLabel(labelThen);
-			
+			visit(ast.then(), arg);
 	
-			visit(ast.otherwise(), arg);
+			
 		
 			cg.emit.emitLabel(labelOtherwise);
 
-			visit(ast.otherwise(), arg);
+			//visit(ast.otherwise(), arg);
 
 			return null;
 		}

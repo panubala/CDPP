@@ -221,7 +221,12 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 					child = AstCodeGenerator.classTables.get(child).superClass;
 				} else{
 					System.out.println("Error Downcast");
-					throw new ToDoException();
+
+					cg.emit.emit("subl", "$8", cg.rm.STACK_REG);
+					cg.emit.emit("movl", "$" + ExitCode.INVALID_DOWNCAST.value, "0(" + cg.rm.STACK_REG + ")");
+					cg.emit.emit("call", Config.EXIT);
+					cg.emit.emit("addl", "4", cg.rm.STACK_REG);
+					found = true;
 				}
 			}
 			

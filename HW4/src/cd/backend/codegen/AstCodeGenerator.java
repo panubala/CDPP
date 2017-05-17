@@ -196,10 +196,14 @@ public class AstCodeGenerator {
 			}
 		}
 		
+		System.out.println("here1");
+		printTables();
+		
 		while(classTables.size() != astRoots.size()){
 
 			for (ClassDecl ast : astRoots) {
 				if (classTables.containsKey(ast.superClass)) {
+					System.out.println("here2");
 					VTable currT = new VTable(ast.name);
 					currT.superClass = ast.superClass;
 					classTables.put(ast.name, currT);
@@ -231,6 +235,7 @@ public class AstCodeGenerator {
 				}
 			}
 		}
+		printTables();
 	}
 
 	protected void emitMethodSuffix(boolean returnNull) {
