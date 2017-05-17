@@ -171,10 +171,26 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 	@Override
 	public Register index(Index ast, VarLocation arg) {
 		System.out.println("==index");
-		{
-			// TODO
-			throw new ToDoException();
+
+		boolean temp = arg.calculateValue;
+
+		arg.calculateValue = false;
+		Register locationOfObject = cg.eg.gen(ast.left(), arg);
+
+		arg.calculateValue = true;
+		Register offSet = cg.eg.gen(ast.right(), arg);
+
+		cg.emit.emit("addl", "$1", offSet); // Add one because first entry is
+											// the length of array
+
+		cg.emit.emit("addl", offSet, locationOfObject);
+
+		cg.rm.releaseRegister(offSet);
+
+		if (temp) { // return Value
+			cg.emit.emit("movl", "0(" + locationOfObject + ")", locationOfObject);
 		}
+		return locationOfObject;
 	}
 
 	@Override
@@ -192,34 +208,50 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 		System.out.println("==Field");
 
 		System.out.println(ast.arg().type.name);
-		
+
 		boolean temp = arg.calculateValue;
-		
+
 		arg.calculateValue = false;
 		Register locationOfInstance = cg.eg.gen(ast.arg(), arg);
 		arg.calculateValue = temp;
-		
+
 		int fieldOffset = AstCodeGenerator.classTables.get(ast.arg().type.name).getFieldOffset(ast.fieldName);
-		
+
 		Register returnReg = cg.rm.getRegister();
-		
-		if(arg.calculateValue){
+
+		if (arg.calculateValue) {
 			cg.emit.emit("movl", fieldOffset + "(" + locationOfInstance + ")", returnReg);
-		}else{
+		} else {
 			cg.emit.emit("leal", fieldOffset + "(" + locationOfInstance + ")", returnReg);
 		}
 		cg.rm.releaseRegister(locationOfInstance);
-		
+
 		return returnReg;
 	}
 
 	@Override
 	public Register newArray(NewArray ast, VarLocation arg) {
 		System.out.println("==NewArray");
-		{
-			// TODO
-			throw new ToDoException();
-		}
+
+		Register numberOfEl = cg.eg.gen(ast.arg(), arg);
+
+		// TODO test if value pos
+
+		cg.emit.emit("addl", "$1", numberOfEl); // First Element stores length
+												// of Array
+
+		cg.emit.emit("subl", 16, RegisterManager.STACK_REG);
+		cg.emit.emit("movl", numberOfEl, "0(" + RegisterManager.STACK_REG + ")");
+		cg.emit.emit("movl", "$4", "4(" + RegisterManager.STACK_REG + ")");
+
+		cg.emit.emit("call", Config.CALLOC);
+
+		cg.emit.emit("addl", 16, RegisterManager.STACK_REG);
+
+		Register reg = cg.rm.getRegister();
+		cg.emit.emit("movl", Register.EAX, reg);
+
+		return reg;
 	}
 
 	@Override
@@ -384,10 +416,10 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 			}
 			if (ast.sym.kind == Kind.LOCAL || ast.sym.kind == Kind.PARAM) {
 				String loc = arg.getVariableLocation(ast.name);
-				
-				if(arg.calculateValue){
+
+				if (arg.calculateValue) {
 					cg.emit.emit("movl", loc, reg);
-				} else{
+				} else {
 					cg.emit.emit("leal", loc, reg);
 				}
 			}
