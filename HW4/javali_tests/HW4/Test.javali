@@ -1,12 +1,17 @@
 class Main{
-    int k;
+    
     void main() {
-    	m(2);
-    	write(k);
+    	A a;
+    	a = new A();
+    	a.b = new A();
+    	a.b.k = 1;
+    	write(a.b.k);
     }
-    void m(int z){
-    	k = z;
-    }
+}
+
+class A{
+	A b;
+	int k;
 }
 
 

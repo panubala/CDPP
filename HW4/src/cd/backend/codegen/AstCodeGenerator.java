@@ -100,7 +100,7 @@ public class AstCodeGenerator {
 					this.emit.emit("subl", 8, RegisterManager.STACK_REG);
 					
 					
-					int numberOfFields = mainClass.fields().size() + 1; //Plus Pointer to the VTable
+					int numberOfFields = mainClass.fields().size();// + 1; //Plus Pointer to the VTable
 					this.emit.emit("movl", "$" + numberOfFields, "0(" + RegisterManager.STACK_REG + ")");
 					//TODO not always 4
 					this.emit.emit("movl", "$4", "4(" + RegisterManager.STACK_REG + ")");
@@ -168,7 +168,7 @@ public class AstCodeGenerator {
 				offSet++;
 			}
 			
-			offSet = 1;
+			offSet = 0;
 			for(VarDecl field : ast.fields()){
 				currT.addField(field.name, offSet);
 				offSet++;

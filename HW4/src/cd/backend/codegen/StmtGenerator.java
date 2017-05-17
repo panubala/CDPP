@@ -207,41 +207,48 @@ class StmtGenerator extends AstVisitor<Register, VarLocation> {
 			// throw new RuntimeException("LHS must be var in HW1");
 			// Var var = (Var) ast.left();
 			
+			
+			arg.calculateValue = false;
+			Register lhsReg = cg.eg.gen(ast.left(), arg);
+			arg.calculateValue = true;
 			Register rhsReg = cg.eg.gen(ast.right(), arg);
+			
+			cg.emit.emit("movl", rhsReg, "0("+lhsReg+")");
+			
 
-			Register lhsReg = cg.rm.getRegister();
+//			if (ast.left() instanceof Var) {
+//				Var var = (Var) ast.left();
+//
+//				if (ast.right() instanceof NewObject) {
+//					VTable vt = AstCodeGenerator.classTables.get(ast.left().type.name).copy();
+//					AstCodeGenerator.objectTables.put(var.name, new VTable(vt.className));
+//				}
+//
+//				if (var.sym.kind == Kind.LOCAL) {
+//					lhsReg = cg.eg.gen(ast.left(), arg);
+//
+//					cg.emit.emit("movl", rhsReg, lhsReg);
+//					cg.emit.emitMove(lhsReg, arg.getVariableLocation(var.name));
+//
+//				}
 
-			// TODO left side, Array, field, ...
-
-			if (ast.left() instanceof Var) {
-				Var var = (Var) ast.left();
-
-				if (ast.right() instanceof NewObject) {
-					VTable vt = AstCodeGenerator.classTables.get(ast.left().type.name).copy();
-					AstCodeGenerator.objectTables.put(var.name, new VTable(vt.className));
-				}
-
-				if (var.sym.kind == Kind.LOCAL) {
-					lhsReg = cg.eg.gen(ast.left(), arg);
-
-					cg.emit.emit("movl", rhsReg, lhsReg);
-					cg.emit.emitMove(lhsReg, arg.getVariableLocation(var.name));
-
-				}
-
-				if (var.sym.kind == Kind.FIELD) {
-
-					int offSet = 8 + arg.numberOfParameters*4;
-					cg.emit.emit("movl", offSet + "(" + cg.rm.BASE_REG + ")", lhsReg);
-
-					// cg.emit.emit("movl", "0(" + lhsReg + ")", lhsReg);
-					cg.emit.emit("movl", rhsReg, "0(" + lhsReg + ")");
-
-					// cg.emit.emitMove(rhsReg, "0(" + lhsReg + ")");
-					// cg.emit.emitMove();
-				}
-			} else
-				throw new RuntimeException("LHS must be var in HW1");
+//				if (var.sym.kind == Kind.FIELD) {
+//
+//					int offSet = 8 + arg.numberOfParameters * 4;
+//					cg.emit.emit("movl", offSet + "(" + cg.rm.BASE_REG + ")", lhsReg);
+//
+//					// cg.emit.emit("movl", "0(" + lhsReg + ")", lhsReg);
+//					cg.emit.emit("movl", rhsReg, "0(" + lhsReg + ")");
+//
+//					// cg.emit.emitMove(rhsReg, "0(" + lhsReg + ")");
+//					// cg.emit.emitMove();
+//				}
+//			} else if (ast.left() instanceof Field) {
+//				lhsReg = cg.eg.gen(ast.left(), arg);
+//
+//			} else {
+//				throw new RuntimeException("LHS must be var in HW1");
+//			}
 			cg.rm.releaseRegister(rhsReg);
 			cg.rm.releaseRegister(lhsReg);
 
