@@ -25,7 +25,6 @@ public class AstCodeGenerator {
 	public int oldBasePointer;
 
 	public static HashMap<String, VTable> classTables = new HashMap<String, VTable>();
-	public static HashMap<String, VTable> objectTables = new HashMap<String, VTable>();
 
 	protected final Main main;
 
@@ -255,11 +254,6 @@ public class AstCodeGenerator {
 		}
 		System.out.println("////////////////////////////////");
 		System.out.println("ObjectTables:");
-		for (String ot : objectTables.keySet()) {
-			System.out.println(ot);
-			System.out.println(objectTables.get(ot));
-		}
-		System.out.println("////////////////////////////////");
 
 	}
 

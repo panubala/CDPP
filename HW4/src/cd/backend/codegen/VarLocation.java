@@ -1,15 +1,25 @@
 package cd.backend.codegen;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class VarLocation {
 
 	private HashMap<String, Integer> varLocation;
+	private HashSet<String> createdObjects;
 	private AstCodeGenerator cg;
 
 	public VarLocation(AstCodeGenerator astCodeGenerator) {
 		this.varLocation = new HashMap();
 		this.cg = astCodeGenerator;
+	}
+	
+	public void createObject(String name){
+		createdObjects.add(name);
+	}
+	
+	public boolean objectExist(String name){
+		return createdObjects.contains(name);
 	}
 	
 	public String currentClass;

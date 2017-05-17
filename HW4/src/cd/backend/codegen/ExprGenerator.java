@@ -265,7 +265,8 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 
 		cg.emit.emit("addl", "$1", offSet); // Add one because first entry is
 											// the length of array
-
+		
+		cg.emit.emit("imul", "$4", offSet);
 		cg.emit.emit("addl", offSet, locationOfObject);
 
 		cg.rm.releaseRegister(offSet);
@@ -356,7 +357,7 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 
 		Register reg = cg.rm.getRegister();
 		cg.emit.emit("movl", Register.EAX, reg);
-
+		
 		return reg;
 
 	}
@@ -394,17 +395,17 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 		if (ast.receiver() instanceof Ast.Var) {
 			Var v = (Ast.Var) ast.receiver();
 			System.out.println(v.name);
-			if (!AstCodeGenerator.objectTables.containsKey(v.name)) {
-				System.out.println("NULLPOINTER_EXCEPTION");
-
-				cg.emit.emit("subl", "4", cg.rm.STACK_REG);
-				cg.emit.emit("movl", "$4", "0(" + cg.rm.STACK_REG + ")"); // Exit
-																			// Code
-																			// 4:
-																			// NullPointerException
-				cg.emit.emit("call", Config.EXIT);
-				cg.emit.emit("addl", "4", cg.rm.STACK_REG);
-			}
+//			if (varLoc.objectExist(v.name)) {
+//				System.out.println("NULLPOINTER_EXCEPTION");
+//
+//				cg.emit.emit("subl", "4", cg.rm.STACK_REG);
+//				cg.emit.emit("movl", "$4", "0(" + cg.rm.STACK_REG + ")"); // Exit
+//																			// Code
+//																			// 4:
+//																			// NullPointerException
+//				cg.emit.emit("call", Config.EXIT);
+//				cg.emit.emit("addl", "4", cg.rm.STACK_REG);
+//			}
 		}
 
 
