@@ -67,6 +67,8 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 			int leftRN = cg.rnv.calc(ast.left());
 			int rightRN = cg.rnv.calc(ast.right());
 
+			String op = "";
+
 			Register leftReg, rightReg;
 			if (leftRN > rightRN) {
 				leftReg = gen(ast.left(), arg);
@@ -116,9 +118,44 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 						cg.emit.emit("popl", s);
 				}
 				break;
-			default: {
-				throw new ToDoException();
-			}
+			case B_AND:
+				cg.emit.emit("and", leftReg, rightReg);
+				break;
+
+			case B_OR:
+				cg.emit.emit("or", leftReg, rightReg);
+				break;
+
+			case B_EQUAL:
+				op = "je";
+
+			case B_NOT_EQUAL:
+				op = "jne";
+
+			case B_LESS_THAN:
+				op = "jl";
+
+			case B_LESS_OR_EQUAL:
+				op = "jle";
+
+			case B_GREATER_THAN:
+				op = "jg";
+
+			case B_GREATER_OR_EQUAL:
+				op = "jge";
+
+				String trueLabel = cg.emit.uniqueLabel();
+				String falseLabel = cg.emit.uniqueLabel();
+
+				cg.emit.emit("cmp", rightReg, leftReg);
+				cg.emit.emit(op, trueLabel);
+				cg.emit.emitMove(constant(0), leftReg);
+				cg.emit.emit("jmp", falseLabel);
+				cg.emit.emitLabel(trueLabel);
+				cg.emit.emitMove(constant(1), leftReg);
+				cg.emit.emitLabel(falseLabel);
+				break;
+			
 			}
 
 			cg.rm.releaseRegister(rightReg);
@@ -163,7 +200,18 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 		System.out.println("==Cast");
 		{
 			// TODO
-			throw new ToDoException();
+			Register rightReg = cg.rm.getRegister();
+			Register leftReg = cg.rm.getRegister();
+
+			String errorLabel = cg.emit.uniqueLabel();
+
+			// String vTable = VTable
+
+			// Error
+			cg.emit.emitLabel(errorLabel);
+			cg.emit.emit("call", Config.EXIT);
+
+			return null;
 
 		}
 	}
@@ -282,7 +330,6 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 	public Register nullConst(NullConst ast, VarLocation varLoc) {
 		System.out.println("==NullConst");
 		{
-			// TODO
 			Register reg = cg.rm.getRegister();
 			cg.emit.emitMove(constant(0), reg);
 			return reg;
@@ -293,16 +340,20 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 	public Register thisRef(ThisRef ast, VarLocation arg) {
 		System.out.println("==ThisRef");
 
+
 		Register locationOfThisInstance = cg.rm.getRegister();
 		int offSet = 8 + arg.numberOfParameters * 4;
 		cg.emit.emit("movl", offSet + "(" + RegisterManager.BASE_REG + ")", locationOfThisInstance);
 		return locationOfThisInstance;
+
 	}
 
 	@Override
 	public Register methodCall(MethodCallExpr ast, VarLocation varLoc) {
 		System.out.println("==Expr-MethodCall");
 		List<Expr> args = ast.argumentsWithoutReceiver();
+
+
 
 		// check nullPointer
 		if (ast.receiver() instanceof Ast.Var) {
@@ -321,9 +372,11 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 			}
 		}
 
+
 		Register locationOfClassInstance = cg.eg.gen(ast.receiver(), varLoc); // Adress
 																				// of
 																				// instance
+
 
 		// Load adress of CalledFnc
 
@@ -335,6 +388,7 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 
 		// Add Offset of method
 		int offSet = vTable.getMethodOffset(ast.methodName);
+
 
 		cg.emit.emit("addl", "$-4", RegisterManager.STACK_REG);
 		cg.currentStackPointerOffset -= 4;
@@ -360,6 +414,7 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 		}
 
 		cg.emit.emit("addl", "$" + offSet, locationOfClassVTable);
+
 
 		cg.emit.emit("movl", "0(" + locationOfClassVTable + ")", locationOfClassVTable);
 		cg.emit.emit("call", "*" + locationOfClassVTable);
@@ -402,7 +457,7 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 
 	@Override
 	public Register var(Var ast, VarLocation arg) {
-		System.out.println("==Var");
+		System.out.println("==Var " + ast.name);
 		{
 			Register reg = cg.rm.getRegister();
 
@@ -410,9 +465,11 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 				int offSet = 8 + arg.numberOfParameters * 4;
 				cg.emit.emit("movl", offSet + "(" + cg.rm.BASE_REG + ")", reg);
 
+
 				if (arg.calculateValue) {
 					cg.emit.emit("movl", 0 + "(" + reg + ")", reg);
 				}
+
 			}
 			if (ast.sym.kind == Kind.LOCAL || ast.sym.kind == Kind.PARAM) {
 				String loc = arg.getVariableLocation(ast.name);

@@ -156,36 +156,23 @@ class StmtGenerator extends AstVisitor<Register, VarLocation> {
 			String labelThen = cg.emit.uniqueLabel();
 			String labelOtherwise = cg.emit.uniqueLabel();
 			String doneLabel = cg.emit.uniqueLabel();
-			// TODO:
+			
 			Register conditionReg = cg.eg.gen(ast.condition(), arg);
 
 			cg.emit.emit("cmpl", constant(0), conditionReg);
+			cg.rm.releaseRegister(conditionReg);
 
-			// System.out.println("Here");
-			// cg.emit.emitLabel(labelThen);
 			cg.emit.emit("je", labelThen);
 			visit(ast.then(), arg);
 			cg.emit.emit("jmp", labelOtherwise);
 			cg.emit.emitLabel(labelThen);
-			//
-			// visit(ast.then(), arg);
-			// cg.emit.emit("jmp", doneLabel);
-			//
+			
+	
 			visit(ast.otherwise(), arg);
-			// cg.emit.emit("jmp", doneLabel);
+		
 			cg.emit.emitLabel(labelOtherwise);
 
 			visit(ast.otherwise(), arg);
-
-			// if(ast.otherwise() == null){
-			//
-			//
-			// //Then part
-			// visit(ast.then(),arg);
-			//
-			// }else{
-			//
-			// }
 
 			return null;
 		}
@@ -195,7 +182,24 @@ class StmtGenerator extends AstVisitor<Register, VarLocation> {
 	public Register whileLoop(WhileLoop ast, VarLocation arg) {
 		System.out.println("==WhileLoop");
 		{
-			throw new ToDoException();
+		
+			Register conditionReg = cg.eg.gen(ast.condition(),arg );
+			String before = cg.emit.uniqueLabel();
+			String after = cg.emit.uniqueLabel();
+			
+			cg.emit.emitLabel(before);
+			
+			cg.emit.emit("cmp", constant(0), conditionReg);
+			
+			cg.emit.emit("je", after);
+			visit(ast.body(), arg);
+			
+			cg.emit.emit("jmp", before);
+	        cg.emit.emitLabel(after);
+			
+			return null;
+			
+			
 		}
 	}
 
@@ -292,8 +296,7 @@ class StmtGenerator extends AstVisitor<Register, VarLocation> {
 			} else {
 
 				Register reg = cg.eg.gen(ast.arg(), arg);
-				// TODO: Panuya: Need to find out where I should put the reg -
-				// Into the EAX register
+				
 				cg.emit.emitMove(reg, Register.EAX);
 				cg.emitMethodSuffix(false);
 				cg.rm.releaseRegister(reg);
