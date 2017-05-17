@@ -1,0 +1,15 @@
+class Main {
+	void main() {
+		int i;
+		int[] a;
+
+		i0 = 0;
+
+        a = new int[5];
+        a[0] = 1;
+
+        i = a[0];
+
+        
+	}
+}

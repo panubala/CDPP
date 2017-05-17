@@ -1,28 +1,7 @@
 class Main {
-<<<<<<< Updated upstream
-    void main() {
-        A a;
-        B b;
-        a = new A();
-        b = new B();
-        //b = (B) a;
-        a = (A) b;
-        a.k = 5;
-        write(a.k);
-    }
-}
 
-class A {
-	int k;
-	
-	void m(){}
-
-}
-
-class B extends A {}
-=======
    void main() {
 
    }
 }
->>>>>>> Stashed changes
+
