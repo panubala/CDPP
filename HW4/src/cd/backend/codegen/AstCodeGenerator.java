@@ -21,7 +21,7 @@ public class AstCodeGenerator {
 	protected ExprGenerator eg;
 	protected StmtGenerator sg;
 
-	public int currentStackPointerOffset;
+	//public int currentStackPointerOffset;
 	public int oldBasePointer;
 
 	public static HashMap<String, VTable> classTables = new HashMap<String, VTable>();
@@ -128,9 +128,9 @@ public class AstCodeGenerator {
 																							// vtable
 
 		this.emit.emit("addl", "$-4", this.rm.STACK_REG);
-		this.currentStackPointerOffset -= 4;
+		//this.currentStackPointerOffset -= 4;
 		this.emit.emitMove(locationOfMainInstance, "0(" + this.rm.STACK_REG.repr + ")");
-		System.out.println(">>>>StackPointer is now at: " + this.currentStackPointerOffset);
+		//System.out.println(">>>>StackPointer is now at: " + this.currentStackPointerOffset);
 		this.rm.releaseRegister(locationOfMainInstance);
 
 		int offSet = vTable.getMethodOffset("main");
@@ -156,8 +156,10 @@ public class AstCodeGenerator {
 	}
 
 	protected void emitDataSection(List<? extends ClassDecl> astRoots) {
-
+		
+	
 		fillTables(astRoots);
+		
 
 		this.emit.emitRaw(Config.DATA_INT_SECTION);
 
@@ -172,6 +174,8 @@ public class AstCodeGenerator {
 	}
 
 	protected void fillTables(List<? extends ClassDecl> astRoots) {
+		
+		System.out.println(astRoots);
 		for (ClassDecl ast : astRoots) {
 
 			if (ast.superClass.equals("Object")) {
@@ -193,6 +197,7 @@ public class AstCodeGenerator {
 		}
 		
 		while(classTables.size() != astRoots.size()){
+
 			for (ClassDecl ast : astRoots) {
 				if (classTables.containsKey(ast.superClass)) {
 					VTable currT = new VTable(ast.name);
@@ -240,6 +245,7 @@ public class AstCodeGenerator {
 		System.out.println("VirtualTables:");
 		for (String vt : classTables.keySet()) {
 			System.out.println(vt);
+			System.out.println("=======");
 			System.out.println(classTables.get(vt));
 		}
 		System.out.println("////////////////////////////////");

@@ -421,16 +421,16 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 
 
 		cg.emit.emit("addl", "$-4", RegisterManager.STACK_REG);
-		cg.currentStackPointerOffset -= 4;
+		varLoc.currentStackPointerOffset -= 4;
 		cg.emit.emitMove(locationOfClassInstance, "0(" + RegisterManager.STACK_REG.repr + ")");
-		System.out.println(">>>>StackPointer is now at: " + cg.currentStackPointerOffset);
+		System.out.println(">>>>StackPointer is now at: " + varLoc.currentStackPointerOffset);
 		cg.rm.releaseRegister(locationOfClassInstance);
 
 		// Make space for arguments
 		cg.emit.emit("subl", args.size() * 4, cg.rm.STACK_REG); // TODO 4?
-		cg.currentStackPointerOffset -= args.size() * 4;
+		varLoc.currentStackPointerOffset -= args.size() * 4;
 
-		System.out.println(">>>>StackPointer is now at: " + cg.currentStackPointerOffset);
+		System.out.println(">>>>StackPointer is now at: " + varLoc.currentStackPointerOffset);
 
 		// push arguments
 		int offset = 0;
@@ -453,9 +453,8 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 		System.out.println("----------------------------------------");
 
 		// Return value
-		AstCodeGenerator.classTables.get(varLoc.currentClass).adjustOffSet(-24);
 		Register retValue = cg.rm.getRegister();
-
+		
 		cg.emit.emit("movl", Register.EAX, retValue);
 		// cg.rm.releaseRegister(Register.EAX);
 

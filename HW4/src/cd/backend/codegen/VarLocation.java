@@ -16,6 +16,8 @@ public class VarLocation {
 	
 	public int numberOfParameters;
 	
+	public int currentStackPointerOffset;
+	
 	public boolean calculateValue = true; //if false -> calculate Adress
 
 	private int getVariableOffset(String variableName) {
@@ -24,10 +26,10 @@ public class VarLocation {
 			System.out.println("==Variable " + variableName + " is currently not stored on the stack");
 			cg.emit.emit("addl", "$-4", cg.rm.STACK_REG); // move the
 															// stackpointer
-			cg.currentStackPointerOffset -= 4;
+			currentStackPointerOffset -= 4;
 
-			System.out.println(">>>>StackPointer is now at: " + cg.currentStackPointerOffset);
-			varLocation.put(variableName, cg.currentStackPointerOffset);
+			System.out.println(">>>>StackPointer is now at: " + currentStackPointerOffset);
+			varLocation.put(variableName, currentStackPointerOffset);
 		}
 		return varLocation.get(variableName);
 	}
