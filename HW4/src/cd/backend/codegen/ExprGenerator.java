@@ -9,6 +9,7 @@ import java.util.List;
 
 import cd.Config;
 import cd.ToDoException;
+import cd.backend.ExitCode;
 import cd.backend.codegen.RegisterManager.Register;
 import cd.ir.Ast;
 import cd.ir.Ast.BinaryOp;
@@ -362,13 +363,13 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 			if (!AstCodeGenerator.objectTables.containsKey(v.name)) {
 				System.out.println("NULLPOINTER_EXCEPTION");
 
-				cg.emit.emit("subl", 4, cg.rm.STACK_REG);
+				cg.emit.emit("subl", "4", cg.rm.STACK_REG);
 				cg.emit.emit("movl", "$4", "0(" + cg.rm.STACK_REG + ")"); // Exit
 																			// Code
 																			// 4:
 																			// NullPointerException
 				cg.emit.emit("call", Config.EXIT);
-				cg.emit.emit("addl", 4, cg.rm.STACK_REG);
+				cg.emit.emit("addl", "4", cg.rm.STACK_REG);
 			}
 		}
 
