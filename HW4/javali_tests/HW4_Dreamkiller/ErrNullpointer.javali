@@ -1,0 +1,15 @@
+class Main {
+	void main() {
+        A a;
+        b = new A();
+        a.b.a();
+	}
+}
+
+class A {
+    A b;
+
+    int a() {
+        return 1;
+    }
+}

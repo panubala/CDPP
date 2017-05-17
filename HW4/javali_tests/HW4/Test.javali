@@ -1,5 +1,6 @@
 /* Test expressions using array elements as operands */
 class Main {
+<<<<<<< HEAD
    int[] x;
    void main() {
       int i;
@@ -12,3 +13,11 @@ class Main {
       writeln();
    }
 }
+=======
+
+   void main() {
+
+   }
+}
+
+>>>>>>> 9c3ac39793988d0c8dfd7b09763536135c0afb2b

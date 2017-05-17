@@ -1,0 +1,21 @@
+class A {
+    int a;
+}
+
+class B extends A {
+    int b;
+}
+
+class C extends B {
+    int c;
+}
+
+class D extends B {
+    int d1;
+    int d2;
+}
+
+class Main {
+    void main() {
+    }
+}
