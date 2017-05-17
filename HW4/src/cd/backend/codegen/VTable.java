@@ -1,6 +1,7 @@
 package cd.backend.codegen;
 
 import java.util.HashMap;
+import java.util.Set;
 
 public class VTable {
 
@@ -11,6 +12,8 @@ public class VTable {
 	}
 
 	public final String className;
+	
+	public String superClass;
 
 	private HashMap<String, Integer> methods = new HashMap<String, Integer>(); // method
 																				// name
@@ -26,6 +29,10 @@ public class VTable {
 	public void addMethod(String methodName, int methodOffset) {
 		methods.put(methodName, methodOffset * 4);
 	}
+		
+	public Set<String> getMethods(){
+		return methods.keySet();
+	}
 
 	public int numberOfField() {
 		return fields.size();
@@ -33,6 +40,10 @@ public class VTable {
 
 	public void addField(String fieldName, int fieldOffset) {
 		fields.put(fieldName, fieldOffset);
+	}
+	
+	public Set<String> getFields(){
+		return fields.keySet();
 	}
 
 	public boolean contains(String name) {
