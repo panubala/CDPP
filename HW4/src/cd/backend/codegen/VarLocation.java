@@ -13,6 +13,10 @@ public class VarLocation {
 	}
 	
 	public String currentClass;
+	
+	public int numberOfParameters;
+	
+	public boolean calculateValue = true; //if false -> calculate Adress
 
 	private int getVariableOffset(String variableName) {
 		if (!varLocation.containsKey(variableName)) { // The variable does not exist local
@@ -29,7 +33,6 @@ public class VarLocation {
 	}
 
 	public String getVariableLocation(String variableName) {
-		if (getVariableOffset(variableName) == -70) return null;
 		return getVariableOffset(variableName) + "(" + cg.rm.BASE_REG.repr + ")";
 	}
 

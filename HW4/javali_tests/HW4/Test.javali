@@ -1,5 +1,6 @@
 
 class Main{
+<<<<<<< HEAD
     
     void main() {
     	int a;
@@ -16,10 +17,24 @@ class Main{
     	}
     	
     	
+=======
+    
+    void main() {
+    	A a;
+    	a = new A();
+    	a.b = new A();
+    	a.b.k = 1;
+    	write(a.b.k);
+>>>>>>> origin/master
     }
     
   
     
+}
+
+class A{
+	A b;
+	int k;
 }
 
 

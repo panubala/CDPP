@@ -10,6 +10,7 @@ import java.util.List;
 import cd.Config;
 import cd.ToDoException;
 import cd.backend.codegen.RegisterManager.Register;
+import cd.ir.Ast;
 import cd.ir.Ast.BinaryOp;
 import cd.ir.Ast.BooleanConst;
 import cd.ir.Ast.BuiltInRead;
@@ -25,7 +26,6 @@ import cd.ir.Ast.NullConst;
 import cd.ir.Ast.ThisRef;
 import cd.ir.Ast.UnaryOp;
 import cd.ir.Ast.Var;
-import cd.ir.Ast;
 import cd.ir.ExprVisitor;
 import cd.ir.Symbol.VariableSymbol.Kind;
 import cd.util.debug.AstOneLine;
@@ -238,10 +238,27 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 	@Override
 	public Register field(Field ast, VarLocation arg) {
 		System.out.println("==Field");
-		{
-			// TODO
-			throw new ToDoException();
+
+		System.out.println(ast.arg().type.name);
+		
+		boolean temp = arg.calculateValue;
+		
+		arg.calculateValue = false;
+		Register locationOfInstance = cg.eg.gen(ast.arg(), arg);
+		arg.calculateValue = temp;
+		
+		int fieldOffset = AstCodeGenerator.classTables.get(ast.arg().type.name).getFieldOffset(ast.fieldName);
+		
+		Register returnReg = cg.rm.getRegister();
+		
+		if(arg.calculateValue){
+			cg.emit.emit("movl", fieldOffset + "(" + locationOfInstance + ")", returnReg);
+		}else{
+			cg.emit.emit("leal", fieldOffset + "(" + locationOfInstance + ")", returnReg);
 		}
+		cg.rm.releaseRegister(locationOfInstance);
+		
+		return returnReg;
 	}
 
 	@Override
@@ -262,24 +279,13 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 		int noF = classTable.numberOfField();
 
 		// Add arguments for calloc(#items, size_of_1_item)
-		cg.emit.emit("subl", noF * 4, RegisterManager.STACK_REG);
+		cg.emit.emit("subl", 16, RegisterManager.STACK_REG);
 		cg.emit.emit("movl", "$" + noF, "0(" + RegisterManager.STACK_REG + ")");
-		cg.emit.emit("movl", "$4", "4(" + RegisterManager.STACK_REG + ")"); // TODO
-																			// not
-																			// only
-																			// alwasys
-																			// 4
-																			// i
-																			// guess,
-																			// (if
-																			// Objetc
-																			// is
-																			// in
-																			// classField)
+		cg.emit.emit("movl", "$4", "4(" + RegisterManager.STACK_REG + ")");
 
 		cg.emit.emit("call", Config.CALLOC);
 
-		cg.emit.emit("addl", noF * 4, RegisterManager.STACK_REG);
+		cg.emit.emit("addl", 16, RegisterManager.STACK_REG);
 
 		Register reg = cg.rm.getRegister();
 		cg.emit.emit("movl", Register.EAX, reg);
@@ -289,7 +295,7 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 	}
 
 	@Override
-	public Register nullConst(NullConst ast, VarLocation arg) {
+	public Register nullConst(NullConst ast, VarLocation varLoc) {
 		System.out.println("==NullConst");
 		{
 			Register reg = cg.rm.getRegister();
@@ -301,34 +307,21 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 	@Override
 	public Register thisRef(ThisRef ast, VarLocation arg) {
 		System.out.println("==ThisRef");
-		// TODO
-		// int offset = arg.getVariableLocation("this");
 
-		// Register thisReg = cg.rm.getRegister();
 
-		return cg.rm.getRegister();
+		Register locationOfThisInstance = cg.rm.getRegister();
+		int offSet = 8 + arg.numberOfParameters * 4;
+		cg.emit.emit("movl", offSet + "(" + RegisterManager.BASE_REG + ")", locationOfThisInstance);
+		return locationOfThisInstance;
+
 	}
 
 	@Override
-	public Register methodCall(MethodCallExpr ast, VarLocation arg) {
+	public Register methodCall(MethodCallExpr ast, VarLocation varLoc) {
 		System.out.println("==Expr-MethodCall");
 		List<Expr> args = ast.argumentsWithoutReceiver();
-		// Make space for arguments
-		cg.emit.emit("subl", args.size() * 4, cg.rm.STACK_REG); // TODO 4?
-		cg.currentStackPointerOffset -= args.size() * 4;
 
-		System.out.println(">>>>StackPointer is now at: " + cg.currentStackPointerOffset);
 
-		// push arguments
-		int offset = 0;
-		for (Expr argument : args) {
-			// TODO add emitMove(reg, offset, baseP) -> emitStore
-			String dest = offset + "(" + cg.rm.STACK_REG.repr + ")";
-			Register reg = cg.eg.gen(argument, arg);
-			cg.emit.emitMove(reg, dest);
-			cg.rm.releaseRegister(reg);
-			offset += 4;
-		}
 
 		// check nullPointer
 		if (ast.receiver() instanceof Ast.Var) {
@@ -347,33 +340,58 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 			}
 		}
 
-		String calledClass = ast.receiver().type.name;
 
-		// TODO receiver
-		VTable vTable = AstCodeGenerator.classTables.get(calledClass); // TODO
-																		// Main
-																		// harcoded
+		Register locationOfClassInstance = cg.eg.gen(ast.receiver(), varLoc); // Adress
+																				// of
+																				// instance
 
-		Register reg = cg.rm.getRegister();
 
 		// Load adress of CalledFnc
-		cg.emit.emit("leal", calledClass, reg);
+
+		String calledClass = ast.receiver().type.name;
+		VTable vTable = AstCodeGenerator.classTables.get(calledClass);
+
+		Register locationOfClassVTable = cg.rm.getRegister();
+		cg.emit.emit("leal", calledClass, locationOfClassVTable);
 
 		// Add Offset of method
 		int offSet = vTable.getMethodOffset(ast.methodName);
 
-		AstCodeGenerator.classTables.get(arg.currentClass).adjustOffSet(24);
 
-		cg.emit.emit("addl", "$" + offSet, reg);
+		cg.emit.emit("addl", "$-4", RegisterManager.STACK_REG);
+		cg.currentStackPointerOffset -= 4;
+		cg.emit.emitMove(locationOfClassInstance, "0(" + RegisterManager.STACK_REG.repr + ")");
+		System.out.println(">>>>StackPointer is now at: " + cg.currentStackPointerOffset);
+		cg.rm.releaseRegister(locationOfClassInstance);
 
-		cg.emit.emit("movl", "0(" + reg + ")", reg);
-		cg.emit.emit("call", "*" + reg);
+		// Make space for arguments
+		cg.emit.emit("subl", args.size() * 4, cg.rm.STACK_REG); // TODO 4?
+		cg.currentStackPointerOffset -= args.size() * 4;
 
-		cg.rm.releaseRegister(reg);
+		System.out.println(">>>>StackPointer is now at: " + cg.currentStackPointerOffset);
+
+		// push arguments
+		int offset = 0;
+		for (Expr argument : args) {
+			// TODO add emitMove(reg, offset, baseP) -> emitStore
+			String dest = offset + "(" + cg.rm.STACK_REG.repr + ")";
+			Register reg = cg.eg.gen(argument, varLoc);
+			cg.emit.emitMove(reg, dest);
+			cg.rm.releaseRegister(reg);
+			offset += 4;
+		}
+
+		cg.emit.emit("addl", "$" + offSet, locationOfClassVTable);
+
+
+		cg.emit.emit("movl", "0(" + locationOfClassVTable + ")", locationOfClassVTable);
+		cg.emit.emit("call", "*" + locationOfClassVTable);
+
+		cg.rm.releaseRegister(locationOfClassVTable);
 		System.out.println("----------------------------------------");
 
 		// Return value
-		AstCodeGenerator.classTables.get(arg.currentClass).adjustOffSet(-24);
+		AstCodeGenerator.classTables.get(varLoc.currentClass).adjustOffSet(-24);
 		Register retValue = cg.rm.getRegister();
 
 		cg.emit.emit("movl", Register.EAX, retValue);
@@ -412,14 +430,23 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 			Register reg = cg.rm.getRegister();
 
 			if (ast.sym.kind == Kind.FIELD) {
-				VTable vt = AstCodeGenerator.classTables.get(arg.currentClass);
-				int offSet = vt.getFieldOffset(ast.name);
+				int offSet = 8 + arg.numberOfParameters * 4;
 				cg.emit.emit("movl", offSet + "(" + cg.rm.BASE_REG + ")", reg);
-				cg.emit.emit("movl", 0 + "(" + reg + ")", reg);
+
+
+				if (arg.calculateValue) {
+					cg.emit.emit("movl", 0 + "(" + reg + ")", reg);
+				}
+
 			}
-			if (ast.sym.kind == Kind.LOCAL) {
+			if (ast.sym.kind == Kind.LOCAL || ast.sym.kind == Kind.PARAM) {
 				String loc = arg.getVariableLocation(ast.name);
-				cg.emit.emit("movl", loc, reg);
+				
+				if(arg.calculateValue){
+					cg.emit.emit("movl", loc, reg);
+				} else{
+					cg.emit.emit("leal", loc, reg);
+				}
 			}
 
 			return reg;

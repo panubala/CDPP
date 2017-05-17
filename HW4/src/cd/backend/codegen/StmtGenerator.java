@@ -113,6 +113,7 @@ class StmtGenerator extends AstVisitor<Register, VarLocation> {
 
 		VarLocation arg = new VarLocation(cg);
 		arg.currentClass = argOld.currentClass;
+		arg.numberOfParameters = ast.argumentNames.size();
 		System.out.println(arg);
 
 		// if (ast.name.equals("main")) {
@@ -121,26 +122,22 @@ class StmtGenerator extends AstVisitor<Register, VarLocation> {
 
 		cg.emit.emitLabel(arg.currentClass + "." + ast.name);
 
-		if (!arg.currentClass.equals("Main") || !ast.name.equals("main")) {
-			cg.emit.emit("enter", "$0", "$0");
-		//	AstCodeGenerator.classTables.get(arg.currentClass).adjustOffSet(24);
-		}
+		cg.emit.emit("enter", "$0", "$0");
+		// AstCodeGenerator.classTables.get(arg.currentClass).adjustOffSet(24);
+
 		// cg.emit.emit("and", -16, STACK_REG); // What is the use of that?
 
-		int currentOffset = 8; // Dont know exactly why, i guess it's because
-								// retAdress is above BasePointer
-		
+		int currentOffset = 8;
 
-		
 		for (String argName : ast.argumentNames) {
 			arg.putParameters(argName, currentOffset);
 			currentOffset += 4;
 		}
 
 		gen(ast.body(), arg);
-		
+
 		if (!arg.currentClass.equals("Main") || !ast.name.equals("main")) {
-		//	AstCodeGenerator.classTables.get(arg.currentClass).adjustOffSet(-24);
+			// AstCodeGenerator.classTables.get(arg.currentClass).adjustOffSet(-24);
 		}
 
 		System.out.println(arg);
@@ -213,43 +210,49 @@ class StmtGenerator extends AstVisitor<Register, VarLocation> {
 			// if (!(ast.left() instanceof Var))
 			// throw new RuntimeException("LHS must be var in HW1");
 			// Var var = (Var) ast.left();
-
+			
+			
+			arg.calculateValue = false;
+			Register lhsReg = cg.eg.gen(ast.left(), arg);
+			arg.calculateValue = true;
 			Register rhsReg = cg.eg.gen(ast.right(), arg);
+			
+			cg.emit.emit("movl", rhsReg, "0("+lhsReg+")");
+			
 
-			Register lhsReg = cg.rm.getRegister();
+//			if (ast.left() instanceof Var) {
+//				Var var = (Var) ast.left();
+//
+//				if (ast.right() instanceof NewObject) {
+//					VTable vt = AstCodeGenerator.classTables.get(ast.left().type.name).copy();
+//					AstCodeGenerator.objectTables.put(var.name, new VTable(vt.className));
+//				}
+//
+//				if (var.sym.kind == Kind.LOCAL) {
+//					lhsReg = cg.eg.gen(ast.left(), arg);
+//
+//					cg.emit.emit("movl", rhsReg, lhsReg);
+//					cg.emit.emitMove(lhsReg, arg.getVariableLocation(var.name));
+//
+//				}
 
-			// TODO left side, Array, field, ...
-
-			if (ast.left() instanceof Var) {
-				Var var = (Var) ast.left();
-
-				if (ast.right() instanceof NewObject) {
-					VTable vt = AstCodeGenerator.classTables.get(ast.left().type.name).copy();
-					AstCodeGenerator.objectTables.put(var.name, new VTable(vt.className));
-				}
-
-				if (var.sym.kind == Kind.LOCAL) {
-					lhsReg = cg.eg.gen(ast.left(), arg);
-
-					cg.emit.emit("movl", rhsReg, lhsReg);
-					cg.emit.emitMove(lhsReg, arg.getVariableLocation(var.name));
-
-				}
-
-				if (var.sym.kind == Kind.FIELD) {
-
-					VTable vt = AstCodeGenerator.classTables.get(arg.currentClass);
-					int offSet = vt.getFieldOffset(var.name);
-					cg.emit.emit("movl", offSet + "(" + cg.rm.BASE_REG + ")", lhsReg);
-
-					// cg.emit.emit("movl", "0(" + lhsReg + ")", lhsReg);
-					cg.emit.emit("movl", rhsReg, "0(" + lhsReg + ")");
-
-					// cg.emit.emitMove(rhsReg, "0(" + lhsReg + ")");
-					// cg.emit.emitMove();
-				}
-			} else
-				throw new RuntimeException("LHS must be var in HW1");
+//				if (var.sym.kind == Kind.FIELD) {
+//
+//					int offSet = 8 + arg.numberOfParameters * 4;
+//					cg.emit.emit("movl", offSet + "(" + cg.rm.BASE_REG + ")", lhsReg);
+//
+//					// cg.emit.emit("movl", "0(" + lhsReg + ")", lhsReg);
+//					cg.emit.emit("movl", rhsReg, "0(" + lhsReg + ")");
+//
+//					// cg.emit.emitMove(rhsReg, "0(" + lhsReg + ")");
+//					// cg.emit.emitMove();
+//				}
+//			} else if (ast.left() instanceof Field) {
+//				lhsReg = cg.eg.gen(ast.left(), arg);
+//
+//			} else {
+//				throw new RuntimeException("LHS must be var in HW1");
+//			}
 			cg.rm.releaseRegister(rhsReg);
 			cg.rm.releaseRegister(lhsReg);
 
