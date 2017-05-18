@@ -95,7 +95,7 @@ public class RegisterManager {
 		if (last < 0)
 			throw new AssemblyFailedException(
 					"Program requires too many registers");
-
+		System.out.println(">>Acquired Register " + registers.get(last).repr);
 		return registers.remove(last);
 	}
 
@@ -104,7 +104,7 @@ public class RegisterManager {
 	 */
 	public void releaseRegister(Register reg) {
 		assert !registers.contains(reg);
-		System.out.println("==Release Register " + reg.repr);
+		System.out.println(">>Release Register " + reg.repr);
 		registers.add(reg);
 		
 	}

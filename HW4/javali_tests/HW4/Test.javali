@@ -1,7 +1,19 @@
-class Main {
-
-   void main() {
-
+/* Test access to parameters and fields */
+class A {
+   int i;
+   void foo(int p) {
+      write(p); 
+      write(i); 
    }
 }
 
+class Main {
+   void main() {
+      A a;
+      a = new A();
+      a.i = 10;
+      a.foo(5);
+      //a.foo(2);
+      //a.foo(3);
+   }
+}   

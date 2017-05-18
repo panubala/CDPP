@@ -1,10 +1,12 @@
 package cd.backend.codegen;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class VarLocation {
 
 	private HashMap<String, Integer> varLocation;
+	private HashSet<String> createdObjects;
 	private AstCodeGenerator cg;
 
 	public VarLocation(AstCodeGenerator astCodeGenerator) {
@@ -12,9 +14,19 @@ public class VarLocation {
 		this.cg = astCodeGenerator;
 	}
 	
+	public void createObject(String name){
+		createdObjects.add(name);
+	}
+	
+	public boolean objectExist(String name){
+		return createdObjects.contains(name);
+	}
+	
 	public String currentClass;
 	
 	public int numberOfParameters;
+	
+	public int currentStackPointerOffset;
 	
 	public boolean calculateValue = true; //if false -> calculate Adress
 
@@ -24,10 +36,10 @@ public class VarLocation {
 			System.out.println("==Variable " + variableName + " is currently not stored on the stack");
 			cg.emit.emit("addl", "$-4", cg.rm.STACK_REG); // move the
 															// stackpointer
-			cg.currentStackPointerOffset -= 4;
+			currentStackPointerOffset -= 4;
 
-			System.out.println(">>>>StackPointer is now at: " + cg.currentStackPointerOffset);
-			varLocation.put(variableName, cg.currentStackPointerOffset);
+			System.out.println(">>>>StackPointer is now at: " + currentStackPointerOffset);
+			varLocation.put(variableName, currentStackPointerOffset);
 		}
 		return varLocation.get(variableName);
 	}

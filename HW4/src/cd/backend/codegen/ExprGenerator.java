@@ -221,7 +221,12 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 					child = AstCodeGenerator.classTables.get(child).superClass;
 				} else{
 					System.out.println("Error Downcast");
-					throw new ToDoException();
+
+					cg.emit.emit("subl", "$8", cg.rm.STACK_REG);
+					cg.emit.emit("movl", "$" + ExitCode.INVALID_DOWNCAST.value, "0(" + cg.rm.STACK_REG + ")");
+					cg.emit.emit("call", Config.EXIT);
+					cg.emit.emit("addl", "4", cg.rm.STACK_REG);
+					found = true;
 				}
 			}
 			
@@ -260,7 +265,8 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 
 		cg.emit.emit("addl", "$1", offSet); // Add one because first entry is
 											// the length of array
-
+		
+		cg.emit.emit("imul", "$4", offSet);
 		cg.emit.emit("addl", offSet, locationOfObject);
 
 		cg.rm.releaseRegister(offSet);
@@ -351,7 +357,7 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 
 		Register reg = cg.rm.getRegister();
 		cg.emit.emit("movl", Register.EAX, reg);
-
+		
 		return reg;
 
 	}
@@ -389,17 +395,17 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 		if (ast.receiver() instanceof Ast.Var) {
 			Var v = (Ast.Var) ast.receiver();
 			System.out.println(v.name);
-			if (!AstCodeGenerator.objectTables.containsKey(v.name)) {
-				System.out.println("NULLPOINTER_EXCEPTION");
-
-				cg.emit.emit("subl", "4", cg.rm.STACK_REG);
-				cg.emit.emit("movl", "$4", "0(" + cg.rm.STACK_REG + ")"); // Exit
-																			// Code
-																			// 4:
-																			// NullPointerException
-				cg.emit.emit("call", Config.EXIT);
-				cg.emit.emit("addl", "4", cg.rm.STACK_REG);
-			}
+//			if (varLoc.objectExist(v.name)) {
+//				System.out.println("NULLPOINTER_EXCEPTION");
+//
+//				cg.emit.emit("subl", "4", cg.rm.STACK_REG);
+//				cg.emit.emit("movl", "$4", "0(" + cg.rm.STACK_REG + ")"); // Exit
+//																			// Code
+//																			// 4:
+//																			// NullPointerException
+//				cg.emit.emit("call", Config.EXIT);
+//				cg.emit.emit("addl", "4", cg.rm.STACK_REG);
+//			}
 		}
 
 
@@ -421,16 +427,16 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 
 
 		cg.emit.emit("addl", "$-4", RegisterManager.STACK_REG);
-		cg.currentStackPointerOffset -= 4;
+		varLoc.currentStackPointerOffset -= 4;
 		cg.emit.emitMove(locationOfClassInstance, "0(" + RegisterManager.STACK_REG.repr + ")");
-		System.out.println(">>>>StackPointer is now at: " + cg.currentStackPointerOffset);
+		System.out.println(">>>>StackPointer is now at: " + varLoc.currentStackPointerOffset);
 		cg.rm.releaseRegister(locationOfClassInstance);
 
 		// Make space for arguments
 		cg.emit.emit("subl", args.size() * 4, cg.rm.STACK_REG); // TODO 4?
-		cg.currentStackPointerOffset -= args.size() * 4;
+		varLoc.currentStackPointerOffset -= args.size() * 4;
 
-		System.out.println(">>>>StackPointer is now at: " + cg.currentStackPointerOffset);
+		System.out.println(">>>>StackPointer is now at: " + varLoc.currentStackPointerOffset);
 
 		// push arguments
 		int offset = 0;
@@ -453,9 +459,8 @@ class ExprGenerator extends ExprVisitor<Register, VarLocation> {
 		System.out.println("----------------------------------------");
 
 		// Return value
-		AstCodeGenerator.classTables.get(varLoc.currentClass).adjustOffSet(-24);
 		Register retValue = cg.rm.getRegister();
-
+		
 		cg.emit.emit("movl", Register.EAX, retValue);
 		// cg.rm.releaseRegister(Register.EAX);
 
