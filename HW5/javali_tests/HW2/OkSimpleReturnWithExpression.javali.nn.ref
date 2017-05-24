@@ -1,0 +1,22 @@
+Main.m
+  BB0 out: []
+    return ((a + b) + 1): []
+  BB1 out: []
+
+
+Main.main
+  BB0 out: []
+    res = -(1): []
+    res = this.m(...): []
+    write(res): []
+    writeln(): []
+    res = this.m(...): []
+    write(res): []
+    writeln(): []
+    write(this.m(...)): []
+    writeln(): []
+    write(this.m(...)): []
+    writeln(): []
+  BB1 out: []
+
+

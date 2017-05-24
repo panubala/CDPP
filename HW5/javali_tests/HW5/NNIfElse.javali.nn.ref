@@ -1,0 +1,14 @@
+Main.main
+  BB0 out: [a]
+    a = new Main(): []
+    b = null: [a]
+    i = read(): [a]
+    (i >= 0): [a]
+  BB1 out: []
+  BB2 out: []
+    a = null: [a]
+  BB3 out: [a, b]
+    b = new Main(): [a]
+  BB4 out: []
+
+

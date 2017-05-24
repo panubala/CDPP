@@ -1,0 +1,15 @@
+Main.main
+  BB0 out: []
+    i0 = 0: []
+    i0 = (5 + i0): []
+    write(i0): []
+    writeln(): []
+    i0 = (i0 + 5): []
+    write(i0): []
+    writeln(): []
+    i0 = ((i0 + 5) + 3): []
+    write(i0): []
+    writeln(): []
+  BB1 out: []
+
+

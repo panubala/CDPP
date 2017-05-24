@@ -1,0 +1,15 @@
+class Main {
+
+	
+	void main() {
+		int a;
+		a=6;
+		if(a<7){
+		a=8;
+		}else{
+		a=9;
+		}
+	}
+	
+
+}

@@ -1,0 +1,109 @@
+Debug information for file: javali_tests/HW5/Test.javali
+AST Resulting From Parsing Stage:
+ClassDecl (name: Main, superClass: Object)
+| MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)
+| | Seq ()
+| | | VarDecl (name: a, type: int)
+| | Seq ()
+| | | Assign ()
+| | | | Var (name: a)
+| | | | IntConst (value: 6)
+| | | IfElse ()
+| | | | BinaryOp (operator: B_LESS_THAN)
+| | | | | Var (name: a)
+| | | | | IntConst (value: 7)
+| | | | Seq ()
+| | | | | Assign ()
+| | | | | | Var (name: a)
+| | | | | | IntConst (value: 8)
+| | | | Seq ()
+| | | | | Assign ()
+| | | | | | Var (name: a)
+| | | | | | IntConst (value: 9)
+
+Phase cfg failed because we expected to see:
+digraph G {
+  graph [ rankdir = "LR" ];
+  subgraph cluster_0 {
+    label = "Main.main"
+    M0_BB0 [
+      shape="record"
+      label="BB0|a = 6|If: (a \< 7)"
+    ];
+    M0_BB0 -> M0_BB2;
+    M0_BB0 -> M0_BB3 [label="False"];
+    M0_BB1 [
+      shape="record"
+      label="BB1"
+    ];
+    M0_BB2 [
+      shape="record"
+      label="BB2|a = 8"
+    ];
+    M0_BB2 -> M0_BB4;
+    M0_BB3 [
+      shape="record"
+      label="BB3|a = 9"
+    ];
+    M0_BB3 -> M0_BB4;
+    M0_BB4 [
+      shape="record"
+      label="BB4"
+    ];
+    M0_BB4 -> M0_BB1;
+  }
+}
+
+But we actually saw:
+digraph G {
+  graph [ rankdir = "LR" ];
+  subgraph cluster_0 {
+    label = "Main.main"
+    M0_BB0 [
+      shape="record"
+      label="BB0"
+    ];
+    M0_BB0 -> M0_BB2;
+    M0_BB1 [
+      shape="record"
+      label="BB1"
+    ];
+    M0_BB2 [
+      shape="record"
+      label="BB2|If: (a \< 7)"
+    ];
+    M0_BB2 -> M0_BB3;
+    M0_BB2 -> M0_BB4 [label="False"];
+    M0_BB3 [
+      shape="record"
+      label="BB3"
+    ];
+    M0_BB4 [
+      shape="record"
+      label="BB4"
+    ];
+  }
+}
+
+The difference is:
+At line   7 /   7:
+<       label="BB0|a = 6|If: (a \< 7)"
+>       label="BB0"
+At line  10 /  10:
+<     M0_BB0 -> M0_BB3 [label="False"];
+At line  17 /  16:
+<       label="BB2|a = 8"
+>       label="BB2|If: (a \< 7)"
+At line  19 /  18:
+<     M0_BB2 -> M0_BB4;
+>     M0_BB2 -> M0_BB3;
+>     M0_BB2 -> M0_BB4 [label="False"];
+At line  22 /  22:
+<       label="BB3|a = 9"
+>       label="BB3"
+At line  24 /  24:
+<     M0_BB3 -> M0_BB4;
+At line  29 /  28:
+<     M0_BB4 -> M0_BB1;
+Line  32 /  30:
+

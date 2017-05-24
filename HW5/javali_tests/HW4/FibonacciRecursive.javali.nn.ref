@@ -1,0 +1,22 @@
+Main.fib
+  BB0 out: []
+    (n <= 1): []
+  BB1 out: []
+  BB2 out: []
+    fib = n: []
+  BB3 out: []
+    fib = this.fib(...): []
+    fib2 = this.fib(...): []
+    fib = (fib + fib2): []
+  BB4 out: []
+    return fib: []
+
+
+Main.main
+  BB0 out: []
+    a = this.fib(...): []
+    write(a): []
+    writeln(): []
+  BB1 out: []
+
+

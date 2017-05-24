@@ -1,0 +1,29 @@
+A.base
+  BB0 out:
+  BB1 out:
+
+
+A.override
+  BB0 out:
+  BB1 out:
+
+
+B.override
+  BB0 out:
+  BB1 out:
+
+
+B.sub
+  BB0 out:
+  BB1 out:
+
+
+Main.main
+  BB0 out:
+    a = b
+    b = new B()
+  BB1 out:
+    a = b
+    b = new B()
+
+

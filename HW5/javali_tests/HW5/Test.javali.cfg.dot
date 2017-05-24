@@ -1,0 +1,29 @@
+digraph G {
+  graph [ rankdir = "LR" ];
+  subgraph cluster_0 {
+    label = "Main.main"
+    M0_BB0 [
+      shape="record"
+      label="BB0"
+    ];
+    M0_BB0 -> M0_BB2;
+    M0_BB1 [
+      shape="record"
+      label="BB1"
+    ];
+    M0_BB2 [
+      shape="record"
+      label="BB2|If: (a \< 7)"
+    ];
+    M0_BB2 -> M0_BB3;
+    M0_BB2 -> M0_BB4 [label="False"];
+    M0_BB3 [
+      shape="record"
+      label="BB3"
+    ];
+    M0_BB4 [
+      shape="record"
+      label="BB4"
+    ];
+  }
+}

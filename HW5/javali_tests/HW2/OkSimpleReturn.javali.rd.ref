@@ -1,0 +1,12 @@
+Main.m
+  BB0 out:
+  BB1 out:
+
+
+Main.main
+  BB0 out:
+    res = this.m(...)
+  BB1 out:
+    res = this.m(...)
+
+

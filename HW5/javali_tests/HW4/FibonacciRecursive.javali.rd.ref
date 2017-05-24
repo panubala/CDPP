@@ -1,0 +1,24 @@
+Main.fib
+  BB0 out:
+  BB1 out:
+    fib = (fib + fib2)
+    fib = n
+    fib2 = this.fib(...)
+  BB2 out:
+    fib = n
+  BB3 out:
+    fib = (fib + fib2)
+    fib2 = this.fib(...)
+  BB4 out:
+    fib = (fib + fib2)
+    fib = n
+    fib2 = this.fib(...)
+
+
+Main.main
+  BB0 out:
+    a = this.fib(...)
+  BB1 out:
+    a = this.fib(...)
+
+

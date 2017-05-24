@@ -1,0 +1,18 @@
+A.foo
+  BB0 out: []
+    write(p): []
+    write(this.i): []
+    writeln(): []
+  BB1 out: []
+
+
+Main.main
+  BB0 out: [a]
+    a = new A(): []
+    a.i = 10: [a]
+    a.foo(...): [a]
+    a.foo(...): [a]
+    a.foo(...): [a]
+  BB1 out: [a]
+
+

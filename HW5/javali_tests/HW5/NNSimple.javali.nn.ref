@@ -1,0 +1,8 @@
+Main.main
+  BB0 out: [a]
+    a = new Main(): []
+    a = null: [a]
+    a = this: []
+  BB1 out: [a]
+
+

@@ -1,0 +1,16 @@
+Main.main
+  BB0 out: [a, b]
+    a = new A(): []
+    a.foo = 1: [a]
+    write(a.foo): [a]
+    a = new B(): [a]
+    a.foo = 2: [a]
+    write(a.foo): [a]
+    b = new B(): [a]
+    b.foo = 3: [a, b]
+    b.bar = 4: [a, b]
+    write(b.foo): [a, b]
+    write(b.bar): [a, b]
+  BB1 out: [a, b]
+
+

@@ -1,0 +1,23 @@
+A.foo
+  BB0 out: []
+    write(1): []
+    write(this.field): []
+    writeln(): []
+  BB1 out: []
+
+
+Main.main
+  BB0 out: []
+    this.x = new A[][2]: []
+    i = 1: []
+    write(i): []
+    writeln(): []
+    this.x[i] = new A(): []
+    this.x[i].field = (i + 1): []
+    i = this.x[1].field: []
+    write(i): []
+    writeln(): []
+    this.x[1].foo(...): []
+  BB1 out: []
+
+

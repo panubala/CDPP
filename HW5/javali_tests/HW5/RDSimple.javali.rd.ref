@@ -1,0 +1,14 @@
+Main.m
+  BB0 out:
+  BB1 out:
+
+
+Main.main
+  BB0 out:
+    array = null
+    local = 1
+  BB1 out:
+    array = null
+    local = 1
+
+

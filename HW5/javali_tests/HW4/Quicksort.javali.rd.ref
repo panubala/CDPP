@@ -1,0 +1,204 @@
+Main.main
+  BB0 out:
+    SIZE = 5
+    j = 0
+  BB1 out:
+    SIZE = 5
+    j = (j + 1)
+    j = 0
+  BB2 out:
+    SIZE = 5
+    j = (j + 1)
+    j = 0
+  BB3 out:
+    SIZE = 5
+    j = (j + 1)
+  BB4 out:
+    SIZE = 5
+    j = 0
+  BB5 out:
+    SIZE = 5
+    j = (j + 1)
+    j = 0
+  BB6 out:
+    SIZE = 5
+    j = (j + 1)
+  BB7 out:
+    SIZE = 5
+    j = 0
+  BB8 out:
+    SIZE = 5
+    j = (j + 1)
+    j = 0
+  BB9 out:
+    SIZE = 5
+    j = (j + 1)
+  BB10 out:
+    SIZE = 5
+    j = (j + 1)
+    j = 0
+
+
+Main.sort
+  BB0 out:
+    i = left
+    j = right
+    m = ((this.a[left].a + this.a[right].a) / 2)
+  BB1 out:
+    i = (i + 1)
+    i = (i + 1)
+    i = left
+    j = (j - 1)
+    j = (j - 1)
+    j = right
+    m = ((this.a[left].a + this.a[right].a) / 2)
+  BB2 out:
+    i = (i + 1)
+    i = (i + 1)
+    i = left
+    j = (j - 1)
+    j = (j - 1)
+    j = right
+    m = ((this.a[left].a + this.a[right].a) / 2)
+  BB3 out:
+    i = (i + 1)
+    i = (i + 1)
+    i = left
+    j = (j - 1)
+    j = (j - 1)
+    j = right
+    m = ((this.a[left].a + this.a[right].a) / 2)
+  BB4 out:
+    i = (i + 1)
+    i = (i + 1)
+    i = left
+    j = (j - 1)
+    j = (j - 1)
+    j = right
+    m = ((this.a[left].a + this.a[right].a) / 2)
+  BB5 out:
+    i = (i + 1)
+    i = (i + 1)
+    i = left
+    j = (j - 1)
+    j = (j - 1)
+    j = right
+    m = ((this.a[left].a + this.a[right].a) / 2)
+  BB6 out:
+    i = (i + 1)
+    j = (j - 1)
+    j = (j - 1)
+    j = right
+    m = ((this.a[left].a + this.a[right].a) / 2)
+  BB7 out:
+    i = (i + 1)
+    i = (i + 1)
+    i = left
+    j = (j - 1)
+    j = (j - 1)
+    j = right
+    m = ((this.a[left].a + this.a[right].a) / 2)
+  BB8 out:
+    i = (i + 1)
+    i = (i + 1)
+    i = left
+    j = (j - 1)
+    j = (j - 1)
+    j = right
+    m = ((this.a[left].a + this.a[right].a) / 2)
+  BB9 out:
+    i = (i + 1)
+    i = (i + 1)
+    i = left
+    j = (j - 1)
+    m = ((this.a[left].a + this.a[right].a) / 2)
+  BB10 out:
+    i = (i + 1)
+    i = (i + 1)
+    i = left
+    j = (j - 1)
+    j = (j - 1)
+    j = right
+    m = ((this.a[left].a + this.a[right].a) / 2)
+  BB11 out:
+    i = (i + 1)
+    j = (j - 1)
+    m = ((this.a[left].a + this.a[right].a) / 2)
+  BB12 out:
+    i = (i + 1)
+    i = (i + 1)
+    i = left
+    j = (j - 1)
+    j = (j - 1)
+    j = right
+    m = ((this.a[left].a + this.a[right].a) / 2)
+  BB13 out:
+    i = (i + 1)
+    i = (i + 1)
+    i = left
+    j = (j - 1)
+    j = (j - 1)
+    j = right
+    m = ((this.a[left].a + this.a[right].a) / 2)
+  BB14 out:
+    i = (i + 1)
+    i = (i + 1)
+    i = left
+    j = (j - 1)
+    j = (j - 1)
+    j = right
+    m = ((this.a[left].a + this.a[right].a) / 2)
+  BB15 out:
+    i = (i + 1)
+    i = (i + 1)
+    i = left
+    j = (j - 1)
+    j = (j - 1)
+    j = right
+    m = ((this.a[left].a + this.a[right].a) / 2)
+  BB16 out:
+    i = (i + 1)
+    i = (i + 1)
+    i = left
+    j = (j - 1)
+    j = (j - 1)
+    j = right
+    m = ((this.a[left].a + this.a[right].a) / 2)
+  BB17 out:
+    i = (i + 1)
+    i = (i + 1)
+    i = left
+    j = (j - 1)
+    j = (j - 1)
+    j = right
+    m = ((this.a[left].a + this.a[right].a) / 2)
+  BB18 out:
+    i = (i + 1)
+    i = (i + 1)
+    i = left
+    j = (j - 1)
+    j = (j - 1)
+    j = right
+    m = ((this.a[left].a + this.a[right].a) / 2)
+  BB19 out:
+    i = (i + 1)
+    i = (i + 1)
+    i = left
+    j = (j - 1)
+    j = (j - 1)
+    j = right
+    m = ((this.a[left].a + this.a[right].a) / 2)
+
+
+Main.swap
+  BB0 out:
+    temp = r1.a
+  BB1 out:
+    temp = r1.a
+
+
+Record.print
+  BB0 out:
+  BB1 out:
+
+

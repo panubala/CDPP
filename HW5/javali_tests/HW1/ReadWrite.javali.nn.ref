@@ -1,0 +1,12 @@
+Main.main
+  BB0 out: []
+    i0 = 5: []
+    i1 = read(): []
+    r1 = (i0 + i1): []
+    write(r1): []
+    writeln(): []
+    write((r1 - 3)): []
+    writeln(): []
+  BB1 out: []
+
+

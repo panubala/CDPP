@@ -1,0 +1,9 @@
+Main.main
+  BB0 out:
+    a = new B()
+    b = (B)(a)
+  BB1 out:
+    a = new B()
+    b = (B)(a)
+
+

@@ -1,0 +1,17 @@
+Main.main
+  BB0 out: [arr]
+    write(1): []
+    writeln(): []
+    y = read(): []
+    write((y + 1)): []
+    writeln(): []
+    this.x = read(): []
+    write((this.x + 1)): []
+    writeln(): []
+    arr = new int[][64]: []
+    arr[this.x] = read(): [arr]
+    write((arr[this.x] + 1)): [arr]
+    writeln(): [arr]
+  BB1 out: [arr]
+
+

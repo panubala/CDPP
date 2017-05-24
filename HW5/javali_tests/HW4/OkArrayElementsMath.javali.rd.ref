@@ -1,0 +1,7 @@
+Main.main
+  BB0 out:
+    i = ((this.x[0] + this.x[1]) + this.x[2])
+  BB1 out:
+    i = ((this.x[0] + this.x[1]) + this.x[2])
+
+

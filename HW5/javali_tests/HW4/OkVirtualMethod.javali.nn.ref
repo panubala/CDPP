@@ -1,0 +1,48 @@
+A.base
+  BB0 out: []
+    write(1): []
+    writeln(): []
+  BB1 out: []
+
+
+A.override
+  BB0 out: []
+    write(0): []
+    writeln(): []
+  BB1 out: []
+
+
+B.override
+  BB0 out: []
+    write(2): []
+    writeln(): []
+  BB1 out: []
+
+
+B.sub
+  BB0 out: []
+    write(3): []
+    writeln(): []
+  BB1 out: []
+
+
+Main.main
+  BB0 out: [a, b]
+    a = null: []
+    b = null: []
+    a = new A(): []
+    a.base(...): [a]
+    a.override(...): [a]
+    b = new B(): [a]
+    b.base(...): [a, b]
+    b.override(...): [a, b]
+    b.sub(...): [a, b]
+    a = b: [a, b]
+    a.base(...): [a, b]
+    a.override(...): [a, b]
+    b.base(...): [a, b]
+    b.override(...): [a, b]
+    b.sub(...): [a, b]
+  BB1 out: [a, b]
+
+
