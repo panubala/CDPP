@@ -4,11 +4,44 @@ digraph G {
     label = "Main.main"
     M0_BB0 [
       shape="record"
-      label="BB0"
+      label="BB0|a = 1|b = 1|c = 1|a = 2|If: false"
     ];
+    M0_BB0 -> M0_BB2;
+    M0_BB0 -> M0_BB3 [label="False"];
     M0_BB1 [
       shape="record"
       label="BB1"
     ];
+    M0_BB2 [
+      shape="record"
+      label="BB2|a = 3"
+    ];
+    M0_BB2 -> M0_BB7;
+    M0_BB3 [
+      shape="record"
+      label="BB3|a = 4"
+    ];
+    M0_BB3 -> M0_BB4;
+    M0_BB4 [
+      shape="record"
+      label="BB4|If: false"
+    ];
+    M0_BB4 -> M0_BB5;
+    M0_BB4 -> M0_BB6 [label="False"];
+    M0_BB5 [
+      shape="record"
+      label="BB5|b = 2"
+    ];
+    M0_BB5 -> M0_BB4;
+    M0_BB6 [
+      shape="record"
+      label="BB6|c = 2"
+    ];
+    M0_BB6 -> M0_BB7;
+    M0_BB7 [
+      shape="record"
+      label="BB7"
+    ];
+    M0_BB7 -> M0_BB1;
   }
 }

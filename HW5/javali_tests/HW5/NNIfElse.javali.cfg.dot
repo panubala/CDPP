@@ -4,11 +4,28 @@ digraph G {
     label = "Main.main"
     M0_BB0 [
       shape="record"
-      label="BB0"
+      label="BB0|a = new Main()|b = null|i = read()|If: (i \>= 0)"
     ];
+    M0_BB0 -> M0_BB2;
+    M0_BB0 -> M0_BB3 [label="False"];
     M0_BB1 [
       shape="record"
       label="BB1"
     ];
+    M0_BB2 [
+      shape="record"
+      label="BB2|a = null"
+    ];
+    M0_BB2 -> M0_BB4;
+    M0_BB3 [
+      shape="record"
+      label="BB3|b = new Main()"
+    ];
+    M0_BB3 -> M0_BB4;
+    M0_BB4 [
+      shape="record"
+      label="BB4"
+    ];
+    M0_BB4 -> M0_BB1;
   }
 }

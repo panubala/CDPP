@@ -4,8 +4,9 @@ digraph G {
     label = "Main.main"
     M0_BB0 [
       shape="record"
-      label="BB0"
+      label="BB0|i0 = 5|i1 = read()|r1 = (i0 + i1)|write(r1)|writeln()|write((r1 - 3))|writeln()"
     ];
+    M0_BB0 -> M0_BB1;
     M0_BB1 [
       shape="record"
       label="BB1"

@@ -56,14 +56,14 @@ abstract public class AbstractTestAgainstFrozenReference {
 					{
 						if (passedSemanticAnalysis) {						
 							testControlFlowGraph(astRoots);
-							testReachingDefsAnalysis(astRoots);
-							testNonNullAnalysis(astRoots);
+//							testReachingDefsAnalysis(astRoots);
+//							testNonNullAnalysis(astRoots);
 						}
 					}
 					
 					{
 						if (passedSemanticAnalysis) {
-							testCodeGenerator(astRoots);
+							//testCodeGenerator(astRoots);
 						}
 					}
 				}

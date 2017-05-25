@@ -20,8 +20,8 @@ public class TestSamplePrograms extends AbstractTestAgainstFrozenReference {
 	 * variable like:
 	 * {@code justFile = new File("javali_tests/HW2/Inheritance.javali")}.
 	 */
-	public static final File justFile = new File("javali_tests/HW5/Test.javali");
-//	public static final File justFile = null;
+//	public static final File justFile = new File("javali_tests/HW5/Test.javali");
+	public static final File justFile = null;
 
 	/**
 	 * Directory in which to search for test files. If null, then the default is
@@ -29,7 +29,7 @@ public class TestSamplePrograms extends AbstractTestAgainstFrozenReference {
 	 * particular directory, use sth. like:
 	 * {@code testDir = new File("javali_tests/HW2/")}.
 	 */
-//	public static final File testDir = new File("javali_tests/HW1");
+//	public static final File testDir = new File("javali_tests/HW5");
 	public static final File testDir = new File("javali_tests");
 	
 	@Parameters(name="{index}:{0}")

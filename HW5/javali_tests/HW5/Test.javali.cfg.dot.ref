@@ -4,7 +4,7 @@ digraph G {
     label = "Main.main"
     M0_BB0 [
       shape="record"
-      label="BB0|a = 6|If: (a \< 7)"
+      label="BB0|If: (a \< 5)"
     ];
     M0_BB0 -> M0_BB2;
     M0_BB0 -> M0_BB3 [label="False"];
@@ -14,17 +14,17 @@ digraph G {
     ];
     M0_BB2 [
       shape="record"
-      label="BB2|a = 8"
+      label="BB2"
     ];
     M0_BB2 -> M0_BB4;
     M0_BB3 [
       shape="record"
-      label="BB3|a = 9"
+      label="BB3|nop"
     ];
     M0_BB3 -> M0_BB4;
     M0_BB4 [
       shape="record"
-      label="BB4"
+      label="BB4|a = 7"
     ];
     M0_BB4 -> M0_BB1;
   }

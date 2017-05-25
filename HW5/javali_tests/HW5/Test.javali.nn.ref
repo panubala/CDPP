@@ -1,12 +1,11 @@
 Main.main
   BB0 out: []
-    a = 6: []
-    (a < 7): []
+    (a < 5): []
   BB1 out: []
   BB2 out: []
-    a = 8: []
   BB3 out: []
-    a = 9: []
+    nop: []
   BB4 out: []
+    a = 7: []
 
 

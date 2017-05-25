@@ -4,8 +4,9 @@ digraph G {
     label = "A.foo"
     M0_BB0 [
       shape="record"
-      label="BB0"
+      label="BB0|write(1)|write(this.field)|writeln()"
     ];
+    M0_BB0 -> M0_BB1;
     M0_BB1 [
       shape="record"
       label="BB1"
@@ -15,8 +16,9 @@ digraph G {
     label = "Main.main"
     M1_BB0 [
       shape="record"
-      label="BB0"
+      label="BB0|this.x = new A[][2]|i = 1|write(i)|writeln()|this.x[i] = new A()|this.x[i].field = (i + 1)|i = this.x[1].field|write(i)|writeln()|this.x[1].foo(...)"
     ];
+    M1_BB0 -> M1_BB1;
     M1_BB1 [
       shape="record"
       label="BB1"

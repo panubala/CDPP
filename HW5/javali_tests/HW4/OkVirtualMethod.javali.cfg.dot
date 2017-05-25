@@ -4,8 +4,9 @@ digraph G {
     label = "A.override"
     M0_BB0 [
       shape="record"
-      label="BB0"
+      label="BB0|write(0)|writeln()"
     ];
+    M0_BB0 -> M0_BB1;
     M0_BB1 [
       shape="record"
       label="BB1"
@@ -15,8 +16,9 @@ digraph G {
     label = "A.base"
     M1_BB0 [
       shape="record"
-      label="BB0"
+      label="BB0|write(1)|writeln()"
     ];
+    M1_BB0 -> M1_BB1;
     M1_BB1 [
       shape="record"
       label="BB1"
@@ -26,8 +28,9 @@ digraph G {
     label = "B.override"
     M2_BB0 [
       shape="record"
-      label="BB0"
+      label="BB0|write(2)|writeln()"
     ];
+    M2_BB0 -> M2_BB1;
     M2_BB1 [
       shape="record"
       label="BB1"
@@ -37,8 +40,9 @@ digraph G {
     label = "B.sub"
     M3_BB0 [
       shape="record"
-      label="BB0"
+      label="BB0|write(3)|writeln()"
     ];
+    M3_BB0 -> M3_BB1;
     M3_BB1 [
       shape="record"
       label="BB1"
@@ -48,8 +52,9 @@ digraph G {
     label = "Main.main"
     M4_BB0 [
       shape="record"
-      label="BB0"
+      label="BB0|a = null|b = null|a = new A()|a.base(...)|a.override(...)|b = new B()|b.base(...)|b.override(...)|b.sub(...)|a = b|a.base(...)|a.override(...)|b.base(...)|b.override(...)|b.sub(...)"
     ];
+    M4_BB0 -> M4_BB1;
     M4_BB1 [
       shape="record"
       label="BB1"
