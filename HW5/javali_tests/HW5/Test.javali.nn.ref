@@ -1,11 +1,25 @@
-Main.main
+Main.f
   BB0 out: []
-    (a < 5): []
+    (k < 5): []
   BB1 out: []
   BB2 out: []
+    return 2: []
   BB3 out: []
     nop: []
   BB4 out: []
-    a = 7: []
+    (k > 9): []
+  BB5 out: []
+    return 1: []
+  BB6 out: []
+    nop: []
+  BB7 out: []
+    z = 6: []
+    return z: []
+
+
+Main.main
+  BB0 out: []
+    return: []
+  BB1 out: []
 
 

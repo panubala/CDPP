@@ -2,9 +2,25 @@ class Main {
 
 	
 	void main() {
-		int a;
-		if(a<5){
+		int k;
+		return;
+		while(true){
+			
 		}
-		a=7;
+		return;
+	}
+	
+	int f(int k){
+		int z;
+		if(k < 5){
+			return 2;
+		}
+		if(k>9){
+			return 1;
+			z =5;
+		}
+		z=6;
+		return z;
+		z=4;
 	}
 }

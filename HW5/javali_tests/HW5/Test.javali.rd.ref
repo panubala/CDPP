@@ -1,10 +1,18 @@
-Main.main
+Main.f
   BB0 out:
   BB1 out:
-    a = 7
+    z = 6
   BB2 out:
   BB3 out:
   BB4 out:
-    a = 7
+  BB5 out:
+  BB6 out:
+  BB7 out:
+    z = 6
+
+
+Main.main
+  BB0 out:
+  BB1 out:
 
 
