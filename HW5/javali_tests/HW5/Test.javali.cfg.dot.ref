@@ -4,56 +4,28 @@ digraph G {
     label = "Main.main"
     M0_BB0 [
       shape="record"
-      label="BB0|return"
+      label="BB0|k = 4|k = 5|If: (k \< 5)"
     ];
-    M0_BB0 -> M0_BB1;
+    M0_BB0 -> M0_BB2;
+    M0_BB0 -> M0_BB3 [label="False"];
     M0_BB1 [
       shape="record"
       label="BB1"
     ];
-  }
-  subgraph cluster_1 {
-    label = "Main.f"
-    M1_BB0 [
+    M0_BB2 [
       shape="record"
-      label="BB0|If: (k \< 5)"
+      label="BB2|k = 6|k = 4"
     ];
-    M1_BB0 -> M1_BB2;
-    M1_BB0 -> M1_BB3 [label="False"];
-    M1_BB1 [
+    M0_BB2 -> M0_BB4;
+    M0_BB3 [
       shape="record"
-      label="BB1"
+      label="BB3|k = 2|k = 7"
     ];
-    M1_BB2 [
+    M0_BB3 -> M0_BB4;
+    M0_BB4 [
       shape="record"
-      label="BB2|return 2"
+      label="BB4|k = 1"
     ];
-    M1_BB2 -> M1_BB1;
-    M1_BB3 [
-      shape="record"
-      label="BB3|nop"
-    ];
-    M1_BB3 -> M1_BB4;
-    M1_BB4 [
-      shape="record"
-      label="BB4|If: (k \> 9)"
-    ];
-    M1_BB4 -> M1_BB5;
-    M1_BB4 -> M1_BB6 [label="False"];
-    M1_BB5 [
-      shape="record"
-      label="BB5|return 1"
-    ];
-    M1_BB5 -> M1_BB1;
-    M1_BB6 [
-      shape="record"
-      label="BB6|nop"
-    ];
-    M1_BB6 -> M1_BB7;
-    M1_BB7 [
-      shape="record"
-      label="BB7|z = 6|return z"
-    ];
-    M1_BB7 -> M1_BB1;
+    M0_BB4 -> M0_BB1;
   }
 }

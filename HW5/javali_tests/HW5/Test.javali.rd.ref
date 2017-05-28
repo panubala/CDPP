@@ -1,18 +1,13 @@
-Main.f
-  BB0 out:
-  BB1 out:
-    z = 6
-  BB2 out:
-  BB3 out:
-  BB4 out:
-  BB5 out:
-  BB6 out:
-  BB7 out:
-    z = 6
-
-
 Main.main
   BB0 out:
+    k = 5
   BB1 out:
+    k = 1
+  BB2 out:
+    k = 4
+  BB3 out:
+    k = 7
+  BB4 out:
+    k = 1
 
 

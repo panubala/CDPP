@@ -1,25 +1,16 @@
-Main.f
+Main.main
   BB0 out: []
+    k = 4: []
+    k = 5: []
     (k < 5): []
   BB1 out: []
   BB2 out: []
-    return 2: []
+    k = 6: []
+    k = 4: []
   BB3 out: []
-    nop: []
+    k = 2: []
+    k = 7: []
   BB4 out: []
-    (k > 9): []
-  BB5 out: []
-    return 1: []
-  BB6 out: []
-    nop: []
-  BB7 out: []
-    z = 6: []
-    return z: []
-
-
-Main.main
-  BB0 out: []
-    return: []
-  BB1 out: []
+    k = 1: []
 
 

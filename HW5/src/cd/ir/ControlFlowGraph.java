@@ -26,7 +26,6 @@ public class ControlFlowGraph {
 	 * the new successor.
 	 */
 	public BasicBlock join(BasicBlock... pred) {
-//	public BasicBlock join(List<BasicBlock> pred) {
 		BasicBlock result = newBlock();
 		for (BasicBlock p : pred) {
 			assert p.condition == null;

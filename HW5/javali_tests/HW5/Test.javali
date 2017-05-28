@@ -3,24 +3,16 @@ class Main {
 	
 	void main() {
 		int k;
-		return;
-		while(true){
-			
+		
+		k = 4;
+		k = 5;
+		if(k<5){
+			k=6;
+			k = 4;
+		}else{
+			k = 2;
+			k =7;
 		}
-		return;
-	}
-	
-	int f(int k){
-		int z;
-		if(k < 5){
-			return 2;
-		}
-		if(k>9){
-			return 1;
-			z =5;
-		}
-		z=6;
-		return z;
-		z=4;
+		k = 1;
 	}
 }
