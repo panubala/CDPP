@@ -1,7 +1,7 @@
 package cd.transform.analysis;
 
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -51,40 +51,48 @@ public abstract class DataFlowAnalysis<State> {
 	 * the required initialization.
 	 */
 	protected void iterate() {
-		
+
 		// For all Blocks without the last one:
 		State inState = initialState();
-		for (BasicBlock block : cfg.allBlocks) {
-			if (block != cfg.end) {
-				Set<State> outStatesPre = new HashSet<>();
+
+		boolean change = true;
+		while (change) {
+			change = false;
+			Map<BasicBlock, State> oldOutStates = new HashMap<BasicBlock, State>(outStates);
+			System.out.println(oldOutStates);
+			
+			//Go through all Blocks and adjust their in/outStates
+			for (BasicBlock block : cfg.allBlocks) {
+				Set<State> outStatesPre = new LinkedHashSet<>();
 				outStatesPre.add(initialState());
+				
+				//Get all outStates of the predecessors and put them into one inSet
 				for (BasicBlock predecessor : block.predecessors) {
 					if (outStateOf(predecessor) != null) {
 						outStatesPre.add(outStateOf(predecessor));
 					}
 				}
 				inState = join(outStatesPre);
-				inStates.put(block, inState);
-				State outState = transferFunction(block, inState);
-				outStates.put(block, outState);
+				
+				if(inStates.containsKey(block) && inStateOf(block).toString().equals(inState.toString())){
+					//The inputSets didnt change -> no need to colculate new outSet
+				}else{
+					//InSet changed
+					inStates.put(block, inState);
+					State outState = transferFunction(block, inState);
+					outStates.put(block, outState);
+				}
+			}
+			
+			if(oldOutStates.keySet().size() == 0) change = true;
+			
+			//Check if the outStates changed, if they didnt, we can stop the loop
+			for(BasicBlock k : oldOutStates.keySet()){				
+				if(!oldOutStates.get(k).toString().equals(outStates.get(k).toString())){
+					change = true;
+				}
 			}
 		}
-		
-		//Same but now for the last Block
-		BasicBlock block = cfg.end;
-		Set<State> outStatesPre = new HashSet<>();
-		outStatesPre.add(initialState());
-		for (BasicBlock predecessor : block.predecessors) {
-			if (outStateOf(predecessor) != null) {
-				outStatesPre.add(outStateOf(predecessor));
-			}
-		}
-		inState = join(outStatesPre);
-		inStates.put(block, inState);
-		State outState = transferFunction(block, inState);
-		outStates.put(block, outState);
-		///
-
 	}
 
 	/**

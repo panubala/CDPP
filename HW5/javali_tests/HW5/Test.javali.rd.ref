@@ -1,13 +1,7 @@
 Main.main
   BB0 out:
-    k = 5
+    i = ((this.x[0] + this.x[1]) + this.x[2])
   BB1 out:
-    k = 1
-  BB2 out:
-    k = 4
-  BB3 out:
-    k = 7
-  BB4 out:
-    k = 1
+    i = ((this.x[0] + this.x[1]) + this.x[2])
 
 

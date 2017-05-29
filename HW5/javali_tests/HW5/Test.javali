@@ -1,18 +1,14 @@
+/* Test expressions using array elements as operands */
 class Main {
-
-	
-	void main() {
-		int k;
-		
-		k = 4;
-		k = 5;
-		if(k<5){
-			k=6;
-			k = 4;
-		}else{
-			k = 2;
-			k =7;
-		}
-		k = 1;
-	}
+   int[] x;
+   void main() {
+      int i;
+      x = new int[3];
+      x[0] = 3; 
+      x[1] = 4; 
+      x[2] = 5;
+      i = x[0] + x[1] + x[2];
+      write(i); 
+      writeln();
+   }
 }

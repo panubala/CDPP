@@ -4,28 +4,12 @@ digraph G {
     label = "Main.main"
     M0_BB0 [
       shape="record"
-      label="BB0|k = 4|k = 5|If: (k \< 5)"
+      label="BB0|this.x = new int[][3]|this.x[0] = 3|this.x[1] = 4|this.x[2] = 5|i = ((this.x[0] + this.x[1]) + this.x[2])|write(i)|writeln()"
     ];
-    M0_BB0 -> M0_BB2;
-    M0_BB0 -> M0_BB3 [label="False"];
+    M0_BB0 -> M0_BB1;
     M0_BB1 [
       shape="record"
       label="BB1"
     ];
-    M0_BB2 [
-      shape="record"
-      label="BB2|k = 6|k = 4"
-    ];
-    M0_BB2 -> M0_BB4;
-    M0_BB3 [
-      shape="record"
-      label="BB3|k = 2|k = 7"
-    ];
-    M0_BB3 -> M0_BB4;
-    M0_BB4 [
-      shape="record"
-      label="BB4|k = 1"
-    ];
-    M0_BB4 -> M0_BB1;
   }
 }
