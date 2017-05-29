@@ -1,0 +1,44 @@
+Debug information for file: javali_tests/HW5/NNTest.javali
+AST Resulting From Parsing Stage:
+ClassDecl (name: Main, superClass: Object)
+| MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)
+| | Seq ()
+| | | VarDecl (name: a, type: A)
+| | | VarDecl (name: b, type: A)
+| | Seq ()
+| | | Assign ()
+| | | | Var (name: a)
+| | | | NewObject (typeName: A)
+| | | Assign ()
+| | | | Var (name: b)
+| | | | Var (name: a)
+ClassDecl (name: A, superClass: Object)
+
+Phase nn failed because we expected to see:
+Main.main
+  BB0 out: [a, b]
+    a = new A(): []
+    b = a: [a]
+  BB1 out: [a, b]
+
+
+
+But we actually saw:
+Main.main
+  BB0 out: []
+    a = new A(): []
+    b = a: []
+  BB1 out: []
+
+
+
+The difference is:
+At line   2 /   2:
+<   BB0 out: [a, b]
+>   BB0 out: []
+At line   4 /   4:
+<     b = a: [a]
+<   BB1 out: [a, b]
+>     b = a: []
+>   BB1 out: []
+

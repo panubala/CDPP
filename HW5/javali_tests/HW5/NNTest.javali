@@ -1,0 +1,12 @@
+/* Test expressions using array elements as operands */
+class Main {
+  
+   void main() {
+      A a,b;
+      a = new A();
+      b= a;
+		
+   }
+}
+
+class A{}

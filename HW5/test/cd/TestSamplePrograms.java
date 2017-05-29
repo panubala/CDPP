@@ -29,8 +29,8 @@ public class TestSamplePrograms extends AbstractTestAgainstFrozenReference {
 	 * particular directory, use sth. like:
 	 * {@code testDir = new File("javali_tests/HW2/")}.
 	 */
-//	public static final File testDir = new File("javali_tests/HW5");
-	public static final File testDir = new File("javali_tests");
+	public static final File testDir = new File("javali_tests/HW5");
+//	public static final File testDir = new File("javali_tests");
 	
 	@Parameters(name="{index}:{0}")
 	public static Collection<Object[]> testFiles() {

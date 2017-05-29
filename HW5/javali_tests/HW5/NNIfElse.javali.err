@@ -1,0 +1,83 @@
+Debug information for file: javali_tests/HW5/NNIfElse.javali
+AST Resulting From Parsing Stage:
+ClassDecl (name: Main, superClass: Object)
+| MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)
+| | Seq ()
+| | | VarDecl (name: a, type: Main)
+| | | VarDecl (name: b, type: Main)
+| | | VarDecl (name: i, type: int)
+| | Seq ()
+| | | Assign ()
+| | | | Var (name: a)
+| | | | NewObject (typeName: Main)
+| | | Assign ()
+| | | | Var (name: b)
+| | | | NullConst ()
+| | | Assign ()
+| | | | Var (name: i)
+| | | | BuiltInRead ()
+| | | IfElse ()
+| | | | BinaryOp (operator: B_GREATER_OR_EQUAL)
+| | | | | Var (name: i)
+| | | | | IntConst (value: 0)
+| | | | Seq ()
+| | | | | Assign ()
+| | | | | | Var (name: a)
+| | | | | | NullConst ()
+| | | | Seq ()
+| | | | | Assign ()
+| | | | | | Var (name: b)
+| | | | | | NewObject (typeName: Main)
+
+Phase nn failed because we expected to see:
+Main.main
+  BB0 out: [a]
+    a = new Main(): []
+    b = null: [a]
+    i = read(): [a]
+    (i >= 0): [a]
+  BB1 out: []
+  BB2 out: []
+    a = null: [a]
+  BB3 out: [a, b]
+    b = new Main(): [a]
+  BB4 out: []
+
+
+
+But we actually saw:
+Main.main
+  BB0 out: []
+    a = new Main(): []
+    b = null: []
+    i = read(): []
+    (i >= 0): []
+  BB1 out: []
+  BB2 out: []
+    a = null: []
+  BB3 out: []
+    b = new Main(): []
+  BB4 out: []
+
+
+
+The difference is:
+At line   2 /   2:
+<   BB0 out: [a]
+>   BB0 out: []
+At line   4 /   4:
+<     b = null: [a]
+<     i = read(): [a]
+<     (i >= 0): [a]
+>     b = null: []
+>     i = read(): []
+>     (i >= 0): []
+At line   9 /   9:
+<     a = null: [a]
+<   BB3 out: [a, b]
+<     b = new Main(): [a]
+>     a = null: []
+>   BB3 out: []
+>     b = new Main(): []
+Line  13 /  13:
+

@@ -34,16 +34,21 @@ public class ReachingDefsAnalysis extends DataFlowAnalysis<Set<Def>> {
 	public ReachingDefsAnalysis(ControlFlowGraph cfg) {
 		super(cfg);
 		super.iterate();
+
 	}
 
 	@Override
 	protected Set<Def> initialState() {
+
 		return new LinkedHashSet<Def>();
+
 	}
 
 	@Override
 	protected Set<Def> startState() {
+
 		return new LinkedHashSet<Def>();
+
 	}
 
 	// TODO
@@ -52,6 +57,7 @@ public class ReachingDefsAnalysis extends DataFlowAnalysis<Set<Def>> {
 
 	@Override
 	protected Set<Def> transferFunction(BasicBlock block, Set<Def> inState) {
+
 		for (Stmt stmt : block.stmts) {
 			if (stmt instanceof Assign) {
 				Assign ass = (Assign) stmt;				
@@ -70,12 +76,15 @@ public class ReachingDefsAnalysis extends DataFlowAnalysis<Set<Def>> {
 		}
 
 		return inState;
+
 	}
 
 	@Override
 	protected Set<Def> join(Set<Set<Def>> states) {
+
 		// Join sets to one and delete duplicates
 		Set<Def> joinSet = new LinkedHashSet<Def>();
+
 		for (Set<Def> set : states) {
 			for (Def newDef : set) {
 				boolean alreadyIn = false;
@@ -91,6 +100,7 @@ public class ReachingDefsAnalysis extends DataFlowAnalysis<Set<Def>> {
 			}
 		}
 		return joinSet;
+
 	}
 
 	/**

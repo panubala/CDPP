@@ -37,7 +37,11 @@ public class NonNullDump {
 				dump.append(clazz.name).append(".").append(method.name).append("\n");
 				
 				NonNullAnalysis analysis = new NonNullAnalysis(method);
+				
 				for(BasicBlock block : method.cfg.allBlocks) {
+					
+					
+				
 					dump.append("  BB").append(block.index).append(" out: ")
 					    .append(sortedStrings(analysis.outStateOf(block))).append("\n");
 					for(Stmt stmt : block.stmts)

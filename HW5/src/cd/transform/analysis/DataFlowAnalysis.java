@@ -22,7 +22,7 @@ import cd.ir.ControlFlowGraph;
 public abstract class DataFlowAnalysis<State> {
 
 	protected final ControlFlowGraph cfg;
-	private Map<BasicBlock, State> inStates;
+	public Map<BasicBlock, State> inStates;
 	private Map<BasicBlock, State> outStates;
 
 	public DataFlowAnalysis(ControlFlowGraph cfg) {
@@ -51,6 +51,7 @@ public abstract class DataFlowAnalysis<State> {
 	 * the required initialization.
 	 */
 	protected void iterate() {
+
 
 		// For all Blocks without the last one:
 		State inState = initialState();
@@ -93,6 +94,7 @@ public abstract class DataFlowAnalysis<State> {
 				}
 			}
 		}
+
 	}
 
 	/**
