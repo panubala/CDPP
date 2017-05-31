@@ -4,7 +4,7 @@ digraph G {
     label = "Main.main"
     M0_BB0 [
       shape="record"
-      label="BB0|this.x = new int[][3]|this.x[0] = 3|this.x[1] = 4|this.x[2] = 5|i = ((this.x[0] + this.x[1]) + this.x[2])|write(i)|writeln()"
+      label="BB0|a = new A()|b = a"
     ];
     M0_BB0 -> M0_BB1;
     M0_BB1 [

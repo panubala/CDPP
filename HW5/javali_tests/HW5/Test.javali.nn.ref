@@ -1,12 +1,7 @@
 Main.main
-  BB0 out: []
-    this.x = new int[][3]: []
-    this.x[0] = 3: []
-    this.x[1] = 4: []
-    this.x[2] = 5: []
-    i = ((this.x[0] + this.x[1]) + this.x[2]): []
-    write(i): []
-    writeln(): []
-  BB1 out: []
+  BB0 out: [a, b]
+    a = new A(): []
+    b = a: [a]
+  BB1 out: [a, b]
 
 

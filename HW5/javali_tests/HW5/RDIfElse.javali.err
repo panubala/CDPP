@@ -1,0 +1,115 @@
+Debug information for file: javali_tests/HW5/RDIfElse.javali
+AST Resulting From Parsing Stage:
+ClassDecl (name: Main, superClass: Object)
+| MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)
+| | Seq ()
+| | | VarDecl (name: a, type: int)
+| | | VarDecl (name: b, type: int)
+| | | VarDecl (name: c, type: int)
+| | Seq ()
+| | | Assign ()
+| | | | Var (name: a)
+| | | | IntConst (value: 1)
+| | | Assign ()
+| | | | Var (name: b)
+| | | | IntConst (value: 1)
+| | | Assign ()
+| | | | Var (name: c)
+| | | | IntConst (value: 1)
+| | | Assign ()
+| | | | Var (name: a)
+| | | | IntConst (value: 2)
+| | | IfElse ()
+| | | | BooleanConst (value: false)
+| | | | Seq ()
+| | | | | Assign ()
+| | | | | | Var (name: a)
+| | | | | | IntConst (value: 3)
+| | | | Seq ()
+| | | | | Assign ()
+| | | | | | Var (name: a)
+| | | | | | IntConst (value: 4)
+| | | | | WhileLoop ()
+| | | | | | BooleanConst (value: false)
+| | | | | | Seq ()
+| | | | | | | Assign ()
+| | | | | | | | Var (name: b)
+| | | | | | | | IntConst (value: 2)
+| | | | | Assign ()
+| | | | | | Var (name: c)
+| | | | | | IntConst (value: 2)
+
+Phase nn failed because we expected to see:
+Main.main
+  BB0 out: []
+    a = 1: []
+    b = 1: []
+    c = 1: []
+    a = 2: []
+    false: []
+  BB1 out: []
+  BB2 out: []
+    a = 3: []
+  BB3 out: []
+    a = 4: []
+  BB4 out: []
+    false: []
+  BB5 out: []
+    b = 2: []
+  BB6 out: []
+    c = 2: []
+  BB7 out: []
+
+
+
+But we actually saw:
+Main.main
+  BB0 out: [a, b, c]
+    a = 1: []
+    b = 1: []
+    c = 1: []
+    a = 2: []
+    false: []
+  BB1 out: [a, b, c]
+  BB2 out: [a, b, c]
+    a = 3: [a, b, c]
+  BB3 out: [a, b, c]
+    a = 4: [a, b, c]
+  BB4 out: [a, b, c]
+    false: [a, b]
+  BB5 out: [a, b, c]
+    b = 2: []
+  BB6 out: [a, b, c]
+    c = 2: []
+  BB7 out: [a, b, c]
+
+
+
+The difference is:
+At line   2 /   2:
+<   BB0 out: []
+>   BB0 out: [a, b, c]
+At line   8 /   8:
+<   BB1 out: []
+<   BB2 out: []
+<     a = 3: []
+<   BB3 out: []
+<     a = 4: []
+<   BB4 out: []
+<     false: []
+<   BB5 out: []
+>   BB1 out: [a, b, c]
+>   BB2 out: [a, b, c]
+>     a = 3: [a, b, c]
+>   BB3 out: [a, b, c]
+>     a = 4: [a, b, c]
+>   BB4 out: [a, b, c]
+>     false: [a, b]
+>   BB5 out: [a, b, c]
+At line  17 /  17:
+<   BB6 out: []
+>   BB6 out: [a, b, c]
+At line  19 /  19:
+<   BB7 out: []
+>   BB7 out: [a, b, c]
+

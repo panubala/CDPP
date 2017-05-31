@@ -1,7 +1,9 @@
 Main.main
   BB0 out:
-    i = ((this.x[0] + this.x[1]) + this.x[2])
+    a = new A()
+    b = a
   BB1 out:
-    i = ((this.x[0] + this.x[1]) + this.x[2])
+    a = new A()
+    b = a
 
 

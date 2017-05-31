@@ -1,0 +1,78 @@
+Debug information for file: javali_tests/HW5/RDSimple.javali
+AST Resulting From Parsing Stage:
+ClassDecl (name: Main, superClass: Object)
+| VarDecl (name: field, type: int)
+| VarDecl (name: arrayfield, type: int[])
+| MethodDecl (argumentNames: [], argumentTypes: [], name: main, returnType: void)
+| | Seq ()
+| | | VarDecl (name: local, type: int)
+| | | VarDecl (name: array, type: int[])
+| | Seq ()
+| | | Assign ()
+| | | | Var (name: array)
+| | | | NullConst ()
+| | | Assign ()
+| | | | Var (name: arrayfield)
+| | | | NullConst ()
+| | | Assign ()
+| | | | Var (name: local)
+| | | | IntConst (value: 1)
+| | | Assign ()
+| | | | Var (name: field)
+| | | | IntConst (value: 3)
+| | | BuiltInWrite ()
+| | | | Var (name: local)
+| | | BuiltInWriteln ()
+| | | MethodCall ()
+| | | | MethodCallExpr (methodName: m)
+| | | | | ThisRef ()
+| MethodDecl (argumentNames: [], argumentTypes: [], name: m, returnType: void)
+| | Seq ()
+| | Seq ()
+
+Phase nn failed because we expected to see:
+Main.m
+  BB0 out: []
+  BB1 out: []
+
+
+Main.main
+  BB0 out: []
+    array = null: []
+    this.arrayfield = null: []
+    local = 1: []
+    this.field = 3: []
+    write(local): []
+    writeln(): []
+    this.m(...): []
+  BB1 out: []
+
+
+
+But we actually saw:
+Main.m
+  BB0 out: []
+  BB1 out: []
+
+
+Main.main
+  BB0 out: [array, local]
+    array = null: []
+    this.arrayfield = null: []
+    local = 1: []
+    this.field = 3: []
+    write(local): []
+    writeln(): []
+    this.m(...): []
+  BB1 out: [array, local]
+
+
+
+The difference is:
+At line   7 /   7:
+<   BB0 out: []
+>   BB0 out: [array, local]
+At line  15 /  15:
+<   BB1 out: []
+>   BB1 out: [array, local]
+

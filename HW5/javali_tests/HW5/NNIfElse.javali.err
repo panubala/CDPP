@@ -47,37 +47,41 @@ Main.main
 
 But we actually saw:
 Main.main
-  BB0 out: []
+  BB0 out: [a, b, i]
     a = new Main(): []
     b = null: []
     i = read(): []
     (i >= 0): []
-  BB1 out: []
-  BB2 out: []
-    a = null: []
-  BB3 out: []
-    b = new Main(): []
-  BB4 out: []
+  BB1 out: [a, b, i]
+  BB2 out: [a, b, i]
+    a = null: [a, b, i]
+  BB3 out: [a, b, i]
+    b = new Main(): [a, b, i]
+  BB4 out: [a, b, i]
 
 
 
 The difference is:
 At line   2 /   2:
 <   BB0 out: [a]
->   BB0 out: []
+>   BB0 out: [a, b, i]
 At line   4 /   4:
 <     b = null: [a]
 <     i = read(): [a]
 <     (i >= 0): [a]
->     b = null: []
->     i = read(): []
->     (i >= 0): []
-At line   9 /   9:
+<   BB1 out: []
+<   BB2 out: []
 <     a = null: [a]
 <   BB3 out: [a, b]
 <     b = new Main(): [a]
->     a = null: []
->   BB3 out: []
->     b = new Main(): []
-Line  13 /  13:
+<   BB4 out: []
+>     b = null: []
+>     i = read(): []
+>     (i >= 0): []
+>   BB1 out: [a, b, i]
+>   BB2 out: [a, b, i]
+>     a = null: [a, b, i]
+>   BB3 out: [a, b, i]
+>     b = new Main(): [a, b, i]
+>   BB4 out: [a, b, i]
 

@@ -2,7 +2,7 @@
 class Main {
   
    void main() {
-      A a,b;
+      A a,b, c;
       a = new A();
       b= a;
 		

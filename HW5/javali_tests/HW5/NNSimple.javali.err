@@ -27,22 +27,17 @@ Main.main
 
 But we actually saw:
 Main.main
-  BB0 out: []
+  BB0 out: [a]
     a = new Main(): []
     a = null: []
     a = this: []
-  BB1 out: []
+  BB1 out: [a]
 
 
 
 The difference is:
-At line   2 /   2:
-<   BB0 out: [a]
->   BB0 out: []
 At line   4 /   4:
 <     a = null: [a]
 >     a = null: []
-At line   6 /   6:
-<   BB1 out: [a]
->   BB1 out: []
+Line   7 /   7:
 

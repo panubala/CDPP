@@ -14,6 +14,7 @@ import cd.ir.Ast.Field;
 import cd.ir.Ast.MethodDecl;
 import cd.ir.Ast.Stmt;
 import cd.ir.Ast.UnaryOp;
+import cd.ir.Ast.Var;
 import cd.ir.BasicBlock;
 import cd.ir.Symbol.VariableSymbol;
 
@@ -35,10 +36,10 @@ public class NonNullAnalysis extends DataFlowAnalysis<Set<VariableSymbol>> {
 		super(method.cfg);
 		if(method.cfg == null)
 			throw new IllegalArgumentException("method is missing CFG");
+	
 		
 		//def and use computed for each block
 		
-		super.iterate();
 		
 		Set<VariableSymbol> defSymbols;
 		Set<VariableSymbol> useSymbols;
@@ -51,24 +52,27 @@ public class NonNullAnalysis extends DataFlowAnalysis<Set<VariableSymbol>> {
 			
 			for (Stmt stmt : block.stmts) {
 				statements.put(stmt, block);
+				
+				System.out.println("== Statement: " + stmt.toString());
 				if (stmt instanceof Assign){
 					defSymbols.addAll(getVariableSymbol(((Assign) stmt).left()));
 					useSymbols.addAll(getVariableSymbol(((Assign) stmt).right()));	
 				}	
+				
+				System.out.println(defSymbols.toString() + useSymbols.toString());
 			}
 			
-//			if(!defSymbols.isEmpty()){
-				use.put(block, defSymbols);	
-//			}
-			
-			
-			
-//			if(!useSymbols.isEmpty()){
+				def.put(block, defSymbols);	
+
 				use.put(block, useSymbols);	
-//			}
+
 			
 		}
-		System.out.println("=="+def.toString() + use.toString());
+		System.out.println("=="+ "Def: " + def.toString() + "Use: " + use.toString());
+		
+		super.iterate();
+		
+		
 		
 		
 	}
@@ -89,16 +93,20 @@ public class NonNullAnalysis extends DataFlowAnalysis<Set<VariableSymbol>> {
 	
 	@Override
 	protected Set<VariableSymbol> transferFunction(BasicBlock block, Set<VariableSymbol> inState) {
-		System.out.println("== TransferFunction");
+		System.out.println("== TransferFunction: " + block.toString());
 		Set<VariableSymbol> result = new HashSet<VariableSymbol>();
-
-		if (!(use.get(block)==null)){
-			result.addAll(use.get(block));
+		for (Stmt stmt: block.stmts ){
+			if (stmt instanceof Assign){
+				outStateOf(block);
+			}
+		}
+		if (!(def.get(block)==null)){
+			result.addAll(def.get(block));
 		}
 		
 		
 		for (VariableSymbol sym : inState){
-			if(!def.get(block).contains(sym)){
+			if(!use.get(block).contains(sym)){
 				result.add(sym);
 			}		
 		}
@@ -110,10 +118,11 @@ public class NonNullAnalysis extends DataFlowAnalysis<Set<VariableSymbol>> {
 	private Set<VariableSymbol> getVariableSymbol(Expr expr){
 		Set<VariableSymbol> symbols = new HashSet<VariableSymbol>();
 		
-		if(expr instanceof Field){
+		
+		if(expr instanceof Var){
 			
-			Field field = (Field) expr;
-			symbols.add(field.sym);
+			Var var = (Var) expr;
+			symbols.add(var.sym);
 			
 		}else if(expr instanceof BinaryOp){
 			
@@ -148,7 +157,25 @@ public class NonNullAnalysis extends DataFlowAnalysis<Set<VariableSymbol>> {
 	public Set<VariableSymbol> nonNullBefore(Stmt stmt) {
 		System.out.println("==nonNullBefore");
 		BasicBlock block = statements.get(stmt);
-		return use.get(block);
+		System.out.println("Block: " + block.toString() + " Statements: " + block.stmts.toString());
+		
+		
+		Set<VariableSymbol> symbls = new HashSet<>();
+		
+		int i = 1;
+		Stmt s = block.stmts.get(0);
+		while(s != stmt){
+			
+			if (s instanceof Assign){
+				symbls.addAll(getVariableSymbol(((Assign) s).left()));		
+			}
+			s = block.stmts.get(i);
+		}
+		
+		int size;
+		size = block.predecessors.size();
+		System.out.println("Size of Predecessors: " + size);
+		return symbls;
 	}
 	
 	/**
@@ -157,6 +184,18 @@ public class NonNullAnalysis extends DataFlowAnalysis<Set<VariableSymbol>> {
 	 */
 	public Set<VariableSymbol> nonNullBeforeCondition(BasicBlock block) {
 		System.out.println("==nonNullBeforeCondition");
-		return use.get(block);
+		Set<VariableSymbol>  result = new HashSet<VariableSymbol>();
+		
+		System.out.println("Def in nonNullBeforeCondition: " + def.toString());
+		
+		for(BasicBlock b: block.predecessors){
+			result.addAll(def.get(b));
+			System.out.println(result.toString());
+		}
+		
+		result.addAll(def.get(block));
+		
+		System.out.println("==nonNullBeforeCondition's output: " +result.toString());
+		return result;
 	}
 }

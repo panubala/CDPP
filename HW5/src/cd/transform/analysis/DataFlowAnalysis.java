@@ -22,7 +22,7 @@ import cd.ir.ControlFlowGraph;
 public abstract class DataFlowAnalysis<State> {
 
 	protected final ControlFlowGraph cfg;
-	public Map<BasicBlock, State> inStates;
+	private Map<BasicBlock, State> inStates;
 	private Map<BasicBlock, State> outStates;
 
 	public DataFlowAnalysis(ControlFlowGraph cfg) {
@@ -60,12 +60,14 @@ public abstract class DataFlowAnalysis<State> {
 		while (change) {
 			change = false;
 			Map<BasicBlock, State> oldOutStates = new HashMap<BasicBlock, State>(outStates);
-			System.out.println(oldOutStates);
+			System.out.println("OutStates: " + oldOutStates);
 			
 			//Go through all Blocks and adjust their in/outStates
 			for (BasicBlock block : cfg.allBlocks) {
 				Set<State> outStatesPre = new LinkedHashSet<>();
 				outStatesPre.add(initialState());
+				
+				
 				
 				//Get all outStates of the predecessors and put them into one inSet
 				for (BasicBlock predecessor : block.predecessors) {
@@ -82,6 +84,7 @@ public abstract class DataFlowAnalysis<State> {
 					inStates.put(block, inState);
 					State outState = transferFunction(block, inState);
 					outStates.put(block, outState);
+					
 				}
 			}
 			
